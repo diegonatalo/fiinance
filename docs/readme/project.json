@@ -1,0 +1,121 @@
+{
+  "name": "FIInance",
+  "repo": "FIInance",
+  "tagline": "Sua carteira de FIIs, sem planilha.",
+  "urls": {
+    "demo": "https://fiinance1.vercel.app"
+  },
+  "stack": [
+    {
+      "pkg": "react"
+    },
+    {
+      "pkg": "typescript"
+    },
+    {
+      "pkg": "vite"
+    },
+    {
+      "pkg": "tailwindcss"
+    },
+    {
+      "pkg": "react-router"
+    },
+    {
+      "pkg": "recharts"
+    },
+    "Phosphor Icons"
+  ],
+  "badges_extra": [
+    {
+      "alt": "Privacidade",
+      "label": "dados",
+      "message": "só no seu navegador",
+      "color": "10b981"
+    }
+  ],
+  "features": [
+    {
+      "title": "Operações",
+      "desc": "Lance compras e vendas. Cotas e preço médio saem delas, e comprar um ticker repetido soma à posição."
+    },
+    {
+      "title": "Resultado",
+      "desc": "Informe a cotação de cada fundo e veja valor atual e lucro ou prejuízo, em R$ e em %."
+    },
+    {
+      "title": "Proventos",
+      "desc": "O app confere quantas cotas você tinha na data e calcula renda mensal e yield on cost de 12 meses."
+    },
+    {
+      "title": "Meta de alocação",
+      "desc": "Defina quanto quer em papel e em tijolo e veja o aporte que falta para chegar lá."
+    },
+    {
+      "title": "Gráficos",
+      "desc": "Distribuição por ativo, tipo, segmento e indexador, mais a evolução dos aportes mês a mês."
+    },
+    {
+      "title": "Calculadoras",
+      "desc": "Magic Number e Preço Médio, já ligadas à sua carteira, com opção de registrar a compra simulada."
+    },
+    {
+      "title": "Backup",
+      "desc": "Exporte tudo em JSON, as operações em CSV, e importe quando precisar."
+    },
+    {
+      "title": "Tema e celular",
+      "desc": "Tema claro ou escuro, e uma tabela que vira cartões em telas pequenas."
+    }
+  ],
+  "banner": {
+    "shot": {
+      "file": "docs/screenshots/painel-dark.png",
+      "title": "fiinance1.vercel.app"
+    },
+    "chips": 4
+  },
+  "demo": {
+    "note": "Capturas com dados fictícios, só para demonstração.",
+    "layout": "stack",
+    "shots": [
+      {
+        "file": "docs/screenshots/painel-dark.png",
+        "file_light": "docs/screenshots/painel-light.png",
+        "title": "Painel",
+        "alt": "Painel com resumo da carteira, meta de alocação, gráficos de distribuição e evolução dos aportes"
+      },
+      {
+        "file": "docs/screenshots/carteira.png",
+        "title": "Carteira",
+        "alt": "Tabela de ativos com cotas, preço médio, cotação e resultado",
+        "caption": "<b>Carteira</b>: posição, cotação e resultado de cada fundo."
+      },
+      {
+        "file": "docs/screenshots/proventos.png",
+        "title": "Proventos",
+        "alt": "Formulário de proventos, gráfico dos últimos 12 meses e histórico",
+        "caption": "<b>Proventos</b>: renda mensal e histórico de pagamentos."
+      },
+      {
+        "file": "docs/screenshots/calculadoras.png",
+        "title": "Calculadoras",
+        "alt": "Calculadoras de Magic Number e de Preço Médio lado a lado com seus resultados",
+        "caption": "<b>Calculadoras</b>: Magic Number e novo preço médio."
+      },
+      {
+        "files": [
+          "docs/screenshots/mobile-painel.png",
+          "docs/screenshots/mobile-carteira.png"
+        ],
+        "title": "No celular",
+        "alt": "Painel no celular, com os cartões de resumo empilhados, e carteira no celular, com cada ativo em um cartão",
+        "caption": "<b>No celular</b>: o layout se adapta à tela."
+      }
+    ]
+  },
+  "footer": "Feito com 💚 para quem investe em FIIs.",
+  "credits": [
+    "Ícones do [Phosphor Icons](https://phosphoricons.com), gráficos com [Recharts](https://recharts.org)\ne cotações opcionais pela [brapi](https://brapi.dev)."
+  ]
+}

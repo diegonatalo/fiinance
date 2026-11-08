@@ -1,17 +1,25 @@
+<!-- Arquivo gerado pelo readme-kit. Não edite aqui: altere docs/readme/ e rode "readme-kit build". -->
 <div align="center">
 
-<img src="docs/assets/banner.svg" alt="FIInance: Sua carteira de FIIs, sem planilha." width="100%" />
+<img src="docs/assets/banner.svg" alt="FIInance: Sua carteira de FIIs, sem planilha. github.com/diegonatalo/FIInance. Stack: React 19, TypeScript 6, Vite 8, Tailwind CSS 4" width="100%" />
 
-<a href="https://fiinance1.vercel.app"><img src="docs/assets/btn-demo.svg" alt="Demonstração ↗" height="46" /></a>
+<br />
+
+<a href="https://fiinance1.vercel.app"><img src="docs/assets/btn-demo.svg" alt="Abrir o app ↗" height="46" /></a>
 <a href="https://github.com/diegonatalo/FIInance"><img src="docs/assets/btn-code.svg" alt="Código ↗" height="46" /></a>
 
+<br />
+
 ![React](https://img.shields.io/badge/React_19-20232a?style=flat-square&logo=react&logoColor=61dafb)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178c6?style=flat-square&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646cff?style=flat-square&logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript_6-3178c6?style=flat-square&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite_8-646cff?style=flat-square&logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)
-![Privacidade](https://img.shields.io/badge/dados-só_no_seu_navegador-10b981?style=flat-square)
+![Privacidade](https://img.shields.io/badge/dados-s%C3%B3_no_seu_navegador-10b981?style=flat-square)
+![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-16a34a?style=flat-square)
 
 </div>
+
+<br />
 
 <div align="center">
 
@@ -19,40 +27,50 @@
 
 </div>
 
+**Sua carteira de FIIs, sem planilha.**<br />
 Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes direto no navegador.
+
+<br />
 
 <div align="center">
 
-<img src="docs/assets/h-demo.svg" alt="02 · DEMO: Telas" width="100%" />
+<img src="docs/assets/h-demo.svg" alt="02 · DEMO: Demonstração" width="100%" />
 
 </div>
 
 <div align="center">
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/shot-painel-dark.svg" />
-  <img src="docs/assets/shot-painel-light.svg" alt="Painel com resumo da carteira, meta de alocação, gráficos de distribuição e evolução dos aportes" width="100%" />
-</picture>
-
 <sub>Capturas com dados fictícios, só para demonstração.</sub>
 
-<img src="docs/assets/shot-carteira.svg" alt="Tabela de ativos com cotas, preço médio, cotação e resultado" width="100%" />
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/shot-01.svg" /><img src="docs/assets/shot-01-light.svg" alt="Painel com resumo da carteira, meta de alocação, gráficos de distribuição e evolução dos aportes" width="380" /></picture>
+
+<br />
+
+<img src="docs/assets/shot-02.svg" alt="Tabela de ativos com cotas, preço médio, cotação e resultado" width="100%" />
 <br />
 <sub><b>Carteira</b>: posição, cotação e resultado de cada fundo.</sub>
 
-<img src="docs/assets/shot-proventos.svg" alt="Formulário de proventos, gráfico dos últimos 12 meses e histórico" width="100%" />
+<br />
+
+<img src="docs/assets/shot-03.svg" alt="Formulário de proventos, gráfico dos últimos 12 meses e histórico" width="100%" />
 <br />
 <sub><b>Proventos</b>: renda mensal e histórico de pagamentos.</sub>
 
-<img src="docs/assets/shot-calculadoras.svg" alt="Calculadoras de Magic Number e de Preço Médio lado a lado com seus resultados" width="100%" />
+<br />
+
+<img src="docs/assets/shot-04.svg" alt="Calculadoras de Magic Number e de Preço Médio lado a lado com seus resultados" width="100%" />
 <br />
 <sub><b>Calculadoras</b>: Magic Number e novo preço médio.</sub>
 
-<img src="docs/assets/shot-mobile.svg" alt="Painel no celular, com os cartões de resumo empilhados, e carteira no celular, com cada ativo em um cartão" width="100%" />
+<br />
+
+<img src="docs/assets/shot-05.svg" alt="Painel no celular, com os cartões de resumo empilhados, e carteira no celular, com cada ativo em um cartão" width="100%" />
 <br />
 <sub><b>No celular</b>: o layout se adapta à tela.</sub>
 
 </div>
+
+<br />
 
 <div align="center">
 
@@ -62,15 +80,21 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 <div align="center">
 
-<img src="docs/assets/f-01.svg" alt="Operações: Lance compras e vendas. Cotas e preço médio saem delas, e comprar um ticker repetido soma à posição." width="49%" /> <img src="docs/assets/f-02.svg" alt="Resultado: Informe a cotação de cada fundo e veja valor atual e lucro ou prejuízo, em R$ e em %." width="49%" />
+<img src="docs/assets/f-01.svg" alt="Operações: Lance compras e vendas. Cotas e preço médio saem delas, e comprar um ticker repetido soma à posição." width="49%" />
+<img src="docs/assets/f-02.svg" alt="Resultado: Informe a cotação de cada fundo e veja valor atual e lucro ou prejuízo, em R$ e em %." width="49%" />
 <br />
-<img src="docs/assets/f-03.svg" alt="Proventos: O app confere quantas cotas você tinha na data e calcula renda mensal e yield on cost de 12 meses." width="49%" /> <img src="docs/assets/f-04.svg" alt="Meta de alocação: Defina quanto quer em papel e em tijolo e veja o aporte que falta para chegar lá." width="49%" />
+<img src="docs/assets/f-03.svg" alt="Proventos: O app confere quantas cotas você tinha na data e calcula renda mensal e yield on cost de 12 meses." width="49%" />
+<img src="docs/assets/f-04.svg" alt="Meta de alocação: Defina quanto quer em papel e em tijolo e veja o aporte que falta para chegar lá." width="49%" />
 <br />
-<img src="docs/assets/f-05.svg" alt="Gráficos: Distribuição por ativo, tipo, segmento e indexador, mais a evolução dos aportes mês a mês." width="49%" /> <img src="docs/assets/f-06.svg" alt="Calculadoras: Magic Number e Preço Médio, já ligadas à sua carteira, com opção de registrar a compra simulada." width="49%" />
+<img src="docs/assets/f-05.svg" alt="Gráficos: Distribuição por ativo, tipo, segmento e indexador, mais a evolução dos aportes mês a mês." width="49%" />
+<img src="docs/assets/f-06.svg" alt="Calculadoras: Magic Number e Preço Médio, já ligadas à sua carteira, com opção de registrar a compra simulada." width="49%" />
 <br />
-<img src="docs/assets/f-07.svg" alt="Backup: Exporte tudo em JSON, as operações em CSV, e importe quando precisar." width="49%" /> <img src="docs/assets/f-08.svg" alt="Tema e celular: Tema claro ou escuro, e uma tabela que vira cartões em telas pequenas." width="49%" />
+<img src="docs/assets/f-07.svg" alt="Backup: Exporte tudo em JSON, as operações em CSV, e importe quando precisar." width="49%" />
+<img src="docs/assets/f-08.svg" alt="Tema e celular: Tema claro ou escuro, e uma tabela que vira cartões em telas pequenas." width="49%" />
 
 </div>
+
+<br />
 
 <div align="center">
 
@@ -80,13 +104,15 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 <div align="center">
 
-<img src="docs/assets/stack.svg" alt="Stack: React 19, TypeScript, Vite, Tailwind CSS 4, React Router, Recharts, Phosphor Icons" width="100%" />
+<img src="docs/assets/stack.svg" alt="Stack: React 19, TypeScript 6, Vite 8, Tailwind CSS 4, React Router 8, Recharts, Phosphor Icons" width="100%" />
 
 </div>
 
+<br />
+
 <div align="center">
 
-<img src="docs/assets/h-rodar.svg" alt="05 · COMO RODAR: Rodando localmente" width="100%" />
+<img src="docs/assets/h-run.svg" alt="05 · COMO RODAR: Rodando localmente" width="100%" />
 
 </div>
 
@@ -116,6 +142,8 @@ Há uma só, usada apenas no build. O modelo está em [`.env.example`](.env.exam
 
 No repositório, `.env.production` já aponta para `https://fiinance1.vercel.app`.
 
+<br />
+
 <div align="center">
 
 <img src="docs/assets/h-estrutura.svg" alt="06 · ESTRUTURA: Estrutura" width="100%" />
@@ -136,23 +164,20 @@ src/
 > [!NOTE]
 > A lógica de negócio fica em `lib/`, sem dependência de React. Os componentes só chamam essas funções.
 
-<details>
-<summary><b>Como adicionar uma página nova</b></summary>
-
 <br />
-
-1. Crie `src/pages/nome-page.tsx` exportando o componente da tela.
-2. Registre a rota em `src/App.tsx`, dentro do `<Route element={<Layout />}>`.
-3. Inclua o item em `navItems`, no `src/layout.tsx`, para aparecer no menu.
-4. Adicione o caminho em `ROTAS`, no `vite.config.ts`, para entrar no `sitemap.xml`.
-
-</details>
 
 <div align="center">
 
 <img src="docs/assets/h-mais.svg" alt="07 · MAIS: Mais informações" width="100%" />
 
 </div>
+
+### 🧩 Como adicionar uma página nova
+
+1. Crie `src/pages/nome-page.tsx` exportando o componente da tela.
+2. Registre a rota em `src/App.tsx`, dentro do `<Route element={<Layout />}>`.
+3. Inclua o item em `navItems`, no `src/layout.tsx`, para aparecer no menu.
+4. Adicione o caminho em `ROTAS`, no `vite.config.ts`, para entrar no `sitemap.xml`.
 
 ### 🔒 Seus dados ficam com você
 
@@ -197,10 +222,13 @@ o `robots.txt` e as URLs absolutas de `og:image` e `twitter:image` usadas nos pr
 - [ ] Paginação do histórico de operações e de proventos, que cresce com o tempo.
 - [ ] Sincronização entre dispositivos. Hoje o caminho é o backup em JSON.
 
-### 🙏 Créditos
+### 📄 Créditos e licença
 
-Ícones do [Phosphor Icons](https://phosphoricons.com), gráficos com [Recharts](https://recharts.org)
+- Ícones do [Phosphor Icons](https://phosphoricons.com), gráficos com [Recharts](https://recharts.org)
 e cotações opcionais pela [brapi](https://brapi.dev).
+- Distribuído sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE).
+
+<br />
 
 <div align="center">
 
@@ -216,10 +244,10 @@ e cotações opcionais pela [brapi](https://brapi.dev).
 
 </div>
 
+<br />
+
 <div align="center">
 
-<img src="docs/assets/footer.svg" alt="© 2026 Diego Natalo" width="100%" />
-
-<sub>Feito com 💚 para quem investe em FIIs.</sub>
+<img src="docs/assets/footer.svg" alt="© 2026 Diego Natalo. Feito com 💚 para quem investe em FIIs." width="100%" />
 
 </div>
