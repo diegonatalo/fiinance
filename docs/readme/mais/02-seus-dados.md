@@ -1,4 +1,4 @@
-### 🔒 Seus dados ficam com você
+### 🔒 Seus dados
 
 Não há servidor nem conta. Tudo é salvo no `localStorage` do navegador, na chave `fiinance:dados`.
 

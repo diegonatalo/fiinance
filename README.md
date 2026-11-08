@@ -179,7 +179,7 @@ src/
 3. Inclua o item em `navItems`, no `src/layout.tsx`, para aparecer no menu.
 4. Adicione o caminho em `ROTAS`, no `vite.config.ts`, para entrar no `sitemap.xml`.
 
-### 🔒 Seus dados ficam com você
+### 🔒 Seus dados
 
 Não há servidor nem conta. Tudo é salvo no `localStorage` do navegador, na chave `fiinance:dados`.
 
@@ -189,7 +189,7 @@ Ao ler, o app valida o conteúdo, e um backup corrompido não derruba a tela.
 Para buscar cotações, o app consulta a [brapi](https://brapi.dev), que exige um token para FIIs.
 Sem ele a API responde 401, e dá para digitar a cotação à mão. O token fica só no navegador e não entra no backup.
 
-### 🧠 Como os cálculos funcionam
+### 🧠 Como funciona
 
 O app guarda **operações**, e a posição de cada fundo é sempre derivada delas.
 

@@ -1,4 +1,4 @@
-### 🧠 Como os cálculos funcionam
+### 🧠 Como funciona
 
 O app guarda **operações**, e a posição de cada fundo é sempre derivada delas.
 
