@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { CHAVE_TEMA } from "../lib/migracao";
 
@@ -8,10 +8,22 @@ function sanitizarTema(raw: unknown): Theme | null {
   return raw === "dark" || raw === "light" ? raw : null;
 }
 
-function temaDoSistema(): Theme {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+const CONSULTA_ESCURO = "(prefers-color-scheme: dark)";
+
+function observarSistema(onChange: () => void) {
+  const consulta = window.matchMedia(CONSULTA_ESCURO);
+  consulta.addEventListener("change", onChange);
+  return () => consulta.removeEventListener("change", onChange);
+}
+
+/** No servidor não há janela: assume claro e o navegador corrige ao hidratar. */
+function useTemaDoSistema(): Theme {
+  const escuro = useSyncExternalStore(
+    observarSistema,
+    () => window.matchMedia(CONSULTA_ESCURO).matches,
+    () => false,
+  );
+  return escuro ? "dark" : "light";
 }
 
 export function useTheme() {
@@ -20,9 +32,10 @@ export function useTheme() {
     null,
     sanitizarTema,
   );
-  const theme = stored ?? temaDoSistema();
+  const sistema = useTemaDoSistema();
+  const theme = stored ?? sistema;
 
-  // O script inline do index.html aplica a classe antes do primeiro paint;
+  // O script inline do layout aplica a classe antes do primeiro paint;
   // aqui só mantemos sincronizado quando o usuário alterna.
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");

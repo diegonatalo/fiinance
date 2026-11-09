@@ -1,15 +1,17 @@
+"use client";
+
 import { useState } from "react";
-import { FiiForm, type FiiFormValues } from "../components/fii-form";
-import { FiiTable } from "../components/fii-table";
-import { OperacaoModal } from "../components/operacao-modal";
-import { CotacoesCard } from "../components/cotacoes-card";
-import { HistoricoCard } from "../components/historico-card";
-import { BackupCard } from "../components/backup-card";
-import { Card, CardTitle } from "../components/ui/card";
-import { Modal } from "../components/ui/modal";
-import { useCarteiraContext } from "../contexts/carteira-context";
-import { useToast } from "../contexts/toast-context";
-import type { Fii } from "../models/fii";
+import { FiiForm, type FiiFormValues } from "@/components/fii-form";
+import { FiiTable } from "@/components/fii-table";
+import { OperacaoModal } from "@/components/operacao-modal";
+import { CotacoesCard } from "@/components/cotacoes-card";
+import { HistoricoCard } from "@/components/historico-card";
+import { BackupCard } from "@/components/backup-card";
+import { Card, CardTitle } from "@/components/ui/card";
+import { Modal } from "@/components/ui/modal";
+import { useCarteiraContext } from "@/contexts/carteira-context";
+import { useToast } from "@/contexts/toast-context";
+import type { Fii } from "@/models/fii";
 
 export function CarteiraPage() {
   const {

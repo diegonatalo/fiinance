@@ -1,7 +1,7 @@
 <!-- Arquivo gerado pelo readme-kit. Não edite aqui: altere docs/readme/ e rode "readme-kit build". -->
 <div align="center">
 
-<img src="docs/assets/banner.svg" alt="FIInance: Sua carteira de FIIs, sem planilha. github.com/diegonatalo/FIInance. Stack: React 19, TypeScript 6, Vite 8, Tailwind CSS 4" width="100%" />
+<img src="docs/assets/banner.svg" alt="FIInance: Sua carteira de FIIs, sem planilha. github.com/diegonatalo/FIInance. Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4" width="100%" />
 
 <br />
 
@@ -10,9 +10,9 @@
 
 <br />
 
+![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React_19-20232a?style=flat-square&logo=react&logoColor=61dafb)
 ![TypeScript](https://img.shields.io/badge/TypeScript_6-3178c6?style=flat-square&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite_8-646cff?style=flat-square&logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)
 ![Privacidade](https://img.shields.io/badge/dados-s%C3%B3_no_seu_navegador-10b981?style=flat-square)
 ![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-16a34a?style=flat-square)
@@ -104,7 +104,7 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 <div align="center">
 
-<img src="docs/assets/stack.svg" alt="Stack: React 19, TypeScript 6, Vite 8, Tailwind CSS 4, React Router 8, Recharts, Phosphor Icons" width="100%" />
+<img src="docs/assets/stack.svg" alt="Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4, Recharts, Phosphor Icons" width="100%" />
 
 </div>
 
@@ -122,23 +122,23 @@ Requer [Node.js](https://nodejs.org) e [pnpm](https://pnpm.io).
 git clone https://github.com/diegonatalo/FIInance.git
 cd FIInance
 pnpm install
-pnpm dev        # http://localhost:5173
+pnpm dev        # http://localhost:3000
 ```
 
 | Comando | O que faz |
 |---|---|
-| `pnpm dev` | Servidor de desenvolvimento com HMR, também acessível pela rede local (`--host`) |
-| `pnpm build` | Checa os tipos e gera o build de produção em `dist/` |
-| `pnpm preview` | Serve o build de produção |
+| `pnpm dev` | Servidor de desenvolvimento, também acessível pela rede local |
+| `pnpm build` | Checa os tipos e gera o build de produção em `.next/` |
+| `pnpm start` | Serve o build de produção |
 | `pnpm lint` | Roda o ESLint |
 
 ### 🔑 Variáveis de ambiente
 
-Há uma só, usada apenas no build. O modelo está em [`.env.example`](.env.example).
+Há uma só. O nome antigo, `VITE_SITE_URL`, continua sendo aceito. O modelo está em [`.env.example`](.env.example).
 
 | Variável | Descrição | Se não for definida |
 |---|---|---|
-| `VITE_SITE_URL` | URL pública do site, sem barra final. | `robots.txt` sai sem a linha `Sitemap`, e o `sitemap.xml` não é gerado. |
+| `NEXT_PUBLIC_SITE_URL` | URL pública do site, sem barra final. | `robots.txt` sai sem a linha `Sitemap`, e o `sitemap.xml` sai vazio. |
 
 No repositório, `.env.production` já aponta para `https://fiinance1.vercel.app`.
 
@@ -152,13 +152,14 @@ No repositório, `.env.production` já aponta para `https://fiinance1.vercel.app
 
 ```text
 src/
+├── app/          rotas do Next (App Router): layout, páginas, 404, robots e sitemap
 ├── models/       tipos do domínio: Ativo, Transacao, Provento, Dados
 ├── lib/          lógica pura, sem React: posição, resumo, proventos, metas,
 │                 calculadoras, validação e migração dos dados, exportação
 ├── hooks/        useCarteira (estado e ações), useLocalStorage, useTheme
 ├── contexts/     CarteiraProvider e ToastProvider
 ├── components/   interface (ui/: Button, Card, Modal, Field, Input)
-└── pages/        uma tela por rota: Painel, Carteira, Proventos, Calculadoras e 404
+└── views/        uma tela por rota: Painel, Carteira, Proventos, Calculadoras e 404
 ```
 
 > [!NOTE]
@@ -174,10 +175,10 @@ src/
 
 ### 🧩 Como adicionar uma página nova
 
-1. Crie `src/pages/nome-page.tsx` exportando o componente da tela.
-2. Registre a rota em `src/App.tsx`, dentro do `<Route element={<Layout />}>`.
-3. Inclua o item em `navItems`, no `src/layout.tsx`, para aparecer no menu.
-4. Adicione o caminho em `ROTAS`, no `vite.config.ts`, para entrar no `sitemap.xml`.
+1. Crie `src/views/nome-page.tsx` exportando o componente da tela (com `"use client"` no topo).
+2. Crie a rota em `src/app/nome/page.tsx`, renderizando esse componente.
+3. Inclua o item em `navItems`, no `src/components/app-shell.tsx`, para aparecer no menu.
+4. Adicione o caminho em `ROTAS`, no `src/lib/site.ts`, para entrar no `sitemap.xml`.
 
 ### 🔒 Seus dados
 
@@ -207,11 +208,10 @@ O app guarda **operações**, e a posição de cada fundo é sempre derivada del
 
 ### 🌐 Deploy
 
-O app é publicado na [Vercel](https://vercel.com). O `vercel.json` redireciona qualquer rota para o
-`index.html`, porque o app usa `BrowserRouter`. Em outro host, configure o mesmo *SPA fallback*;
-sem ele, atualizar a página em `/carteira` retorna 404.
+O app é publicado na [Vercel](https://vercel.com). A Vercel detecta o Next.js, então não há configuração extra. Atualizar a página em `/carteira`
+funciona, e um endereço inexistente devolve a 404 do próprio app, com status 404.
 
-Ao mudar de domínio, atualize `VITE_SITE_URL` em `.env.production`. É ela que gera o `sitemap.xml`,
+Ao mudar de domínio, atualize `NEXT_PUBLIC_SITE_URL` em `.env.production`. É ela que gera o `sitemap.xml`,
 o `robots.txt` e as URLs absolutas de `og:image` e `twitter:image` usadas nos previews de links.
 
 ### 🧭 Próximos passos

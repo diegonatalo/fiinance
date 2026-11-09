@@ -1,12 +1,14 @@
-import { useTheme } from "../hooks/useTheme";
-import { SummaryCards } from "../components/summary-card";
-import { ChartsGrid } from "../components/charts-grid";
-import { MetasCard } from "../components/metas-card";
-import { EvolucaoChart } from "../components/evolucao-chart";
-import { useCarteiraContext } from "../contexts/carteira-context";
-import { evolucaoAportes } from "../lib/evolucao";
-import { hoje, mesDe } from "../lib/data";
-import { resumirProventos } from "../lib/proventos";
+"use client";
+
+import { useTheme } from "@/hooks/useTheme";
+import { SummaryCards } from "@/components/summary-card";
+import { ChartsGrid } from "@/components/charts-grid";
+import { MetasCard } from "@/components/metas-card";
+import { EvolucaoChart } from "@/components/evolucao-chart";
+import { useCarteiraContext } from "@/contexts/carteira-context";
+import { evolucaoAportes } from "@/lib/evolucao";
+import { hoje, mesDe } from "@/lib/data";
+import { resumirProventos } from "@/lib/proventos";
 
 export function PainelPage() {
   const { theme } = useTheme();

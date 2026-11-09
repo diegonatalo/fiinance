@@ -7,19 +7,16 @@
   },
   "stack": [
     {
+      "pkg": "next"
+    },
+    {
       "pkg": "react"
     },
     {
       "pkg": "typescript"
     },
     {
-      "pkg": "vite"
-    },
-    {
       "pkg": "tailwindcss"
-    },
-    {
-      "pkg": "react-router"
     },
     {
       "pkg": "recharts"

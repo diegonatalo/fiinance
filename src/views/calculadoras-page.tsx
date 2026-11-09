@@ -1,12 +1,14 @@
+"use client";
+
 import { useState } from "react";
-import { MagicNumberCalc } from "../components/magic-number-calculator";
-import { PrecoMedioCalc } from "../components/preco-medio-calculator";
+import { MagicNumberCalc } from "@/components/magic-number-calculator";
+import { PrecoMedioCalc } from "@/components/preco-medio-calculator";
 import {
   OperacaoModal,
   type OperacaoInicial,
-} from "../components/operacao-modal";
-import { useCarteiraContext } from "../contexts/carteira-context";
-import type { Fii } from "../models/fii";
+} from "@/components/operacao-modal";
+import { useCarteiraContext } from "@/contexts/carteira-context";
+import type { Fii } from "@/models/fii";
 
 export function CalculadorasPage() {
   const { ativos, dados } = useCarteiraContext();

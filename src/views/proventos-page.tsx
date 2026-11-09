@@ -1,13 +1,15 @@
-import { Card, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { ProventoForm } from "../components/provento-form";
-import { ProventosChart } from "../components/proventos-chart";
-import { useCarteiraContext } from "../contexts/carteira-context";
-import { useToast } from "../contexts/toast-context";
-import { useTheme } from "../hooks/useTheme";
-import { formatBRL, formatNumber } from "../lib/format";
-import { formatData, hoje, mesDe } from "../lib/data";
-import { totalProvento, ultimosMeses } from "../lib/proventos";
+"use client";
+
+import { Card, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ProventoForm } from "@/components/provento-form";
+import { ProventosChart } from "@/components/proventos-chart";
+import { useCarteiraContext } from "@/contexts/carteira-context";
+import { useToast } from "@/contexts/toast-context";
+import { useTheme } from "@/hooks/useTheme";
+import { formatBRL, formatNumber } from "@/lib/format";
+import { formatData, hoje, mesDe } from "@/lib/data";
+import { totalProvento, ultimosMeses } from "@/lib/proventos";
 import { TrashSimpleIcon } from "@phosphor-icons/react";
 
 export function ProventosPage() {
