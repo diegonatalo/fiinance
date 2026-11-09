@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { CarteiraProvider } from "@/contexts/carteira-provider";
-import { ToastProvider } from "@/contexts/toast-provider";
+import { CarteiraProvider } from "@/components/carteira-provider";
+import { ToastProvider } from "@/components/toast-provider";
 import { migrarLegado } from "@/lib/migracao";
 
 // Converte dados antigos do localStorage antes do primeiro render no navegador.

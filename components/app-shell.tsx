@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTheme } from "@/hooks/useTheme";
+import { useTheme } from "@/hooks/use-theme";
 import { ThemeToggle } from "./theme-toggle";
 import { BuildingsIcon } from "@phosphor-icons/react";
 

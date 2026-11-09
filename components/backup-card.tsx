@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import { Card, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
-import { useCarteiraContext } from "../contexts/carteira-context";
-import { useToast } from "../contexts/toast-context";
+import { useCarteiraContext } from "../lib/carteira-context";
+import { useToast } from "../lib/toast-context";
 import {
   baixarArquivo,
   dadosParaJson,

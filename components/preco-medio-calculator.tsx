@@ -6,7 +6,7 @@ import { Input, Select } from "./ui/input";
 import { cn, formatBRL, formatNumber, formatPctSinal } from "../lib/format";
 import { simularPrecoMedio } from "../lib/preco-medio";
 import { parseDecimal, parseDecimalOuZero } from "../lib/numero";
-import type { Fii } from "../models/fii";
+import type { Fii } from "../types/fii";
 import {
   ArrowRightIcon,
   CalculatorIcon,

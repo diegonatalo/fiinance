@@ -9,9 +9,9 @@ import { HistoricoCard } from "@/components/historico-card";
 import { BackupCard } from "@/components/backup-card";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
-import { useCarteiraContext } from "@/contexts/carteira-context";
-import { useToast } from "@/contexts/toast-context";
-import type { Fii } from "@/models/fii";
+import { useCarteiraContext } from "@/lib/carteira-context";
+import { useToast } from "@/lib/toast-context";
+import type { Fii } from "@/types/fii";
 
 export function CarteiraPage() {
   const {

@@ -1,4 +1,4 @@
-import type { Dados } from "../models/fii";
+import type { Dados } from "../types/fii";
 
 export function baixarArquivo(nome: string, conteudo: string, tipo: string) {
   const url = URL.createObjectURL(new Blob([conteudo], { type: tipo }));

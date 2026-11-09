@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { Carteira } from "../hooks/useCarteira";
+import type { Carteira } from "../hooks/use-carteira";
 
 export const CarteiraContext = createContext<Carteira | null>(null);
 

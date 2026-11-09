@@ -13,7 +13,7 @@ import {
   type Fii,
   type FiiTipo,
   type Segmento,
-} from "../models/fii";
+} from "../types/fii";
 import { FloppyDiskIcon, PlusIcon } from "@phosphor-icons/react";
 
 export interface FiiFormValues {

@@ -1,5 +1,5 @@
 import { mesDe } from "./data";
-import type { Provento } from "../models/fii";
+import type { Provento } from "../types/fii";
 
 export function totalProvento(p: Provento): number {
   return p.valorPorCota * p.cotas;

@@ -1,4 +1,4 @@
-import type { Ativo, Fii, Transacao } from "../models/fii";
+import type { Ativo, Fii, Transacao } from "../types/fii";
 
 /**
  * Consolida as transações de um ativo em cotas e preço médio.

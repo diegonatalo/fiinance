@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
-import { useCarteiraContext } from "../contexts/carteira-context";
+import { useCarteiraContext } from "../lib/carteira-context";
 import { formatBRL, formatPct } from "../lib/format";
 import { alocacaoAtual, sugerirAporte } from "../lib/metas";
 import { parseDecimal } from "../lib/numero";

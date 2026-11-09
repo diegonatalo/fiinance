@@ -7,8 +7,8 @@ import {
   OperacaoModal,
   type OperacaoInicial,
 } from "@/components/operacao-modal";
-import { useCarteiraContext } from "@/contexts/carteira-context";
-import type { Fii } from "@/models/fii";
+import { useCarteiraContext } from "@/lib/carteira-context";
+import type { Fii } from "@/types/fii";
 
 export function CalculadorasPage() {
   const { ativos, dados } = useCarteiraContext();

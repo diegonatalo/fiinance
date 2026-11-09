@@ -1,4 +1,4 @@
-import type { Fii } from "../models/fii";
+import type { Fii } from "../types/fii";
 
 export interface Fatia {
   nome: string;

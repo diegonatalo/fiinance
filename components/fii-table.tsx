@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { cn, formatBRL, formatNumber, formatPctSinal } from "../lib/format";
 import { valorPosicao } from "../lib/resumo";
-import type { Cotacao, Fii, FiiTipo } from "../models/fii";
+import type { Cotacao, Fii, FiiTipo } from "../types/fii";
 import {
   ArrowsDownUpIcon,
   PencilSimpleIcon,

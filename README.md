@@ -1,7 +1,7 @@
 <!-- Arquivo gerado pelo readme-kit. Não edite aqui: altere docs/readme/ e rode "readme-kit build". -->
 <div align="center">
 
-<img src="docs/assets/banner.svg" alt="FIInance: Sua carteira de FIIs, sem planilha. github.com/diegonatalo/fiinance. Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4" width="100%" />
+<img src="docs/assets/banner.svg" alt="FIInance: Sua carteira de FIIs, sem planilha. github.com/diegonatalo/fiinance. Stack: Next.js 16, React 19, TypeScript 5, Tailwind CSS 4" width="100%" />
 
 <br />
 
@@ -12,7 +12,7 @@
 
 ![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React_19-20232a?style=flat-square&logo=react&logoColor=61dafb)
-![TypeScript](https://img.shields.io/badge/TypeScript_6-3178c6?style=flat-square&logo=typescript&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript_5-3178c6?style=flat-square&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)
 ![Privacidade](https://img.shields.io/badge/dados-s%C3%B3_no_seu_navegador-10b981?style=flat-square)
 ![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-16a34a?style=flat-square)
@@ -104,7 +104,7 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 <div align="center">
 
-<img src="docs/assets/stack.svg" alt="Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4, Recharts, Phosphor Icons" width="100%" />
+<img src="docs/assets/stack.svg" alt="Stack: Next.js 16, React 19, TypeScript 5, Tailwind CSS 4, Recharts, Phosphor Icons" width="100%" />
 
 </div>
 
@@ -152,17 +152,16 @@ No repositório, `.env.production` já aponta para `https://fiinance1.vercel.app
 
 ```text
 ├── app/          rotas do Next (App Router): layout, páginas, 404, robots e sitemap
-├── models/       tipos do domínio: Ativo, Transacao, Provento, Dados
-├── lib/          lógica pura, sem React: posição, resumo, proventos, metas,
-│                 calculadoras, validação e migração dos dados, exportação
-├── hooks/        useCarteira (estado e ações), useLocalStorage, useTheme
-├── contexts/     CarteiraProvider e ToastProvider
-├── components/   interface (ui/: Button, Card, Modal, Field, Input)
-└── views/        uma tela por rota: Painel, Carteira, Proventos, Calculadoras e 404
+├── types/        tipos do domínio: Ativo, Transacao, Provento, Dados
+├── lib/          lógica pura: posição, resumo, proventos, metas,
+│                 calculadoras, validação e migração dos dados, exportação, contextos
+├── hooks/        use-carteira (estado e ações), use-local-storage, use-theme
+└── components/   interface (ui/: Button, Card, Modal, Field, Input), providers
+│   └── views/    uma tela por rota: Painel, Carteira, Proventos, Calculadoras e 404
 ```
 
 > [!NOTE]
-> A lógica de negócio fica em `lib/`, sem dependência de React. Os componentes só chamam essas funções.
+> A lógica de negócio fica em `lib/`, em funções puras sem dependência de React. Os componentes só chamam essas funções.
 
 <br />
 
@@ -174,7 +173,7 @@ No repositório, `.env.production` já aponta para `https://fiinance1.vercel.app
 
 ### 🧩 Como adicionar uma página nova
 
-1. Crie `views/nome-page.tsx` exportando o componente da tela (com `"use client"` no topo).
+1. Crie `components/views/nome-page.tsx` exportando o componente da tela (com `"use client"` no topo).
 2. Crie a rota em `app/nome/page.tsx`, renderizando esse componente.
 3. Inclua o item em `navItems`, no `components/app-shell.tsx`, para aparecer no menu.
 4. Adicione o caminho em `ROTAS`, no `lib/site.ts`, para entrar no `sitemap.xml`.

@@ -1,6 +1,6 @@
 import { useCallback, useState, type ReactNode } from "react";
-import { Toast } from "../components/toast";
-import { ToastContext, type ToastAction } from "./toast-context";
+import { Toast } from "./toast";
+import { ToastContext, type ToastAction } from "../lib/toast-context";
 
 interface ToastState {
   message: string;

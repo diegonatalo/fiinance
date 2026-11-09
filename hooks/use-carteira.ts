@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useLocalStorage } from "./useLocalStorage";
+import { useLocalStorage } from "./use-local-storage";
 import { DADOS_VAZIOS, sanitizarDados, sanitizarOuVazio } from "../lib/dados";
 import { CHAVE_DADOS } from "../lib/migracao";
 import { uid } from "../lib/id";
@@ -11,7 +11,7 @@ import type {
   Provento,
   Transacao,
   TipoOperacao,
-} from "../models/fii";
+} from "../types/fii";
 
 export type NovoAtivo = Omit<Ativo, "id">;
 

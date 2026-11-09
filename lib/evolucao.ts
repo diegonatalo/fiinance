@@ -1,5 +1,5 @@
 import { mesDe } from "./data";
-import type { Transacao } from "../models/fii";
+import type { Transacao } from "../types/fii";
 
 export interface PontoEvolucao {
   mes: string;

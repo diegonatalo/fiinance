@@ -3,13 +3,13 @@ import { Modal } from "./ui/modal";
 import { Button } from "./ui/button";
 import { Field } from "./ui/field";
 import { Input } from "./ui/input";
-import { useCarteiraContext } from "../contexts/carteira-context";
-import { useToast } from "../contexts/toast-context";
+import { useCarteiraContext } from "../lib/carteira-context";
+import { useToast } from "../lib/toast-context";
 import { cn, formatBRL, formatNumber } from "../lib/format";
 import { dataValida, hoje } from "../lib/data";
 import { parseDecimal } from "../lib/numero";
 import { cotasEm } from "../lib/posicao";
-import type { Fii, TipoOperacao } from "../models/fii";
+import type { Fii, TipoOperacao } from "../types/fii";
 
 export interface OperacaoInicial {
   tipo?: TipoOperacao;

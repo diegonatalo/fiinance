@@ -5,7 +5,7 @@ import { Input, Select } from "./ui/input";
 import { cn, formatBRL, formatNumber } from "../lib/format";
 import { calcularMagicNumber } from "../lib/magic-number";
 import { parseDecimal, parseDecimalOuZero } from "../lib/numero";
-import type { Cotacao, Fii, Provento } from "../models/fii";
+import type { Cotacao, Fii, Provento } from "../types/fii";
 import { SparkleIcon, TargetIcon, TrendUpIcon } from "@phosphor-icons/react";
 
 interface MagicNumberCalcProps {

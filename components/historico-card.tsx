@@ -1,7 +1,7 @@
 import { Card, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
-import { useCarteiraContext } from "../contexts/carteira-context";
-import { useToast } from "../contexts/toast-context";
+import { useCarteiraContext } from "../lib/carteira-context";
+import { useToast } from "../lib/toast-context";
 import { cn, formatBRL, formatNumber } from "../lib/format";
 import { formatData } from "../lib/data";
 import { TrashSimpleIcon } from "@phosphor-icons/react";
