@@ -14,10 +14,10 @@ import type { EvolutionPoint } from "@/lib/evolution";
 import type { Theme } from "@/hooks/use-theme";
 import { ChartLineIcon } from "@phosphor-icons/react";
 
-interface EvolutionChartProps {
+type EvolutionChartProps = {
   data: EvolutionPoint[];
   theme: Theme;
-}
+};
 
 export const EvolutionChart = ({ data, theme }: EvolutionChartProps) => {
   const isDark = theme === "dark";

@@ -2,11 +2,11 @@ import { CheckCircleIcon } from "@phosphor-icons/react";
 import { useEffect } from "react";
 import type { ToastAction } from "@/lib/toast-context";
 
-interface ToastProps {
+type ToastProps = {
   message: string | null;
   action?: ToastAction;
   onDone: () => void;
-}
+};
 
 export const Toast = ({ message, action, onDone }: ToastProps) => {
   useEffect(() => {

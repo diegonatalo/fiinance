@@ -10,17 +10,17 @@ function border(error?: boolean) {
     : "border-zinc-300 dark:border-zinc-700";
 }
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   error?: boolean;
-}
+};
 
 export const Input = ({ error, className, ...props }: InputProps) => {
   return <input className={cn(base, border(error), className)} {...props} />;
 };
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   error?: boolean;
-}
+};
 
 export const Select = ({ error, className, ...props }: SelectProps) => {
   return <select className={cn(base, border(error), className)} {...props} />;

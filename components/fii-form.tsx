@@ -17,27 +17,27 @@ import {
 } from "@/types/fii";
 import { FloppyDiskIcon, PlusIcon } from "@phosphor-icons/react";
 
-export interface FiiFormValues {
+export type FiiFormValues = {
   asset: Omit<Asset, "id">;
   /** presente só ao cadastrar um ativo novo */
   buy?: { date: string; shares: number; price: number };
-}
+};
 
-interface FiiFormProps {
+type FiiFormProps = {
   onSubmit: (values: FiiFormValues) => void;
   /** quando informado, o formulário edita o cadastro do ativo (sem cotas/preço) */
   initial?: Fii | null;
   onCancel?: () => void;
   /** devolve o ativo que já usa o ticker, se houver */
   tickerInUse: (ticker: string, ignoreId?: string) => Asset | undefined;
-}
+};
 
-interface FormErrors {
+type FormErrors = {
   ticker?: string;
   date?: string;
   shares?: string;
   averagePrice?: string;
-}
+};
 
 export const FiiForm = ({
   onSubmit,

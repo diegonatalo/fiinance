@@ -11,26 +11,26 @@ import {
   WalletIcon,
 } from "@phosphor-icons/react";
 
-interface FiiTableProps {
+type FiiTableProps = {
   assets: Fii[];
   quotes: Record<string, Quote>;
   total: number;
   onEdit: (fii: Fii) => void;
   onDelete: (fii: Fii) => void;
   onOperation: (fii: Fii) => void;
-}
+};
 
 type FieldName = "ticker" | "investido" | "resultado";
 type Filter = "todos" | FiiType;
 
-interface Row {
+type Row = {
   asset: Fii;
   invested: number;
   quote?: number;
   /** variação da cotação sobre o preço médio, em % */
   resultPct?: number;
   result?: number;
-}
+};
 
 function buildRow(asset: Fii, quotes: Record<string, Quote>): Row {
   const invested = positionValue(asset);
@@ -82,14 +82,14 @@ const TypeBadge = ({ asset }: { asset: Fii }) => {
   );
 };
 
-interface ThProps {
+type ThProps = {
   c: FieldName;
   asset: FieldName;
   asc: boolean;
   onSort: (c: FieldName) => void;
   children: string;
   right?: boolean;
-}
+};
 
 const Th = ({ c, asset, asc, onSort, children, right }: ThProps) => {
   return (

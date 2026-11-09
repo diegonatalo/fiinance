@@ -1,9 +1,9 @@
 import type { Fii } from "@/types/fii";
 
-export interface Slice {
+export type Slice = {
   name: string;
   amount: number;
-}
+};
 
 function assetValue(a: Fii) {
   return a.shares * a.averagePrice;

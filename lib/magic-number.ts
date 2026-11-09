@@ -1,10 +1,10 @@
-export interface MagicNumberResult {
+export type MagicNumberResult = {
   magicNumber: number;
   missing: number;
   progress: number;
   reached: boolean;
   missingContribution: number;
-}
+};
 
 /** Magic number = cotação ÷ dividendo por cota, arredondado para cima. */
 export function calculateMagicNumber(

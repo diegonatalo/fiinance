@@ -8,11 +8,11 @@ import { parseDecimal, parseDecimalOuZero } from "@/lib/numbers";
 import type { Quote, Fii, Payout } from "@/types/fii";
 import { SparkleIcon, TargetIcon, TrendUpIcon } from "@phosphor-icons/react";
 
-interface MagicNumberCalcProps {
+type MagicNumberCalcProps = {
   assets: Fii[];
   payouts: Payout[];
   quotes: Record<string, Quote>;
-}
+};
 
 function lastPayout(payouts: Payout[], assetId: string) {
   return payouts

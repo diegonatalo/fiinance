@@ -4,7 +4,7 @@ export function positionValue(a: Fii): number {
   return a.shares * a.averagePrice;
 }
 
-export interface Summary {
+export type Summary = {
   totalInvested: number;
   totalShares: number;
   activeAssets: number;
@@ -14,7 +14,7 @@ export interface Summary {
   completeQuotes: boolean;
   result: number;
   resultPct: number;
-}
+};
 
 export function calculateSummary(
   positions: Fii[],

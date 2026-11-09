@@ -15,27 +15,27 @@ import type {
 
 export type NewAsset = Omit<Asset, "id">;
 
-export interface NewOperation {
+export type NewOperation = {
   type: OperationType;
   date: string;
   shares: number;
   price: number;
-}
+};
 
-export interface NewPayout {
+export type NewPayout = {
   assetId: string;
   date: string;
   valuePerShare: number;
   shares: number;
-}
+};
 
 /** Tudo o que pertence a um ativo, para permitir "desfazer" a exclusão. */
-export interface AssetSnapshot {
+export type AssetSnapshot = {
   asset: Asset;
   transactions: Transaction[];
   payouts: Payout[];
   quote: AppData["quotes"][string] | undefined;
-}
+};
 
 export function usePortfolio() {
   const [data, setData] = useLocalStorage<AppData>(

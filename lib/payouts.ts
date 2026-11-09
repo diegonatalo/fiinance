@@ -5,10 +5,10 @@ export function payoutTotal(p: Payout): number {
   return p.valuePerShare * p.shares;
 }
 
-export interface PayoutMonth {
+export type PayoutMonth = {
   month: string;
   total: number;
-}
+};
 
 /** Últimos `n` meses terminando em `fim` (yyyy-mm); meses sem proventos valem 0. */
 export function lastMonths(
@@ -32,12 +32,12 @@ export function lastMonths(
   return series;
 }
 
-export interface PayoutsSummary {
+export type PayoutsSummary = {
   total12m: number;
   monthlyAverage: number;
   /** proventos dos últimos 12 meses ÷ total investido, em % */
   dyOnCost: number;
-}
+};
 
 export function summarizePayouts(
   payouts: Payout[],

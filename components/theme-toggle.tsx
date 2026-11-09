@@ -1,10 +1,10 @@
 import { MoonIcon, SunIcon } from "@phosphor-icons/react";
 import type { Theme } from "@/hooks/use-theme";
 
-interface ThemeToggleProps {
+type ThemeToggleProps = {
   theme: Theme;
   onToggle: () => void;
-}
+};
 
 export const ThemeToggle = ({ theme, onToggle }: ThemeToggleProps) => {
   return (

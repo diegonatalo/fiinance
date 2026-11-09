@@ -3,10 +3,10 @@ import { cn } from "@/lib/format";
 
 type Variant = "primary" | "ghost" | "danger" | "outline";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
   variant?: Variant;
-}
+};
 
 const variants: Record<Variant, string> = {
   primary:

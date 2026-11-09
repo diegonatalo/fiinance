@@ -1,11 +1,11 @@
 import { monthOf } from "./date";
 import type { Transaction } from "@/types/fii";
 
-export interface EvolutionPoint {
+export type EvolutionPoint = {
   month: string;
   /** compras − vendas acumuladas até o fim do mês */
   contributed: number;
-}
+};
 
 export function contributionsEvolution(transactions: Transaction[]): EvolutionPoint[] {
   const byMonth = new Map<string, number>();

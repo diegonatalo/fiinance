@@ -12,17 +12,17 @@ import { parseDecimal } from "@/lib/numbers";
 import { sharesOn } from "@/lib/position";
 import type { Fii, OperationType } from "@/types/fii";
 
-export interface InitialOperation {
+export type InitialOperation = {
   type?: OperationType;
   shares?: number;
   price?: number;
-}
+};
 
-interface OperationModalProps {
+type OperationModalProps = {
   asset: Fii | null;
   initialValues?: InitialOperation;
   onClose: () => void;
-}
+};
 
 export const OperationModal = ({ asset, initialValues, onClose }: OperationModalProps) => {
   return (
@@ -43,11 +43,11 @@ export const OperationModal = ({ asset, initialValues, onClose }: OperationModal
   );
 };
 
-interface OperationFormProps {
+type OperationFormProps = {
   asset: Fii;
   initialValues?: InitialOperation;
   onClose: () => void;
-}
+};
 
 const OperationForm = ({ asset, initialValues, onClose }: OperationFormProps) => {
   const { data, recordOperation } = usePortfolioContext();

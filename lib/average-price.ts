@@ -1,11 +1,11 @@
-export interface AveragePriceResult {
+export type AveragePriceResult = {
   newAveragePrice: number;
   totalShares: number;
   contribution: number;
   newTotalInvested: number;
   variation: number;
   variationPct: number;
-}
+};
 
 export function simulateAveragePrice(
   currentShares: number,

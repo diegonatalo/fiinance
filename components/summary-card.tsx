@@ -11,19 +11,19 @@ import {
   WalletIcon,
 } from "@phosphor-icons/react";
 
-interface SummaryCardsProps {
+type SummaryCardsProps = {
   summary: Summary;
   payouts: PayoutsSummary;
-}
+};
 
-interface Item {
+type Item = {
   label: string;
   value: string;
   sub?: string;
   subTone?: "positivo" | "negativo";
   icon: ComponentType<{ size?: number }>;
   highlight?: boolean;
-}
+};
 
 export const SummaryCards = ({ summary, payouts }: SummaryCardsProps) => {
   const items: Item[] = [

@@ -15,11 +15,11 @@ import {
   TrendUpIcon,
 } from "@phosphor-icons/react";
 
-interface AveragePriceCalcProps {
+type AveragePriceCalcProps = {
   assets: Fii[];
   /** abre o registro de compra com os valores da simulação */
   onRecord: (asset: Fii, shares: number, price: number) => void;
-}
+};
 
 export const AveragePriceCalc = ({ assets, onRecord }: AveragePriceCalcProps) => {
   const [assetId, setAssetId] = useState<string>("");

@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/format";
 
-interface CardProps {
+type CardProps = {
   children: ReactNode;
   className?: string;
-}
+};
 
 export const Card = ({ children, className }: CardProps) => {
   return (

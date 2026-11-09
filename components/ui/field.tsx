@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 
-interface FieldProps {
+type FieldProps = {
   label: string;
   error?: string;
   hint?: string;
   children: ReactNode;
-}
+};
 
 export const Field = ({ label, error, hint, children }: FieldProps) => {
   return (

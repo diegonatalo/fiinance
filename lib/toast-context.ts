@@ -1,13 +1,13 @@
 import { createContext, useContext } from "react";
 
-export interface ToastAction {
+export type ToastAction = {
   label: string;
   onClick: () => void;
-}
+};
 
-export interface NotifyFn {
+export type NotifyFn = {
   (message: string, action?: ToastAction): void;
-}
+};
 
 export const ToastContext = createContext<NotifyFn | null>(null);
 

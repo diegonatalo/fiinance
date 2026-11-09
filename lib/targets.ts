@@ -1,7 +1,7 @@
-export interface Allocation {
+export type Allocation = {
   paperPct: number;
   brickPct: number;
-}
+};
 
 export function currentAllocation(paper: number, brick: number): Allocation {
   const total = paper + brick;
@@ -11,11 +11,11 @@ export function currentAllocation(paper: number, brick: number): Allocation {
   };
 }
 
-export interface Suggestion {
+export type Suggestion = {
   variantClass: "papel" | "tijolo";
   /** aporte necessário, só em compras, para atingir a meta */
   contribution: number;
-}
+};
 
 /**
  * Menor aporte em uma única classe que leva a carteira à meta.

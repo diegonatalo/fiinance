@@ -4,11 +4,11 @@ import type { Slice } from "@/lib/distribution";
 import { Card, CardTitle } from "./ui/card";
 import { ChartPieSliceIcon } from "@phosphor-icons/react";
 
-interface PieChartCardProps {
+type PieChartCardProps = {
   title: string;
   data: Slice[];
   theme: "light" | "dark";
-}
+};
 
 const COLORS = [
   "#10b981", // emerald-500

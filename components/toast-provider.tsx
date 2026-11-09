@@ -2,10 +2,10 @@ import { useCallback, useState, type ReactNode } from "react";
 import { Toast } from "./toast";
 import { ToastContext, type ToastAction } from "@/lib/toast-context";
 
-interface ToastState {
+type ToastState = {
   message: string;
   action?: ToastAction;
-}
+};
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [toast, setToast] = useState<ToastState | null>(null);

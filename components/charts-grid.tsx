@@ -7,10 +7,10 @@ import {
 } from "@/lib/distribution";
 import type { Fii } from "@/types/fii";
 
-interface ChartsGridProps {
+type ChartsGridProps = {
   assets: Fii[];
   theme: "light" | "dark";
-}
+};
 
 export const ChartsGrid = ({ assets, theme }: ChartsGridProps) => {
   return (

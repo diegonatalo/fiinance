@@ -13,10 +13,10 @@ import { formatMonth } from "@/lib/date";
 import type { PayoutMonth } from "@/lib/payouts";
 import type { Theme } from "@/hooks/use-theme";
 
-interface PayoutsChartProps {
+type PayoutsChartProps = {
   series: PayoutMonth[];
   theme: Theme;
-}
+};
 
 export const PayoutsChart = ({ series, theme }: PayoutsChartProps) => {
   const isDark = theme === "dark";

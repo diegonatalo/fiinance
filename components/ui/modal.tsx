@@ -1,12 +1,12 @@
 import { XIcon } from "@phosphor-icons/react";
 import { useEffect, useEffectEvent, useRef, type ReactNode } from "react";
 
-interface ModalProps {
+type ModalProps = {
   open: boolean;
   title: string;
   onClose: () => void;
   children: ReactNode;
-}
+};
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
