@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { cn, formatBRL, formatNumber, formatSignedPct } from "@/lib/format";
+import { cn } from "@/lib/cn";
+import { formatBRL, formatNumber, formatSignedPct } from "@/lib/format";
 import { positionValue } from "@/lib/summary";
 import type { Quote, Fii, FiiType } from "@/types/fii";
 import {

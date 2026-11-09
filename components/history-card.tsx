@@ -2,7 +2,8 @@ import { Card, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { usePortfolioContext } from "@/lib/portfolio-context";
 import { useToast } from "@/lib/toast-context";
-import { cn, formatBRL, formatNumber } from "@/lib/format";
+import { cn } from "@/lib/cn";
+import { formatBRL, formatNumber } from "@/lib/format";
 import { formatDate } from "@/lib/date";
 import { TrashSimpleIcon } from "@phosphor-icons/react";
 

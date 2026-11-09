@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import { Card } from "./ui/card";
-import { cn, formatBRL, formatNumber, formatPct, formatSignedPct } from "@/lib/format";
+import { cn } from "@/lib/cn";
+import { formatBRL, formatNumber, formatPct, formatSignedPct } from "@/lib/format";
 import type { Summary } from "@/lib/summary";
 import type { PayoutsSummary } from "@/lib/payouts";
 import {

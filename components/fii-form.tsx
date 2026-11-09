@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Field } from "./ui/field";
 import { Input, Select } from "./ui/input";
-import { cn } from "@/lib/format";
+import { cn } from "@/lib/cn";
 import { today, isValidDate } from "@/lib/date";
 import { useToday } from "@/hooks/use-today";
 import { parseDecimal } from "@/lib/numbers";
