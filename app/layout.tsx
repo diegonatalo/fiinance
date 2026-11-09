@@ -3,23 +3,21 @@ import Script from "next/script";
 import "./globals.css";
 import { AppShell } from "@/components/app-shell";
 import { Providers } from "@/components/providers";
-import { SITE_URL } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const TITLE = "FIInance | Transforme dados em decisões";
-const DESCRIPTION =
-  "Gerencie sua carteira de Fundos Imobiliários (FIIs) com gráficos e cálculos de alocação.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: TITLE,
-  description: DESCRIPTION,
+  description: SITE_DESCRIPTION,
   icons: { icon: "/favicon.svg", apple: "/apple-touch-icon.png" },
   openGraph: {
     type: "website",
-    siteName: "FIInance",
+    siteName: SITE_NAME,
     locale: "pt_BR",
     title: TITLE,
-    description: DESCRIPTION,
+    description: SITE_DESCRIPTION,
     images: [
       {
         url: "/og-image.png",
@@ -32,7 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: TITLE,
-    description: DESCRIPTION,
+    description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
 };

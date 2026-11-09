@@ -8,3 +8,7 @@ export const SITE_URL = (
 
 /** Rotas públicas do app (mantenha em sincronia com app). */
 export const ROUTES = ["/", "/carteira", "/proventos", "/calculadoras"];
+
+export const SITE_NAME = "FIInance";
+export const SITE_DESCRIPTION =
+  "Gerencie sua carteira de Fundos Imobiliários (FIIs) com gráficos e cálculos de alocação.";
