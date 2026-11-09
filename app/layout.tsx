@@ -41,9 +41,7 @@ export const viewport: Viewport = { themeColor: "#10b981" };
 const THEME_BEFORE_PAINT = `
 try {
   var t = JSON.parse(
-    localStorage.getItem("fiinance:theme") ||
-      localStorage.getItem("fii:theme") ||
-      "null",
+    localStorage.getItem("fiinance:theme:v1") || "null",
   );
   var dark = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
   document.documentElement.classList.toggle("dark", dark);

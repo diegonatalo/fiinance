@@ -11,7 +11,7 @@ import { formatBRL } from "@/lib/format";
 import { parseDecimal } from "@/lib/numbers";
 import { ArrowsClockwiseIcon, ChartLineUpIcon } from "@phosphor-icons/react";
 
-const TOKEN_KEY = "fiinance:brapi-token";
+const TOKEN_KEY = "fiinance:brapi-token:v1";
 
 function sanitizeToken(raw: unknown): string {
   return typeof raw === "string" ? raw : "";
