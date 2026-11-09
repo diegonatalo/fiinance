@@ -4,8 +4,8 @@ import {
   distribuicaoPorTipo,
   distribuicaoSegmentoPapel,
   distribuicaoSegmentoTijolo,
-} from "../lib/distribuicao";
-import type { Fii } from "../types/fii";
+} from "@/lib/distribuicao";
+import type { Fii } from "@/types/fii";
 
 interface ChartsGridProps {
   ativos: Fii[];

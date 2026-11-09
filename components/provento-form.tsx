@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Field } from "./ui/field";
 import { Input, Select } from "./ui/input";
-import { useCarteiraContext } from "../lib/carteira-context";
-import { useToast } from "../lib/toast-context";
-import { dataValida, hoje } from "../lib/data";
-import { formatBRL, formatNumber } from "../lib/format";
-import { parseDecimal } from "../lib/numero";
-import { cotasEm } from "../lib/posicao";
+import { useCarteiraContext } from "@/lib/carteira-context";
+import { useToast } from "@/lib/toast-context";
+import { dataValida, hoje } from "@/lib/data";
+import { formatBRL, formatNumber } from "@/lib/format";
+import { parseDecimal } from "@/lib/numero";
+import { cotasEm } from "@/lib/posicao";
 import { PlusIcon } from "@phosphor-icons/react";
 
 export function ProventoForm() {

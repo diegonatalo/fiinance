@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Field } from "./ui/field";
 import { Input, Select } from "./ui/input";
-import { cn } from "../lib/format";
-import { hoje, dataValida } from "../lib/data";
-import { parseDecimal } from "../lib/numero";
-import { TICKER_REGEX } from "../lib/dados";
+import { cn } from "@/lib/format";
+import { hoje, dataValida } from "@/lib/data";
+import { parseDecimal } from "@/lib/numero";
+import { TICKER_REGEX } from "@/lib/dados";
 import {
   SEGMENTOS_PAPEL,
   SEGMENTOS_TIJOLO,
@@ -13,7 +13,7 @@ import {
   type Fii,
   type FiiTipo,
   type Segmento,
-} from "../types/fii";
+} from "@/types/fii";
 import { FloppyDiskIcon, PlusIcon } from "@phosphor-icons/react";
 
 export interface FiiFormValues {

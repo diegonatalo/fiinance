@@ -1,17 +1,17 @@
 import { useMemo } from "react";
 import { useLocalStorage } from "./use-local-storage";
-import { DADOS_VAZIOS, sanitizarDados, sanitizarOuVazio } from "../lib/dados";
-import { CHAVE_DADOS } from "../lib/migracao";
-import { uid } from "../lib/id";
-import { calcularPosicoes } from "../lib/posicao";
-import { calcularResumo } from "../lib/resumo";
+import { DADOS_VAZIOS, sanitizarDados, sanitizarOuVazio } from "@/lib/dados";
+import { CHAVE_DADOS } from "@/lib/migracao";
+import { uid } from "@/lib/id";
+import { calcularPosicoes } from "@/lib/posicao";
+import { calcularResumo } from "@/lib/resumo";
 import type {
   Ativo,
   Dados,
   Provento,
   Transacao,
   TipoOperacao,
-} from "../types/fii";
+} from "@/types/fii";
 
 export type NovoAtivo = Omit<Ativo, "id">;
 

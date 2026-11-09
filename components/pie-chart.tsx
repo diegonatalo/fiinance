@@ -1,6 +1,6 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { formatBRL } from "../lib/format";
-import type { Fatia } from "../lib/distribuicao";
+import { formatBRL } from "@/lib/format";
+import type { Fatia } from "@/lib/distribuicao";
 import { Card, CardTitle } from "./ui/card";
 import { ChartPieSliceIcon } from "@phosphor-icons/react";
 

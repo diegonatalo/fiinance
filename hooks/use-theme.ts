@@ -1,6 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { useLocalStorage } from "./use-local-storage";
-import { CHAVE_TEMA } from "../lib/migracao";
+import { CHAVE_TEMA } from "@/lib/migracao";
 
 export type Theme = "light" | "dark";
 

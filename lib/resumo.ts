@@ -1,4 +1,4 @@
-import type { Cotacao, Fii } from "../types/fii";
+import type { Cotacao, Fii } from "@/types/fii";
 
 export function valorPosicao(a: Fii): number {
   return a.cotas * a.precoMedio;

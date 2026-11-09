@@ -7,7 +7,7 @@ import {
   type Dados,
   type Provento,
   type Transacao,
-} from "../types/fii";
+} from "@/types/fii";
 
 export const DADOS_VAZIOS: Dados = {
   versao: 1,

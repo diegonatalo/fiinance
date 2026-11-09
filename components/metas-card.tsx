@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Card, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
-import { useCarteiraContext } from "../lib/carteira-context";
-import { formatBRL, formatPct } from "../lib/format";
-import { alocacaoAtual, sugerirAporte } from "../lib/metas";
-import { parseDecimal } from "../lib/numero";
-import { valorPosicao } from "../lib/resumo";
+import { useCarteiraContext } from "@/lib/carteira-context";
+import { formatBRL, formatPct } from "@/lib/format";
+import { alocacaoAtual, sugerirAporte } from "@/lib/metas";
+import { parseDecimal } from "@/lib/numero";
+import { valorPosicao } from "@/lib/resumo";
 import { TargetIcon } from "@phosphor-icons/react";
 
 function Barra({

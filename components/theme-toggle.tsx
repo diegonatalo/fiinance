@@ -1,5 +1,5 @@
 import { MoonIcon, SunIcon } from "@phosphor-icons/react";
-import type { Theme } from "../hooks/use-theme";
+import type { Theme } from "@/hooks/use-theme";
 
 interface ThemeToggleProps {
   theme: Theme;

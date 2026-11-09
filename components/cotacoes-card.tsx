@@ -3,12 +3,12 @@ import { Card, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Field } from "./ui/field";
 import { Input } from "./ui/input";
-import { useCarteiraContext } from "../lib/carteira-context";
-import { useToast } from "../lib/toast-context";
-import { useLocalStorage } from "../hooks/use-local-storage";
-import { buscarCotacao } from "../lib/cotacoes";
-import { formatBRL } from "../lib/format";
-import { parseDecimal } from "../lib/numero";
+import { useCarteiraContext } from "@/lib/carteira-context";
+import { useToast } from "@/lib/toast-context";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { buscarCotacao } from "@/lib/cotacoes";
+import { formatBRL } from "@/lib/format";
+import { parseDecimal } from "@/lib/numero";
 import { ArrowsClockwiseIcon, ChartLineUpIcon } from "@phosphor-icons/react";
 
 const CHAVE_TOKEN = "fiinance:brapi-token";

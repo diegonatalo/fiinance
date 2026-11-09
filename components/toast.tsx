@@ -1,6 +1,6 @@
 import { CheckCircleIcon } from "@phosphor-icons/react";
 import { useEffect } from "react";
-import type { ToastAction } from "../lib/toast-context";
+import type { ToastAction } from "@/lib/toast-context";
 
 interface ToastProps {
   message: string | null;

@@ -8,10 +8,10 @@ import {
   YAxis,
 } from "recharts";
 import { Card, CardTitle } from "./ui/card";
-import { formatBRL } from "../lib/format";
-import { formatMes } from "../lib/data";
-import type { PontoEvolucao } from "../lib/evolucao";
-import type { Theme } from "../hooks/use-theme";
+import { formatBRL } from "@/lib/format";
+import { formatMes } from "@/lib/data";
+import type { PontoEvolucao } from "@/lib/evolucao";
+import type { Theme } from "@/hooks/use-theme";
 import { ChartLineIcon } from "@phosphor-icons/react";
 
 interface EvolucaoChartProps {

@@ -1,8 +1,8 @@
 import type { ComponentType } from "react";
 import { Card } from "./ui/card";
-import { cn, formatBRL, formatNumber, formatPct, formatPctSinal } from "../lib/format";
-import type { Resumo } from "../lib/resumo";
-import type { ResumoProventos } from "../lib/proventos";
+import { cn, formatBRL, formatNumber, formatPct, formatPctSinal } from "@/lib/format";
+import type { Resumo } from "@/lib/resumo";
+import type { ResumoProventos } from "@/lib/proventos";
 import {
   CoinsIcon,
   HandCoinsIcon,
