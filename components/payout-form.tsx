@@ -5,6 +5,7 @@ import { Input, Select } from "./ui/input";
 import { usePortfolioContext } from "@/lib/portfolio-context";
 import { useToast } from "@/lib/toast-context";
 import { isValidDate, today } from "@/lib/date";
+import { useToday } from "@/hooks/use-today";
 import { formatBRL, formatNumber } from "@/lib/format";
 import { parseDecimal } from "@/lib/numbers";
 import { sharesOn } from "@/lib/position";
@@ -14,7 +15,9 @@ export function PayoutForm() {
   const { assets, data, addPayout } = usePortfolioContext();
   const notify = useToast();
   const [assetId, setAssetId] = useState("");
-  const [date, setDate] = useState(today);
+  const todayValue = useToday();
+  const [typedDate, setDate] = useState<string | null>(null);
+  const date = typedDate ?? todayValue;
   const [amount, setAmount] = useState("");
   const [errorMap, setErrorMap] = useState<{
     asset?: string;
@@ -64,7 +67,7 @@ export function PayoutForm() {
           <Input
             type="date"
             value={date}
-            max={today()}
+            max={todayValue}
             onChange={(e) => setDate(e.target.value)}
             error={!!errorMap.date}
           />

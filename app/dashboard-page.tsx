@@ -7,16 +7,18 @@ import { TargetsCard } from "@/components/targets-card";
 import { EvolutionChart } from "@/components/evolution-chart";
 import { usePortfolioContext } from "@/lib/portfolio-context";
 import { contributionsEvolution } from "@/lib/evolution";
-import { today, monthOf } from "@/lib/date";
+import { monthOf } from "@/lib/date";
+import { useToday } from "@/hooks/use-today";
 import { summarizePayouts } from "@/lib/payouts";
 
 export function DashboardPage() {
   const { theme } = useTheme();
+  const today = useToday();
   const { assets, data, summary } = usePortfolioContext();
   const payouts = summarizePayouts(
     data.payouts,
     summary.totalInvested,
-    monthOf(today()),
+    monthOf(today),
   );
 
   return (

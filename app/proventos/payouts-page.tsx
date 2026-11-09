@@ -8,7 +8,8 @@ import { usePortfolioContext } from "@/lib/portfolio-context";
 import { useToast } from "@/lib/toast-context";
 import { useTheme } from "@/hooks/use-theme";
 import { formatBRL, formatNumber } from "@/lib/format";
-import { formatDate, today, monthOf } from "@/lib/date";
+import { formatDate, monthOf } from "@/lib/date";
+import { useToday } from "@/hooks/use-today";
 import { payoutTotal, lastMonths } from "@/lib/payouts";
 import { TrashSimpleIcon } from "@phosphor-icons/react";
 
@@ -16,12 +17,13 @@ export function PayoutsPage() {
   const { data, removePayout } = usePortfolioContext();
   const { theme } = useTheme();
   const notify = useToast();
+  const today = useToday();
 
   const tickers = new Map(data.assets.map((a) => [a.id, a.ticker]));
   const sortedItems = data.payouts.toSorted((a, b) =>
     b.date.localeCompare(a.date),
   );
-  const series = lastMonths(data.payouts, monthOf(today()), 12);
+  const series = lastMonths(data.payouts, monthOf(today), 12);
 
   return (
     <>

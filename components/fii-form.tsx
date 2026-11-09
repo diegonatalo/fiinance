@@ -4,6 +4,7 @@ import { Field } from "./ui/field";
 import { Input, Select } from "./ui/input";
 import { cn } from "@/lib/format";
 import { today, isValidDate } from "@/lib/date";
+import { useToday } from "@/hooks/use-today";
 import { parseDecimal } from "@/lib/numbers";
 import { TICKER_REGEX } from "@/lib/data";
 import {
@@ -49,7 +50,9 @@ export function FiiForm({
   const [segment, setSegment] = useState<Segment>(
     initial?.segment ?? "lajes",
   );
-  const [date, setDate] = useState(today);
+  const todayValue = useToday();
+  const [typedDate, setDate] = useState<string | null>(null);
+  const date = typedDate ?? todayValue;
   const [shares, setShares] = useState("");
   const [price, setPrice] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
@@ -173,7 +176,7 @@ export function FiiForm({
             <Input
               type="date"
               value={date}
-              max={today()}
+              max={todayValue}
               onChange={(e) => setDate(e.target.value)}
               error={!!errors.date}
             />

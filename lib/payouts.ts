@@ -16,6 +16,7 @@ export function lastMonths(
   end: string,
   n = 12,
 ): PayoutMonth[] {
+  if (!end) return [];
   const byMonth = new Map<string, number>();
   for (const p of payouts) {
     const month = monthOf(p.date);

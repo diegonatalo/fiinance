@@ -7,6 +7,7 @@ import { usePortfolioContext } from "@/lib/portfolio-context";
 import { useToast } from "@/lib/toast-context";
 import { cn, formatBRL, formatNumber } from "@/lib/format";
 import { isValidDate, today } from "@/lib/date";
+import { useToday } from "@/hooks/use-today";
 import { parseDecimal } from "@/lib/numbers";
 import { sharesOn } from "@/lib/position";
 import type { Fii, OperationType } from "@/types/fii";
@@ -52,7 +53,9 @@ function OperationForm({ asset, initialValues, onClose }: OperationFormProps) {
   const { data, recordOperation } = usePortfolioContext();
   const notify = useToast();
   const [type, setType] = useState<OperationType>(initialValues?.type ?? "compra");
-  const [date, setDate] = useState(today);
+  const todayValue = useToday();
+  const [typedDate, setDate] = useState<string | null>(null);
+  const date = typedDate ?? todayValue;
   const [shares, setShares] = useState(
     initialValues?.shares ? String(initialValues.shares) : "",
   );
@@ -124,7 +127,7 @@ function OperationForm({ asset, initialValues, onClose }: OperationFormProps) {
         <Input
           type="date"
           value={date}
-          max={today()}
+          max={todayValue}
           onChange={(e) => setDate(e.target.value)}
           error={!!errorMap.date}
         />
