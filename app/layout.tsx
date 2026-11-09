@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { AppShell } from "@/components/app-shell";
 import { Providers } from "@/components/providers";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+
+const inter = Inter({ subsets: ["latin"], variable: "--nf-inter", display: "swap" });
 
 const TITLE = "FIInance | Transforme dados em decisões";
 
@@ -53,7 +56,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     // a classe "dark" é aplicada pelo script abaixo, antes da hidratação
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" className={inter.variable} suppressHydrationWarning>
       <body>
         <Script id="tema" strategy="beforeInteractive">
           {THEME_BEFORE_PAINT}
