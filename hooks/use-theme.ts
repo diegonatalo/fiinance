@@ -1,6 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { useLocalStorage } from "./use-local-storage";
-import { THEME_KEY } from "@/lib/migration";
+import { THEME_KEY } from "@/lib/storage-keys";
 
 export type Theme = "light" | "dark";
 

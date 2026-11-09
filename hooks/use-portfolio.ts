@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useLocalStorage } from "./use-local-storage";
 import { EMPTY_DATA, sanitizeData, sanitizeOrEmpty } from "@/lib/data";
-import { DATA_KEY } from "@/lib/migration";
+import { DATA_KEY } from "@/lib/storage-keys";
 import { uid } from "@/lib/id";
 import { calculatePositions } from "@/lib/position";
 import { calculateSummary } from "@/lib/summary";

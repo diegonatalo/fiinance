@@ -77,63 +77,11 @@ function sanitizePayout(o: Obj): Payout | null {
   };
 }
 
-// Formato 1 (campos em português) → formato 2 (campos em inglês). Lê o que já está
-// salvo no navegador e backups exportados antes da troca de nomes.
-const LEGACY_DATA = {
-  versao: "version",
-  ativos: "assets",
-  transacoes: "transactions",
-  proventos: "payouts",
-  cotacoes: "quotes",
-  metaPapel: "paperTarget",
-};
-const LEGACY_ASSET = { tipo: "type", segmento: "segment" };
-const LEGACY_TRANSACTION = {
-  ativoId: "assetId",
-  tipo: "type",
-  data: "date",
-  cotas: "shares",
-  preco: "price",
-};
-const LEGACY_PAYOUT = {
-  ativoId: "assetId",
-  data: "date",
-  valorPorCota: "valuePerShare",
-  cotas: "shares",
-};
-const LEGACY_QUOTE = { preco: "price", atualizadoEm: "updatedAt" };
-
-function renameKeys(o: unknown, map: Record<string, string>): unknown {
-  if (!isObj(o)) return o;
-  return Object.fromEntries(Object.entries(o).map(([k, v]) => [map[k] ?? k, v]));
-}
-
-function renameAll(l: unknown, map: Record<string, string>): unknown {
-  return Array.isArray(l) ? l.map((o) => renameKeys(o, map)) : l;
-}
-
-function upgradeData(raw: unknown): unknown {
-  if (!isObj(raw) || !("ativos" in raw || "versao" in raw)) return raw;
-  const d = renameKeys(raw, LEGACY_DATA) as Obj;
-  return {
-    ...d,
-    assets: renameAll(d.assets, LEGACY_ASSET),
-    transactions: renameAll(d.transactions, LEGACY_TRANSACTION),
-    payouts: renameAll(d.payouts, LEGACY_PAYOUT),
-    quotes: isObj(d.quotes)
-      ? Object.fromEntries(
-          Object.entries(d.quotes).map(([id, q]) => [id, renameKeys(q, LEGACY_QUOTE)]),
-        )
-      : d.quotes,
-  };
-}
-
 /**
  * Valida e normaliza qualquer valor vindo do storage ou de um arquivo importado.
  * Descarta itens inválidos e registros órfãos. Retorna null se não parecer um backup.
  */
-export function sanitizeData(input: unknown): AppData | null {
-  const raw = upgradeData(input);
+export function sanitizeData(raw: unknown): AppData | null {
   if (!isObj(raw) || !Array.isArray(raw.assets)) return null;
 
   const assets: Asset[] = [];

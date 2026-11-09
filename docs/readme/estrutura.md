@@ -3,7 +3,7 @@
 │                 a tela de cada rota fica ao lado do page.tsx (portfolio-page.tsx…)
 ├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
 ├── lib/          lógica pura: posição, resumo, proventos, metas,
-│                 calculadoras, validação e migração dos dados, exportação, contextos
+│                 calculadoras, validação dos dados, exportação, contextos
 ├── hooks/        use-portfolio (estado e ações), use-local-storage, use-theme
 └── components/   interface (ui/: Button, Card, Modal, Field, Input), providers
 ```
