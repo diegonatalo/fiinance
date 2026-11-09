@@ -1,4 +1,4 @@
-import { PainelPage } from "@/components/views/painel-page";
+import { PainelPage } from "./painel-page";
 
 export default function Page() {
   return <PainelPage />;

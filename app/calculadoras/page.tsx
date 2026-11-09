@@ -1,4 +1,4 @@
-import { CalculadorasPage } from "@/components/views/calculadoras-page";
+import { CalculadorasPage } from "./calculadoras-page";
 
 export default function Page() {
   return <CalculadorasPage />;
