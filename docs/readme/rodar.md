@@ -16,10 +16,8 @@ pnpm dev        # http://localhost:3000
 
 ### 🔑 Variáveis de ambiente
 
-Há uma só. O nome antigo, `VITE_SITE_URL`, continua sendo aceito. O modelo está em [`.env.example`](.env.example).
+Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
 
 | Variável | Descrição | Se não for definida |
 |---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | URL pública do site, sem barra final. | `robots.txt` sai sem a linha `Sitemap`, e o `sitemap.xml` sai vazio. |
-
-No repositório, `.env.production` já aponta para `https://fiinance1.vercel.app`.
+| `NEXT_PUBLIC_SITE_URL` | URL pública do site, sem barra final. | Usa `https://fiinance1.vercel.app` (valor padrão em `lib/site.ts`). |

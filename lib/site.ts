@@ -1,12 +1,9 @@
 /**
- * URL pública do site, sem barra final. Usada no sitemap, no robots e nas URLs
- * absolutas das imagens Open Graph. `VITE_SITE_URL` (nome antigo) continua
- * valendo para não quebrar deploys já configurados.
+ * Endereço público do site, sem barra final. Usado em metadados, robots e sitemap.
+ * Para publicar em outro domínio, defina NEXT_PUBLIC_SITE_URL no build.
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  process.env.VITE_SITE_URL ??
-  ""
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://fiinance1.vercel.app"
 ).replace(/\/+$/, "");
 
 /** Rotas públicas do app (mantenha em sincronia com app). */

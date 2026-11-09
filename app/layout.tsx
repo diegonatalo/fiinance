@@ -10,7 +10,7 @@ const DESCRICAO =
   "Gerencie sua carteira de Fundos Imobiliários (FIIs) com gráficos e cálculos de alocação.";
 
 export const metadata: Metadata = {
-  ...(SITE_URL ? { metadataBase: new URL(SITE_URL) } : {}),
+  metadataBase: new URL(SITE_URL),
   title: TITULO,
   description: DESCRICAO,
   icons: { icon: "/favicon.svg", apple: "/apple-touch-icon.png" },

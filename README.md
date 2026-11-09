@@ -134,13 +134,11 @@ pnpm dev        # http://localhost:3000
 
 ### 🔑 Variáveis de ambiente
 
-Há uma só. O nome antigo, `VITE_SITE_URL`, continua sendo aceito. O modelo está em [`.env.example`](.env.example).
+Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
 
 | Variável | Descrição | Se não for definida |
 |---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | URL pública do site, sem barra final. | `robots.txt` sai sem a linha `Sitemap`, e o `sitemap.xml` sai vazio. |
-
-No repositório, `.env.production` já aponta para `https://fiinance1.vercel.app`.
+| `NEXT_PUBLIC_SITE_URL` | URL pública do site, sem barra final. | Usa `https://fiinance1.vercel.app` (valor padrão em `lib/site.ts`). |
 
 <br />
 
@@ -209,7 +207,7 @@ O app guarda **operações**, e a posição de cada fundo é sempre derivada del
 O app é publicado na [Vercel](https://vercel.com). A Vercel detecta o Next.js, então não há configuração extra. Atualizar a página em `/carteira`
 funciona, e um endereço inexistente devolve a 404 do próprio app, com status 404.
 
-Ao mudar de domínio, atualize `NEXT_PUBLIC_SITE_URL` em `.env.production`. É ela que gera o `sitemap.xml`,
+Ao mudar de domínio, defina `NEXT_PUBLIC_SITE_URL` no build (ou altere o valor padrão em `lib/site.ts`). É ela que gera o `sitemap.xml`,
 o `robots.txt` e as URLs absolutas de `og:image` e `twitter:image` usadas nos previews de links.
 
 ### 🧭 Próximos passos
