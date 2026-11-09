@@ -1,4 +1,4 @@
-import { PayoutsPage } from "./payouts-page";
+import { PayoutsPage } from "@/components/payouts-page";
 
 export default function Page() {
   return <PayoutsPage />;
