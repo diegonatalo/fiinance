@@ -1,19 +1,19 @@
-export type FiiTipo = "papel" | "tijolo";
+export type FiiType = "papel" | "tijolo";
 
-export type SegmentoPapel = "IPCA" | "CDI";
+export type PaperSegment = "IPCA" | "CDI";
 
-export type SegmentoTijolo =
+export type BrickSegment =
   | "lajes"
   | "logística"
   | "shoppings"
   | "híbrido"
   | "outro";
 
-export type Segmento = SegmentoPapel | SegmentoTijolo;
+export type Segment = PaperSegment | BrickSegment;
 
-export const SEGMENTOS_PAPEL: SegmentoPapel[] = ["IPCA", "CDI"];
+export const PAPER_SEGMENTS: PaperSegment[] = ["IPCA", "CDI"];
 
-export const SEGMENTOS_TIJOLO: SegmentoTijolo[] = [
+export const BRICK_SEGMENTS: BrickSegment[] = [
   "lajes",
   "logística",
   "shoppings",
@@ -22,54 +22,54 @@ export const SEGMENTOS_TIJOLO: SegmentoTijolo[] = [
 ];
 
 /** Cadastro do fundo. A posição (cotas e preço médio) é derivada das transações. */
-export type Ativo = {
+export type Asset = {
   id: string;
   ticker: string;
-  tipo: FiiTipo;
-  segmento: Segmento;
+  type: FiiType;
+  segment: Segment;
 };
 
 /** Posição consolidada de um ativo, calculada a partir das transações. */
-export type Fii = Ativo & {
-  cotas: number;
-  precoMedio: number;
+export type Fii = Asset & {
+  shares: number;
+  averagePrice: number;
 };
 
-export type TipoOperacao = "compra" | "venda";
+export type OperationType = "compra" | "venda";
 
-export type Transacao = {
+export type Transaction = {
   id: string;
-  ativoId: string;
-  tipo: TipoOperacao;
+  assetId: string;
+  type: OperationType;
   /** yyyy-mm-dd */
-  data: string;
-  cotas: number;
-  preco: number;
+  date: string;
+  shares: number;
+  price: number;
 };
 
-export type Provento = {
+export type Payout = {
   id: string;
-  ativoId: string;
+  assetId: string;
   /** yyyy-mm-dd */
-  data: string;
-  valorPorCota: number;
+  date: string;
+  valuePerShare: number;
   /** cotas que geraram o provento (na data do recebimento) */
-  cotas: number;
+  shares: number;
 };
 
-export type Cotacao = {
-  preco: number;
+export type Quote = {
+  price: number;
   /** ISO datetime */
-  atualizadoEm: string;
+  updatedAt: string;
 };
 
-export type Dados = {
-  versao: 1;
-  ativos: Ativo[];
-  transacoes: Transacao[];
-  proventos: Provento[];
+export type AppData = {
+  version: 2;
+  assets: Asset[];
+  transactions: Transaction[];
+  payouts: Payout[];
   /** indexado por id do ativo */
-  cotacoes: Record<string, Cotacao>;
+  quotes: Record<string, Quote>;
   /** meta de alocação em papel, de 0 a 100 (o restante vai para tijolo) */
-  metaPapel: number | null;
+  paperTarget: number | null;
 };

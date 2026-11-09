@@ -1,5 +1,5 @@
-import { CarteiraPage } from "./carteira-page";
+import { PortfolioPage } from "./portfolio-page";
 
 export default function Page() {
-  return <CarteiraPage />;
+  return <PortfolioPage />;
 }

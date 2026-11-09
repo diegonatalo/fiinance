@@ -1,10 +1,10 @@
 ```text
 ├── app/          rotas do Next (App Router): layout, páginas, 404, robots e sitemap;
-│                 a tela de cada rota fica ao lado do page.tsx (carteira-page.tsx…)
-├── types/        tipos do domínio: Ativo, Transacao, Provento, Dados
+│                 a tela de cada rota fica ao lado do page.tsx (portfolio-page.tsx…)
+├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
 ├── lib/          lógica pura: posição, resumo, proventos, metas,
 │                 calculadoras, validação e migração dos dados, exportação, contextos
-├── hooks/        use-carteira (estado e ações), use-local-storage, use-theme
+├── hooks/        use-portfolio (estado e ações), use-local-storage, use-theme
 └── components/   interface (ui/: Button, Card, Modal, Field, Input), providers
 ```
 

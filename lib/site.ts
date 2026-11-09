@@ -7,4 +7,4 @@ export const SITE_URL = (
 ).replace(/\/+$/, "");
 
 /** Rotas públicas do app (mantenha em sincronia com app). */
-export const ROTAS = ["/", "/carteira", "/proventos", "/calculadoras"];
+export const ROUTES = ["/", "/carteira", "/proventos", "/calculadoras"];

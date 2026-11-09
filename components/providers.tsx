@@ -1,17 +1,17 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { CarteiraProvider } from "@/components/carteira-provider";
+import { PortfolioProvider } from "@/components/portfolio-provider";
 import { ToastProvider } from "@/components/toast-provider";
-import { migrarLegado } from "@/lib/migracao";
+import { migrateLegacy } from "@/lib/migration";
 
 // Converte dados antigos do localStorage antes do primeiro render no navegador.
-if (typeof window !== "undefined") migrarLegado();
+if (typeof window !== "undefined") migrateLegacy();
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <ToastProvider>
-      <CarteiraProvider>{children}</CarteiraProvider>
+      <PortfolioProvider>{children}</PortfolioProvider>
     </ToastProvider>
   );
 }

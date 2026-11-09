@@ -150,11 +150,11 @@ Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
 
 ```text
 ├── app/          rotas do Next (App Router): layout, páginas, 404, robots e sitemap;
-│                 a tela de cada rota fica ao lado do page.tsx (carteira-page.tsx…)
-├── types/        tipos do domínio: Ativo, Transacao, Provento, Dados
+│                 a tela de cada rota fica ao lado do page.tsx (portfolio-page.tsx…)
+├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
 ├── lib/          lógica pura: posição, resumo, proventos, metas,
 │                 calculadoras, validação e migração dos dados, exportação, contextos
-├── hooks/        use-carteira (estado e ações), use-local-storage, use-theme
+├── hooks/        use-portfolio (estado e ações), use-local-storage, use-theme
 └── components/   interface (ui/: Button, Card, Modal, Field, Input), providers
 ```
 
@@ -174,7 +174,7 @@ Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
 1. Crie `app/nome/nome-page.tsx` exportando o componente da tela (com `"use client"` no topo).
 2. Crie `app/nome/page.tsx`, importando e renderizando esse componente.
 3. Inclua o item em `navItems`, no `components/app-shell.tsx`, para aparecer no menu.
-4. Adicione o caminho em `ROTAS`, no `lib/site.ts`, para entrar no `sitemap.xml`.
+4. Adicione o caminho em `ROUTES`, no `lib/site.ts`, para entrar no `sitemap.xml`.
 
 ### 🔒 Seus dados
 

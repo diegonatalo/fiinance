@@ -1,7 +1,7 @@
 const BASE_URL = "https://brapi.dev/api/quote";
 
 /** Busca a cotação atual de um ticker na brapi. Lança erro com mensagem legível. */
-export async function buscarCotacao(
+export async function fetchQuote(
   ticker: string,
   token: string,
   signal?: AbortSignal,
@@ -17,9 +17,9 @@ export async function buscarCotacao(
   const json = (await resp.json()) as {
     results?: { regularMarketPrice?: unknown }[];
   };
-  const preco = json?.results?.[0]?.regularMarketPrice;
-  if (typeof preco !== "number" || !Number.isFinite(preco) || preco <= 0) {
+  const price = json?.results?.[0]?.regularMarketPrice;
+  if (typeof price !== "number" || !Number.isFinite(price) || price <= 0) {
     throw new Error(`Cotação de ${ticker} indisponível`);
   }
-  return preco;
+  return price;
 }

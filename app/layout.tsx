@@ -5,21 +5,21 @@ import { AppShell } from "@/components/app-shell";
 import { Providers } from "@/components/providers";
 import { SITE_URL } from "@/lib/site";
 
-const TITULO = "FIInance | Transforme dados em decisões";
-const DESCRICAO =
+const TITLE = "FIInance | Transforme dados em decisões";
+const DESCRIPTION =
   "Gerencie sua carteira de Fundos Imobiliários (FIIs) com gráficos e cálculos de alocação.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: TITULO,
-  description: DESCRICAO,
+  title: TITLE,
+  description: DESCRIPTION,
   icons: { icon: "/favicon.svg", apple: "/apple-touch-icon.png" },
   openGraph: {
     type: "website",
     siteName: "FIInance",
     locale: "pt_BR",
-    title: TITULO,
-    description: DESCRICAO,
+    title: TITLE,
+    description: DESCRIPTION,
     images: [
       {
         url: "/og-image.png",
@@ -31,8 +31,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: TITULO,
-    description: DESCRICAO,
+    title: TITLE,
+    description: DESCRIPTION,
     images: ["/og-image.png"],
   },
 };
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: "#10b981" };
 
 // aplica o tema antes do primeiro paint, evitando flash de tema errado
-const TEMA_ANTES_DO_PAINT = `
+const THEME_BEFORE_PAINT = `
 try {
   var t = JSON.parse(
     localStorage.getItem("fiinance:theme") ||
@@ -60,7 +60,7 @@ export default function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <body>
         <Script id="tema" strategy="beforeInteractive">
-          {TEMA_ANTES_DO_PAINT}
+          {THEME_BEFORE_PAINT}
         </Script>
         <Providers>
           <AppShell>{children}</AppShell>

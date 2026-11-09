@@ -3,57 +3,57 @@ import { Card, CardTitle } from "./ui/card";
 import { Field } from "./ui/field";
 import { Input, Select } from "./ui/input";
 import { cn, formatBRL, formatNumber } from "@/lib/format";
-import { calcularMagicNumber } from "@/lib/magic-number";
-import { parseDecimal, parseDecimalOuZero } from "@/lib/numero";
-import type { Cotacao, Fii, Provento } from "@/types/fii";
+import { calculateMagicNumber } from "@/lib/magic-number";
+import { parseDecimal, parseDecimalOuZero } from "@/lib/numbers";
+import type { Quote, Fii, Payout } from "@/types/fii";
 import { SparkleIcon, TargetIcon, TrendUpIcon } from "@phosphor-icons/react";
 
 interface MagicNumberCalcProps {
-  ativos: Fii[];
-  proventos: Provento[];
-  cotacoes: Record<string, Cotacao>;
+  assets: Fii[];
+  payouts: Payout[];
+  quotes: Record<string, Quote>;
 }
 
-function ultimoProvento(proventos: Provento[], ativoId: string) {
-  return proventos
-    .filter((p) => p.ativoId === ativoId)
-    .toSorted((a, b) => b.data.localeCompare(a.data))[0];
+function lastPayout(payouts: Payout[], assetId: string) {
+  return payouts
+    .filter((p) => p.assetId === assetId)
+    .toSorted((a, b) => b.date.localeCompare(a.date))[0];
 }
 
-function paraCampo(n: number) {
+function toField(n: number) {
   return String(n).replace(".", ",");
 }
 
 export function MagicNumberCalc({
-  ativos,
-  proventos,
-  cotacoes,
+  assets,
+  payouts,
+  quotes,
 }: MagicNumberCalcProps) {
-  const [ativoId, setAtivoId] = useState<string>("");
-  const [dividendo, setDividendo] = useState("");
-  const [cotacao, setCotacao] = useState("");
-  const [cotasManuais, setCotasManuais] = useState("");
+  const [assetId, setAssetId] = useState<string>("");
+  const [dividend, setDividend] = useState("");
+  const [quote, setQuote] = useState("");
+  const [manualShares, setManualShares] = useState("");
 
-  const ativoSelecionado = ativos.find((a) => a.id === ativoId) ?? null;
-  const cotasAtuais = ativoSelecionado
-    ? ativoSelecionado.cotas
-    : parseDecimalOuZero(cotasManuais);
+  const selectedAsset = assets.find((a) => a.id === assetId) ?? null;
+  const currentShares = selectedAsset
+    ? selectedAsset.shares
+    : parseDecimalOuZero(manualShares);
 
-  const resultado = calcularMagicNumber(
-    parseDecimal(dividendo),
-    parseDecimal(cotacao),
-    cotasAtuais,
+  const result = calculateMagicNumber(
+    parseDecimal(dividend),
+    parseDecimal(quote),
+    currentShares,
   );
 
   // Ao escolher um ativo, preenche dividendo (último provento) e cotação (se houver).
-  function handleAtivo(id: string) {
-    setAtivoId(id);
+  function handleAsset(id: string) {
+    setAssetId(id);
     if (!id) return;
-    setCotasManuais("");
-    const ult = ultimoProvento(proventos, id);
-    if (ult) setDividendo(paraCampo(ult.valorPorCota));
-    const cot = cotacoes[id];
-    if (cot) setCotacao(paraCampo(cot.preco));
+    setManualShares("");
+    const last = lastPayout(payouts, id);
+    if (last) setDividend(toField(last.valuePerShare));
+    const entry = quotes[id];
+    if (entry) setQuote(toField(entry.price));
   }
 
   return (
@@ -74,13 +74,13 @@ export function MagicNumberCalc({
         <div className="grid content-start gap-4">
           <Field label="Usar ativo da carteira (opcional)">
             <Select
-              value={ativoId}
-              onChange={(e) => handleAtivo(e.target.value)}
+              value={assetId}
+              onChange={(e) => handleAsset(e.target.value)}
             >
               <option value="">Informar cotas manualmente</option>
-              {ativos.map((a) => (
+              {assets.map((a) => (
                 <option key={a.id} value={a.id}>
-                  {a.ticker} — {formatNumber(a.cotas)} cotas
+                  {a.ticker} — {formatNumber(a.shares)} cotas
                 </option>
               ))}
             </Select>
@@ -90,16 +90,16 @@ export function MagicNumberCalc({
             <Field label="Dividendo por cota (R$)">
               <Input
                 inputMode="decimal"
-                value={dividendo}
-                onChange={(e) => setDividendo(e.target.value)}
+                value={dividend}
+                onChange={(e) => setDividend(e.target.value)}
                 placeholder="0,90"
               />
             </Field>
             <Field label="Cotação atual (R$)">
               <Input
                 inputMode="decimal"
-                value={cotacao}
-                onChange={(e) => setCotacao(e.target.value)}
+                value={quote}
+                onChange={(e) => setQuote(e.target.value)}
                 placeholder="10,30"
               />
             </Field>
@@ -108,9 +108,9 @@ export function MagicNumberCalc({
           <Field label="Cotas que você já possui">
             <Input
               inputMode="numeric"
-              disabled={!!ativoSelecionado}
-              value={ativoSelecionado ? ativoSelecionado.cotas : cotasManuais}
-              onChange={(e) => setCotasManuais(e.target.value)}
+              disabled={!!selectedAsset}
+              value={selectedAsset ? selectedAsset.shares : manualShares}
+              onChange={(e) => setManualShares(e.target.value)}
               placeholder="0"
             />
           </Field>
@@ -118,7 +118,7 @@ export function MagicNumberCalc({
 
         {/* Resultado */}
         <div className="flex min-h-40 flex-col justify-center rounded-lg border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-950/50">
-          {!resultado ? (
+          {!result ? (
             <div className="flex flex-col items-center gap-2 text-center">
               <TargetIcon
                 size={22}
@@ -136,7 +136,7 @@ export function MagicNumberCalc({
                     Magic Number
                   </p>
                   <p className="text-3xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
-                    {formatNumber(resultado.magicNumber)}
+                    {formatNumber(result.magicNumber)}
                   </p>
                   <p className="text-xs text-zinc-400 dark:text-zinc-500">
                     cotas necessárias
@@ -147,7 +147,7 @@ export function MagicNumberCalc({
                     Você tem
                   </p>
                   <p className="text-2xl font-semibold tabular-nums">
-                    {formatNumber(cotasAtuais)}
+                    {formatNumber(currentShares)}
                   </p>
                 </div>
               </div>
@@ -155,7 +155,7 @@ export function MagicNumberCalc({
               <div className="grid gap-1.5">
                 <div
                   role="progressbar"
-                  aria-valuenow={Math.round(resultado.progresso)}
+                  aria-valuenow={Math.round(result.progress)}
                   aria-valuemin={0}
                   aria-valuemax={100}
                   className="h-2.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800"
@@ -163,17 +163,17 @@ export function MagicNumberCalc({
                   <div
                     className={cn(
                       "h-full rounded-full transition-all",
-                      resultado.atingiu ? "bg-emerald-500" : "bg-emerald-400",
+                      result.reached ? "bg-emerald-500" : "bg-emerald-400",
                     )}
-                    style={{ width: `${resultado.progresso}%` }}
+                    style={{ width: `${result.progress}%` }}
                   />
                 </div>
                 <p className="text-right text-xs tabular-nums text-zinc-400 dark:text-zinc-500">
-                  {resultado.progresso.toFixed(1)}%
+                  {result.progress.toFixed(1)}%
                 </p>
               </div>
 
-              {resultado.atingiu ? (
+              {result.reached ? (
                 <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 px-3 py-2.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
                   <TrendUpIcon size={16} />
                   Meta atingida! Os dividendos já compram uma nova cota.
@@ -183,11 +183,11 @@ export function MagicNumberCalc({
                   <p className="text-sm text-zinc-700 dark:text-zinc-200">
                     Faltam{" "}
                     <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                      {formatNumber(resultado.faltam)}
+                      {formatNumber(result.missing)}
                     </span>{" "}
                     cotas — cerca de{" "}
                     <span className="font-semibold">
-                      {formatBRL(resultado.aporteFaltante)}
+                      {formatBRL(result.missingContribution)}
                     </span>{" "}
                     em aportes.
                   </p>

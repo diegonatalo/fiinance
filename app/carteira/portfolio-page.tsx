@@ -3,81 +3,81 @@
 import { useState } from "react";
 import { FiiForm, type FiiFormValues } from "@/components/fii-form";
 import { FiiTable } from "@/components/fii-table";
-import { OperacaoModal } from "@/components/operacao-modal";
-import { CotacoesCard } from "@/components/cotacoes-card";
-import { HistoricoCard } from "@/components/historico-card";
+import { OperationModal } from "@/components/operation-modal";
+import { QuotesCard } from "@/components/quotes-card";
+import { HistoryCard } from "@/components/history-card";
 import { BackupCard } from "@/components/backup-card";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
-import { useCarteiraContext } from "@/lib/carteira-context";
+import { usePortfolioContext } from "@/lib/portfolio-context";
 import { useToast } from "@/lib/toast-context";
 import type { Fii } from "@/types/fii";
 
-export function CarteiraPage() {
+export function PortfolioPage() {
   const {
-    ativos,
-    dados,
-    resumo,
-    tickerEmUso,
-    adicionarAtivo,
-    atualizarAtivo,
-    removerAtivo,
-    restaurarAtivo,
-  } = useCarteiraContext();
+    assets,
+    data,
+    summary,
+    tickerInUse,
+    addAsset,
+    updateAsset,
+    removeAsset,
+    restoreAsset,
+  } = usePortfolioContext();
   const notify = useToast();
   const [editing, setEditing] = useState<Fii | null>(null);
-  const [operando, setOperando] = useState<Fii | null>(null);
+  const [operating, setOperating] = useState<Fii | null>(null);
 
-  function handleAdd({ ativo, compra }: FiiFormValues) {
-    if (!compra) return;
-    const { existente } = adicionarAtivo(ativo, compra);
+  function handleAdd({ asset, buy }: FiiFormValues) {
+    if (!buy) return;
+    const { existing } = addAsset(asset, buy);
     notify(
-      existente
-        ? `Compra somada à posição de ${ativo.ticker}`
-        : `${ativo.ticker} adicionado à carteira`,
+      existing
+        ? `Compra somada à posição de ${asset.ticker}`
+        : `${asset.ticker} adicionado à carteira`,
     );
   }
 
-  function handleUpdate({ ativo }: FiiFormValues) {
+  function handleUpdate({ asset }: FiiFormValues) {
     if (!editing) return;
-    atualizarAtivo(editing.id, ativo);
-    notify(`${ativo.ticker} atualizado`);
+    updateAsset(editing.id, asset);
+    notify(`${asset.ticker} atualizado`);
     setEditing(null);
   }
 
   function handleDelete(fii: Fii) {
-    const snapshot = removerAtivo(fii.id);
+    const snapshot = removeAsset(fii.id);
     if (!snapshot) return;
     notify(`${fii.ticker} removido`, {
       label: "Desfazer",
-      onClick: () => restaurarAtivo(snapshot),
+      onClick: () => restoreAsset(snapshot),
     });
   }
 
   // posição atualizada do ativo em operação (muda quando a compra/venda é salva)
-  const operandoAtual = ativos.find((a) => a.id === operando?.id) ?? null;
+  const currentOperating = assets.find((a) => a.id === operating?.id) ?? null;
 
   return (
     <>
       <Card>
         <CardTitle className="mb-4">Adicionar ativo</CardTitle>
-        <FiiForm onSubmit={handleAdd} tickerEmUso={tickerEmUso} />
+        <FiiForm onSubmit={handleAdd} tickerInUse={tickerInUse} />
       </Card>
 
       <Card>
         <CardTitle className="mb-4">Meus ativos</CardTitle>
         <FiiTable
-          ativos={ativos}
-          cotacoes={dados.cotacoes}
-          total={resumo.totalInvestido}
+          assets={assets}
+          quotes={data.quotes}
+          total={summary.totalInvested}
           onEdit={setEditing}
           onDelete={handleDelete}
-          onOperacao={setOperando}
+          onOperation={setOperating}
         />
       </Card>
 
-      <CotacoesCard />
-      <HistoricoCard />
+      <QuotesCard />
+      <HistoryCard />
       <BackupCard />
 
       <Modal
@@ -88,13 +88,13 @@ export function CarteiraPage() {
         <FiiForm
           key={editing?.id}
           initial={editing}
-          tickerEmUso={tickerEmUso}
+          tickerInUse={tickerInUse}
           onSubmit={handleUpdate}
           onCancel={() => setEditing(null)}
         />
       </Modal>
 
-      <OperacaoModal ativo={operandoAtual} onClose={() => setOperando(null)} />
+      <OperationModal asset={currentOperating} onClose={() => setOperating(null)} />
     </>
   );
 }

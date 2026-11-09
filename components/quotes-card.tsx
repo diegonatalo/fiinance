@@ -3,58 +3,58 @@ import { Card, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Field } from "./ui/field";
 import { Input } from "./ui/input";
-import { useCarteiraContext } from "@/lib/carteira-context";
+import { usePortfolioContext } from "@/lib/portfolio-context";
 import { useToast } from "@/lib/toast-context";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import { buscarCotacao } from "@/lib/cotacoes";
+import { fetchQuote } from "@/lib/quotes";
 import { formatBRL } from "@/lib/format";
-import { parseDecimal } from "@/lib/numero";
+import { parseDecimal } from "@/lib/numbers";
 import { ArrowsClockwiseIcon, ChartLineUpIcon } from "@phosphor-icons/react";
 
-const CHAVE_TOKEN = "fiinance:brapi-token";
+const TOKEN_KEY = "fiinance:brapi-token";
 
-function sanitizarToken(raw: unknown): string {
+function sanitizeToken(raw: unknown): string {
   return typeof raw === "string" ? raw : "";
 }
 
-export function CotacoesCard() {
-  const { ativos, dados, definirCotacoes } = useCarteiraContext();
+export function QuotesCard() {
+  const { assets, data, setQuotes } = usePortfolioContext();
   const notify = useToast();
-  const [token, setToken] = useLocalStorage(CHAVE_TOKEN, "", sanitizarToken);
-  const [carregando, setCarregando] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
-  const [manuais, setManuais] = useState<Record<string, string>>({});
+  const [token, setToken] = useLocalStorage(TOKEN_KEY, "", sanitizeToken);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [manual, setManual] = useState<Record<string, string>>({});
 
-  const comCotas = ativos.filter((a) => a.cotas > 0);
+  const withShares = assets.filter((a) => a.shares > 0);
 
-  async function atualizar() {
-    setCarregando(true);
-    setErro(null);
-    const resultados = await Promise.allSettled(
-      comCotas.map(async (a) => [a.id, await buscarCotacao(a.ticker, token.trim())] as const),
+  async function update() {
+    setLoading(true);
+    setError(null);
+    const results = await Promise.allSettled(
+      withShares.map(async (a) => [a.id, await fetchQuote(a.ticker, token.trim())] as const),
     );
-    const precos: Record<string, number> = {};
-    const falhas: string[] = [];
-    for (const r of resultados) {
-      if (r.status === "fulfilled") precos[r.value[0]] = r.value[1];
-      else falhas.push(r.reason instanceof Error ? r.reason.message : "Erro de rede");
+    const prices: Record<string, number> = {};
+    const failures: string[] = [];
+    for (const r of results) {
+      if (r.status === "fulfilled") prices[r.value[0]] = r.value[1];
+      else failures.push(r.reason instanceof Error ? r.reason.message : "Erro de rede");
     }
-    if (Object.keys(precos).length > 0) definirCotacoes(precos);
-    if (falhas.length > 0) {
-      setErro(`${falhas.length} de ${comCotas.length} falharam: ${[...new Set(falhas)].join("; ")}`);
+    if (Object.keys(prices).length > 0) setQuotes(prices);
+    if (failures.length > 0) {
+      setError(`${failures.length} de ${withShares.length} falharam: ${[...new Set(failures)].join("; ")}`);
     } else {
       notify("Cotações atualizadas");
     }
-    setCarregando(false);
+    setLoading(false);
   }
 
-  function salvarManual(id: string) {
-    const texto = manuais[id];
-    if (texto === undefined) return;
-    const valor = parseDecimal(texto);
-    if (texto.trim() === "") definirCotacoes({ [id]: 0 });
-    else if (Number.isFinite(valor) && valor > 0) definirCotacoes({ [id]: valor });
-    setManuais((m) => Object.fromEntries(Object.entries(m).filter(([k]) => k !== id)));
+  function saveManual(id: string) {
+    const text = manual[id];
+    if (text === undefined) return;
+    const amount = parseDecimal(text);
+    if (text.trim() === "") setQuotes({ [id]: 0 });
+    else if (Number.isFinite(amount) && amount > 0) setQuotes({ [id]: amount });
+    setManual((m) => Object.fromEntries(Object.entries(m).filter(([k]) => k !== id)));
   }
 
   return (
@@ -78,7 +78,7 @@ export function CotacoesCard() {
         (exige token gratuito para FIIs). O token fica só neste navegador.
       </p>
 
-      {comCotas.length === 0 ? (
+      {withShares.length === 0 ? (
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
           Adicione ativos para acompanhar as cotações.
         </p>
@@ -94,31 +94,31 @@ export function CotacoesCard() {
                 placeholder="seu token"
               />
             </Field>
-            <Button onClick={atualizar} disabled={carregando}>
+            <Button onClick={update} disabled={loading}>
               <ArrowsClockwiseIcon
                 size={16}
-                className={carregando ? "animate-spin" : undefined}
+                className={loading ? "animate-spin" : undefined}
               />
-              {carregando ? "Buscando…" : "Atualizar cotações"}
+              {loading ? "Buscando…" : "Atualizar cotações"}
             </Button>
           </div>
-          {erro && <p className="text-xs text-red-500">{erro}</p>}
+          {error && <p className="text-xs text-red-500">{error}</p>}
 
           <ul className="grid gap-2 sm:grid-cols-2">
-            {comCotas.map((a) => {
-              const cot = dados.cotacoes[a.id];
+            {withShares.map((a) => {
+              const entry = data.quotes[a.id];
               return (
                 <li key={a.id} className="grid grid-cols-[5rem_1fr] items-center gap-2">
                   <span className="text-sm font-semibold">{a.ticker}</span>
                   <Input
                     inputMode="decimal"
                     aria-label={`Cotação de ${a.ticker}`}
-                    placeholder={cot ? formatBRL(cot.preco) : "R$ 0,00"}
-                    value={manuais[a.id] ?? (cot ? String(cot.preco).replace(".", ",") : "")}
+                    placeholder={entry ? formatBRL(entry.price) : "R$ 0,00"}
+                    value={manual[a.id] ?? (entry ? String(entry.price).replace(".", ",") : "")}
                     onChange={(e) =>
-                      setManuais((m) => ({ ...m, [a.id]: e.target.value }))
+                      setManual((m) => ({ ...m, [a.id]: e.target.value }))
                     }
-                    onBlur={() => salvarManual(a.id)}
+                    onBlur={() => saveManual(a.id)}
                     onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
                   />
                 </li>

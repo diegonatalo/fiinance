@@ -8,37 +8,37 @@ interface ModalProps {
   children: ReactNode;
 }
 
-const FOCAVEIS =
+const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function Modal({ open, title, onClose, children }: ModalProps) {
-  const painel = useRef<HTMLDivElement>(null);
-  const fechar = useEffectEvent(onClose);
+  const dashboard = useRef<HTMLDivElement>(null);
+  const close = useEffectEvent(onClose);
 
   useEffect(() => {
     if (!open) return;
-    const anterior = document.activeElement as HTMLElement | null;
-    const el = painel.current;
+    const previous = document.activeElement as HTMLElement | null;
+    const el = dashboard.current;
     // foca o primeiro campo do conteúdo (o primeiro focável é o botão de fechar)
-    const campos = el?.querySelectorAll<HTMLElement>(FOCAVEIS);
-    (campos?.[1] ?? campos?.[0] ?? el)?.focus();
+    const fields = el?.querySelectorAll<HTMLElement>(FOCUSABLE);
+    (fields?.[1] ?? fields?.[0] ?? el)?.focus();
 
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") {
-        fechar();
+        close();
         return;
       }
       if (e.key !== "Tab" || !el) return;
-      const itens = el.querySelectorAll<HTMLElement>(FOCAVEIS);
-      if (itens.length === 0) return;
-      const primeiro = itens[0];
-      const ultimo = itens[itens.length - 1];
-      if (e.shiftKey && document.activeElement === primeiro) {
+      const items = el.querySelectorAll<HTMLElement>(FOCUSABLE);
+      if (items.length === 0) return;
+      const first = items[0];
+      const lastItem = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
-        ultimo.focus();
-      } else if (!e.shiftKey && document.activeElement === ultimo) {
+        lastItem.focus();
+      } else if (!e.shiftKey && document.activeElement === lastItem) {
         e.preventDefault();
-        primeiro.focus();
+        first.focus();
       }
     }
 
@@ -47,7 +47,7 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
-      anterior?.focus();
+      previous?.focus();
     };
   }, [open]);
 
@@ -62,7 +62,7 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
       aria-label={title}
     >
       <div
-        ref={painel}
+        ref={dashboard}
         tabIndex={-1}
         className="max-h-full w-full max-w-lg overflow-y-auto rounded-t-2xl border border-zinc-200 bg-white p-5 shadow-xl outline-none dark:border-zinc-800 dark:bg-zinc-900 sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}

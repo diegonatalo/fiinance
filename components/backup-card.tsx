@@ -1,14 +1,14 @@
 import { useRef } from "react";
 import { Card, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
-import { useCarteiraContext } from "@/lib/carteira-context";
+import { usePortfolioContext } from "@/lib/portfolio-context";
 import { useToast } from "@/lib/toast-context";
 import {
-  baixarArquivo,
-  dadosParaJson,
-  transacoesParaCsv,
-} from "@/lib/exportar";
-import { hoje } from "@/lib/data";
+  downloadFile,
+  dataToJson,
+  transactionsToCsv,
+} from "@/lib/export-data";
+import { today } from "@/lib/date";
 import {
   DownloadSimpleIcon,
   FileCsvIcon,
@@ -16,22 +16,22 @@ import {
 } from "@phosphor-icons/react";
 
 export function BackupCard() {
-  const { dados, importar } = useCarteiraContext();
+  const { data, importData } = usePortfolioContext();
   const notify = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  async function handleArquivo(ev: React.ChangeEvent<HTMLInputElement>) {
-    const arquivo = ev.target.files?.[0];
+  async function handleFile(ev: React.ChangeEvent<HTMLInputElement>) {
+    const file = ev.target.files?.[0];
     ev.target.value = "";
-    if (!arquivo) return;
-    const temDados = dados.ativos.length > 0;
+    if (!file) return;
+    const hasData = data.assets.length > 0;
     if (
-      temDados &&
+      hasData &&
       !window.confirm("Importar vai substituir TODOS os dados atuais. Continuar?")
     ) {
       return;
     }
-    const ok = importar(await arquivo.text());
+    const ok = importData(await file.text());
     notify(ok ? "Backup importado" : "Arquivo inválido: nada foi alterado");
   }
 
@@ -46,9 +46,9 @@ export function BackupCard() {
         <Button
           variant="outline"
           onClick={() =>
-            baixarArquivo(
-              `fiinance-backup-${hoje()}.json`,
-              dadosParaJson(dados),
+            downloadFile(
+              `fiinance-backup-${today()}.json`,
+              dataToJson(data),
               "application/json",
             )
           }
@@ -60,11 +60,11 @@ export function BackupCard() {
         </Button>
         <Button
           variant="outline"
-          disabled={dados.transacoes.length === 0}
+          disabled={data.transactions.length === 0}
           onClick={() =>
-            baixarArquivo(
-              `fiinance-operacoes-${hoje()}.csv`,
-              transacoesParaCsv(dados),
+            downloadFile(
+              `fiinance-operacoes-${today()}.csv`,
+              transactionsToCsv(data),
               "text/csv;charset=utf-8",
             )
           }
@@ -76,7 +76,7 @@ export function BackupCard() {
           type="file"
           accept="application/json,.json"
           className="hidden"
-          onChange={handleArquivo}
+          onChange={handleFile}
         />
       </div>
     </Card>

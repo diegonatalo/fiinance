@@ -1,38 +1,38 @@
 import { PieChartCard } from "./pie-chart";
 import {
-  distribuicaoPorAtivo,
-  distribuicaoPorTipo,
-  distribuicaoSegmentoPapel,
-  distribuicaoSegmentoTijolo,
-} from "@/lib/distribuicao";
+  distributionByAsset,
+  distributionByType,
+  paperSegmentDistribution,
+  brickSegmentDistribution,
+} from "@/lib/distribution";
 import type { Fii } from "@/types/fii";
 
 interface ChartsGridProps {
-  ativos: Fii[];
+  assets: Fii[];
   theme: "light" | "dark";
 }
 
-export function ChartsGrid({ ativos, theme }: ChartsGridProps) {
+export function ChartsGrid({ assets, theme }: ChartsGridProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <PieChartCard
         title="Distribuição por ativo"
-        data={distribuicaoPorAtivo(ativos)}
+        data={distributionByAsset(assets)}
         theme={theme}
       />
       <PieChartCard
         title="Distribuição por tipo"
-        data={distribuicaoPorTipo(ativos)}
+        data={distributionByType(assets)}
         theme={theme}
       />
       <PieChartCard
         title="Distribuição por segmento"
-        data={distribuicaoSegmentoTijolo(ativos)}
+        data={brickSegmentDistribution(assets)}
         theme={theme}
       />
       <PieChartCard
         title="Distribuição por indexador"
-        data={distribuicaoSegmentoPapel(ativos)}
+        data={paperSegmentDistribution(assets)}
         theme={theme}
       />
     </div>

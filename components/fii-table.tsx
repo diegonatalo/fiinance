@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { cn, formatBRL, formatNumber, formatPctSinal } from "@/lib/format";
-import { valorPosicao } from "@/lib/resumo";
-import type { Cotacao, Fii, FiiTipo } from "@/types/fii";
+import { cn, formatBRL, formatNumber, formatSignedPct } from "@/lib/format";
+import { positionValue } from "@/lib/summary";
+import type { Quote, Fii, FiiType } from "@/types/fii";
 import {
   ArrowsDownUpIcon,
   PencilSimpleIcon,
@@ -12,96 +12,96 @@ import {
 } from "@phosphor-icons/react";
 
 interface FiiTableProps {
-  ativos: Fii[];
-  cotacoes: Record<string, Cotacao>;
+  assets: Fii[];
+  quotes: Record<string, Quote>;
   total: number;
   onEdit: (fii: Fii) => void;
   onDelete: (fii: Fii) => void;
-  onOperacao: (fii: Fii) => void;
+  onOperation: (fii: Fii) => void;
 }
 
-type Campo = "ticker" | "investido" | "resultado";
-type Filtro = "todos" | FiiTipo;
+type FieldName = "ticker" | "investido" | "resultado";
+type Filter = "todos" | FiiType;
 
-interface Linha {
-  ativo: Fii;
-  investido: number;
-  cotacao?: number;
+interface Row {
+  asset: Fii;
+  invested: number;
+  quote?: number;
   /** variação da cotação sobre o preço médio, em % */
-  resultadoPct?: number;
-  resultado?: number;
+  resultPct?: number;
+  result?: number;
 }
 
-function montarLinha(ativo: Fii, cotacoes: Record<string, Cotacao>): Linha {
-  const investido = valorPosicao(ativo);
-  const cotacao = cotacoes[ativo.id]?.preco;
-  if (cotacao === undefined || ativo.cotas === 0) {
-    return { ativo, investido, cotacao };
+function buildRow(asset: Fii, quotes: Record<string, Quote>): Row {
+  const invested = positionValue(asset);
+  const quote = quotes[asset.id]?.price;
+  if (quote === undefined || asset.shares === 0) {
+    return { asset, invested, quote };
   }
-  const resultado = ativo.cotas * cotacao - investido;
+  const result = asset.shares * quote - invested;
   return {
-    ativo,
-    investido,
-    cotacao,
-    resultado,
-    resultadoPct: investido > 0 ? (resultado / investido) * 100 : 0,
+    asset,
+    invested,
+    quote,
+    result,
+    resultPct: invested > 0 ? (result / invested) * 100 : 0,
   };
 }
 
-function Resultado({ linha }: { linha: Linha }) {
-  if (linha.resultado === undefined || linha.resultadoPct === undefined) {
+function Result({ row }: { row: Row }) {
+  if (row.result === undefined || row.resultPct === undefined) {
     return <span className="text-zinc-400 dark:text-zinc-600">—</span>;
   }
-  const positivo = linha.resultado >= 0;
+  const positive = row.result >= 0;
   return (
     <span
       className={cn(
         "tabular-nums",
-        positivo
+        positive
           ? "text-emerald-600 dark:text-emerald-400"
           : "text-red-600 dark:text-red-400",
       )}
     >
-      {formatBRL(linha.resultado)}{" "}
-      <span className="text-xs">({formatPctSinal(linha.resultadoPct)})</span>
+      {formatBRL(row.result)}{" "}
+      <span className="text-xs">({formatSignedPct(row.resultPct)})</span>
     </span>
   );
 }
 
-function TipoBadge({ ativo }: { ativo: Fii }) {
+function TypeBadge({ asset }: { asset: Fii }) {
   return (
     <span
       className={
-        ativo.tipo === "papel"
+        asset.type === "papel"
           ? "rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs font-medium capitalize text-emerald-600 dark:text-emerald-400"
           : "rounded-md bg-zinc-200/70 px-2 py-0.5 text-xs font-medium capitalize text-zinc-700 dark:bg-zinc-700/50 dark:text-zinc-300"
       }
     >
-      {ativo.tipo} · {ativo.segmento}
+      {asset.type} · {asset.segment}
     </span>
   );
 }
 
 interface ThProps {
-  c: Campo;
-  ativo: Campo;
+  c: FieldName;
+  asset: FieldName;
   asc: boolean;
-  onSort: (c: Campo) => void;
+  onSort: (c: FieldName) => void;
   children: string;
   right?: boolean;
 }
 
-function Th({ c, ativo, asc, onSort, children, right }: ThProps) {
+function Th({ c, asset, asc, onSort, children, right }: ThProps) {
   return (
     <th
       className={cn("px-3 py-3 font-medium", right && "text-right")}
-      aria-sort={ativo === c ? (asc ? "ascending" : "descending") : "none"}
+      aria-sort={asset === c ? (asc ? "ascending" : "descending") : "none"}
     >
       <button
         onClick={() => onSort(c)}
         className={cn(
           "inline-flex items-center gap-1 uppercase tracking-wide outline-none hover:text-zinc-900 focus-visible:text-zinc-900 dark:hover:text-zinc-100 dark:focus-visible:text-zinc-100",
-          ativo === c && "text-zinc-900 dark:text-zinc-100",
+          asset === c && "text-zinc-900 dark:text-zinc-100",
         )}
       >
         {children}
@@ -112,18 +112,18 @@ function Th({ c, ativo, asc, onSort, children, right }: ThProps) {
 }
 
 export function FiiTable({
-  ativos,
-  cotacoes,
+  assets,
+  quotes,
   total,
   onEdit,
   onDelete,
-  onOperacao,
+  onOperation,
 }: FiiTableProps) {
-  const [campo, setCampo] = useState<Campo>("ticker");
+  const [field, setField] = useState<FieldName>("ticker");
   const [asc, setAsc] = useState(true);
-  const [filtro, setFiltro] = useState<Filtro>("todos");
+  const [filter, setFilter] = useState<Filter>("todos");
 
-  if (ativos.length === 0) {
+  if (assets.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-zinc-300 py-16 text-center dark:border-zinc-700">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500">
@@ -141,32 +141,32 @@ export function FiiTable({
     );
   }
 
-  const linhas = ativos
-    .filter((a) => filtro === "todos" || a.tipo === filtro)
-    .map((a) => montarLinha(a, cotacoes))
+  const rows = assets
+    .filter((a) => filter === "todos" || a.type === filter)
+    .map((a) => buildRow(a, quotes))
     .toSorted((x, y) => {
-      const dir = asc ? 1 : -1;
-      if (campo === "ticker") return x.ativo.ticker.localeCompare(y.ativo.ticker) * dir;
-      if (campo === "investido") return (x.investido - y.investido) * dir;
+      const direction = asc ? 1 : -1;
+      if (field === "ticker") return x.asset.ticker.localeCompare(y.asset.ticker) * direction;
+      if (field === "investido") return (x.invested - y.invested) * direction;
       // sem cotação vai sempre para o fim
-      if (x.resultadoPct === undefined) return 1;
-      if (y.resultadoPct === undefined) return -1;
-      return (x.resultadoPct - y.resultadoPct) * dir;
+      if (x.resultPct === undefined) return 1;
+      if (y.resultPct === undefined) return -1;
+      return (x.resultPct - y.resultPct) * direction;
     });
 
-  function ordenar(novo: Campo) {
-    if (novo === campo) setAsc(!asc);
+  function sort(fresh: FieldName) {
+    if (fresh === field) setAsc(!asc);
     else {
-      setCampo(novo);
-      setAsc(novo === "ticker");
+      setField(fresh);
+      setAsc(fresh === "ticker");
     }
   }
 
-  const acoes = (a: Fii) => (
+  const actions = (a: Fii) => (
     <div className="flex items-center justify-end gap-1">
       <Button
         variant="ghost"
-        onClick={() => onOperacao(a)}
+        onClick={() => onOperation(a)}
         className="px-2!"
         aria-label={`Registrar operação de ${a.ticker}`}
         title="Registrar compra ou venda"
@@ -195,14 +195,14 @@ export function FiiTable({
   return (
     <div className="grid gap-3">
       <div className="flex gap-1.5" role="group" aria-label="Filtrar por tipo">
-        {(["todos", "tijolo", "papel"] as Filtro[]).map((f) => (
+        {(["todos", "tijolo", "papel"] as Filter[]).map((f) => (
           <button
             key={f}
-            onClick={() => setFiltro(f)}
-            aria-pressed={filtro === f}
+            onClick={() => setFilter(f)}
+            aria-pressed={filter === f}
             className={cn(
               "rounded-lg border px-3 py-1 text-xs font-medium capitalize transition-colors",
-              filtro === f
+              filter === f
                 ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                 : "border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800",
             )}
@@ -214,41 +214,41 @@ export function FiiTable({
 
       {/* Mobile: cartões */}
       <ul className="grid gap-2 sm:hidden">
-        {linhas.map((l) => (
+        {rows.map((l) => (
           <li
-            key={l.ativo.id}
+            key={l.asset.id}
             className={cn(
               "rounded-lg border border-zinc-200 p-3 dark:border-zinc-800",
-              l.ativo.cotas === 0 && "opacity-60",
+              l.asset.shares === 0 && "opacity-60",
             )}
           >
             <div className="flex items-start justify-between gap-2">
               <div>
-                <p className="font-semibold">{l.ativo.ticker}</p>
-                <TipoBadge ativo={l.ativo} />
+                <p className="font-semibold">{l.asset.ticker}</p>
+                <TypeBadge asset={l.asset} />
               </div>
-              {acoes(l.ativo)}
+              {actions(l.asset)}
             </div>
             <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
               <dt className="text-zinc-500 dark:text-zinc-400">Cotas</dt>
               <dd className="text-right tabular-nums">
-                {formatNumber(l.ativo.cotas)}
+                {formatNumber(l.asset.shares)}
               </dd>
               <dt className="text-zinc-500 dark:text-zinc-400">Preço médio</dt>
               <dd className="text-right tabular-nums">
-                {formatBRL(l.ativo.precoMedio)}
+                {formatBRL(l.asset.averagePrice)}
               </dd>
               <dt className="text-zinc-500 dark:text-zinc-400">Cotação</dt>
               <dd className="text-right tabular-nums">
-                {l.cotacao !== undefined ? formatBRL(l.cotacao) : "—"}
+                {l.quote !== undefined ? formatBRL(l.quote) : "—"}
               </dd>
               <dt className="text-zinc-500 dark:text-zinc-400">Investido</dt>
               <dd className="text-right font-medium tabular-nums">
-                {formatBRL(l.investido)}
+                {formatBRL(l.invested)}
               </dd>
               <dt className="text-zinc-500 dark:text-zinc-400">Resultado</dt>
               <dd className="text-right">
-                <Resultado linha={l} />
+                <Result row={l} />
               </dd>
             </dl>
           </li>
@@ -268,7 +268,7 @@ export function FiiTable({
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-zinc-200 text-left text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-              <Th c="ticker" ativo={campo} asc={asc} onSort={ordenar}>Ativo</Th>
+              <Th c="ticker" asset={field} asc={asc} onSort={sort}>Ativo</Th>
               <th className="px-3 py-3 text-right font-medium uppercase tracking-wide">
                 Cotas
               </th>
@@ -278,10 +278,10 @@ export function FiiTable({
               <th className="px-3 py-3 text-right font-medium uppercase tracking-wide">
                 Cotação
               </th>
-              <Th c="investido" ativo={campo} asc={asc} onSort={ordenar} right>
+              <Th c="investido" asset={field} asc={asc} onSort={sort} right>
                 Investido
               </Th>
-              <Th c="resultado" ativo={campo} asc={asc} onSort={ordenar} right>
+              <Th c="resultado" asset={field} asc={asc} onSort={sort} right>
                 Resultado
               </Th>
               <th className="px-3 py-3 text-right font-medium uppercase tracking-wide">
@@ -290,41 +290,41 @@ export function FiiTable({
             </tr>
           </thead>
           <tbody>
-            {linhas.map((l) => (
+            {rows.map((l) => (
               <tr
-                key={l.ativo.id}
+                key={l.asset.id}
                 className={cn(
                   "border-b border-zinc-100 transition-colors hover:bg-zinc-50 dark:border-zinc-800/60 dark:hover:bg-zinc-800/40",
-                  l.ativo.cotas === 0 && "opacity-60",
+                  l.asset.shares === 0 && "opacity-60",
                 )}
               >
                 <td className="px-3 py-3">
                   <p className="font-semibold text-zinc-900 dark:text-zinc-50">
-                    {l.ativo.ticker}
-                    {l.ativo.cotas === 0 && (
+                    {l.asset.ticker}
+                    {l.asset.shares === 0 && (
                       <span className="ml-2 text-xs font-normal text-zinc-500">
                         zerado
                       </span>
                     )}
                   </p>
-                  <TipoBadge ativo={l.ativo} />
+                  <TypeBadge asset={l.asset} />
                 </td>
                 <td className="px-3 py-3 text-right tabular-nums text-zinc-600 dark:text-zinc-300">
-                  {formatNumber(l.ativo.cotas)}
+                  {formatNumber(l.asset.shares)}
                 </td>
                 <td className="px-3 py-3 text-right tabular-nums text-zinc-600 dark:text-zinc-300">
-                  {formatBRL(l.ativo.precoMedio)}
+                  {formatBRL(l.asset.averagePrice)}
                 </td>
                 <td className="px-3 py-3 text-right tabular-nums text-zinc-600 dark:text-zinc-300">
-                  {l.cotacao !== undefined ? formatBRL(l.cotacao) : "—"}
+                  {l.quote !== undefined ? formatBRL(l.quote) : "—"}
                 </td>
                 <td className="px-3 py-3 text-right font-medium tabular-nums text-zinc-900 dark:text-zinc-50">
-                  {formatBRL(l.investido)}
+                  {formatBRL(l.invested)}
                 </td>
                 <td className="px-3 py-3 text-right">
-                  <Resultado linha={l} />
+                  <Result row={l} />
                 </td>
-                <td className="px-3 py-3">{acoes(l.ativo)}</td>
+                <td className="px-3 py-3">{actions(l.asset)}</td>
               </tr>
             ))}
           </tbody>

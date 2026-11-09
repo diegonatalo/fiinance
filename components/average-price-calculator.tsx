@@ -3,9 +3,9 @@ import { Card, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Field } from "./ui/field";
 import { Input, Select } from "./ui/input";
-import { cn, formatBRL, formatNumber, formatPctSinal } from "@/lib/format";
-import { simularPrecoMedio } from "@/lib/preco-medio";
-import { parseDecimal, parseDecimalOuZero } from "@/lib/numero";
+import { cn, formatBRL, formatNumber, formatSignedPct } from "@/lib/format";
+import { simulateAveragePrice } from "@/lib/average-price";
+import { parseDecimal, parseDecimalOuZero } from "@/lib/numbers";
 import type { Fii } from "@/types/fii";
 import {
   ArrowRightIcon,
@@ -15,44 +15,44 @@ import {
   TrendUpIcon,
 } from "@phosphor-icons/react";
 
-interface PrecoMedioCalcProps {
-  ativos: Fii[];
+interface AveragePriceCalcProps {
+  assets: Fii[];
   /** abre o registro de compra com os valores da simulação */
-  onRegistrar: (ativo: Fii, cotas: number, preco: number) => void;
+  onRecord: (asset: Fii, shares: number, price: number) => void;
 }
 
-export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
-  const [ativoId, setAtivoId] = useState<string>("");
-  const [cotasAtuaisManuais, setCotasAtuaisManuais] = useState("");
-  const [precoAtualManual, setPrecoAtualManual] = useState("");
-  const [novasCotas, setNovasCotas] = useState("");
-  const [precoNovo, setPrecoNovo] = useState("");
+export function AveragePriceCalc({ assets, onRecord }: AveragePriceCalcProps) {
+  const [assetId, setAssetId] = useState<string>("");
+  const [manualCurrentShares, setManualCurrentShares] = useState("");
+  const [manualCurrentPrice, setManualCurrentPrice] = useState("");
+  const [newShares, setNewShares] = useState("");
+  const [newPrice, setNewPrice] = useState("");
 
-  const ativoSelecionado = ativos.find((a) => a.id === ativoId) ?? null;
+  const selectedAsset = assets.find((a) => a.id === assetId) ?? null;
 
-  const cotasAtuais = ativoSelecionado
-    ? ativoSelecionado.cotas
-    : parseDecimalOuZero(cotasAtuaisManuais);
-  const precoAtual = ativoSelecionado
-    ? ativoSelecionado.precoMedio
-    : parseDecimalOuZero(precoAtualManual);
+  const currentShares = selectedAsset
+    ? selectedAsset.shares
+    : parseDecimalOuZero(manualCurrentShares);
+  const currentPrice = selectedAsset
+    ? selectedAsset.averagePrice
+    : parseDecimalOuZero(manualCurrentPrice);
 
-  const qtdNova = parseDecimal(novasCotas);
-  const pNovo = parseDecimal(precoNovo);
-  const resultado = simularPrecoMedio(cotasAtuais, precoAtual, qtdNova, pNovo);
+  const newQty = parseDecimal(newShares);
+  const newP = parseDecimal(newPrice);
+  const result = simulateAveragePrice(currentShares, currentPrice, newQty, newP);
 
-  function handleAtivo(id: string) {
-    setAtivoId(id);
+  function handleAsset(id: string) {
+    setAssetId(id);
     if (id) {
-      setCotasAtuaisManuais("");
-      setPrecoAtualManual("");
+      setManualCurrentShares("");
+      setManualCurrentPrice("");
     }
   }
 
   // baixou o preço médio = bom (verde), subiu = laranja
-  const baixou = resultado ? resultado.variacao <= 0 : false;
-  const podeRegistrar =
-    !!ativoSelecionado && !!resultado && Number.isInteger(qtdNova);
+  const downloaded = result ? result.variation <= 0 : false;
+  const canRecord =
+    !!selectedAsset && !!result && Number.isInteger(newQty);
 
   return (
     <Card>
@@ -71,14 +71,14 @@ export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
         <div className="grid content-start gap-4">
           <Field label="Usar ativo da carteira (opcional)">
             <Select
-              value={ativoId}
-              onChange={(e) => handleAtivo(e.target.value)}
+              value={assetId}
+              onChange={(e) => handleAsset(e.target.value)}
             >
               <option value="">Informar posição manualmente</option>
-              {ativos.map((a) => (
+              {assets.map((a) => (
                 <option key={a.id} value={a.id}>
-                  {a.ticker} — {formatNumber(a.cotas)} cotas a{" "}
-                  {formatBRL(a.precoMedio)}
+                  {a.ticker} — {formatNumber(a.shares)} cotas a{" "}
+                  {formatBRL(a.averagePrice)}
                 </option>
               ))}
             </Select>
@@ -88,24 +88,24 @@ export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
             <Field label="Cotas atuais">
               <Input
                 inputMode="numeric"
-                disabled={!!ativoSelecionado}
+                disabled={!!selectedAsset}
                 value={
-                  ativoSelecionado ? ativoSelecionado.cotas : cotasAtuaisManuais
+                  selectedAsset ? selectedAsset.shares : manualCurrentShares
                 }
-                onChange={(e) => setCotasAtuaisManuais(e.target.value)}
+                onChange={(e) => setManualCurrentShares(e.target.value)}
                 placeholder="0"
               />
             </Field>
             <Field label="Preço médio atual (R$)">
               <Input
                 inputMode="decimal"
-                disabled={!!ativoSelecionado}
+                disabled={!!selectedAsset}
                 value={
-                  ativoSelecionado
-                    ? String(ativoSelecionado.precoMedio.toFixed(2)).replace(".", ",")
-                    : precoAtualManual
+                  selectedAsset
+                    ? String(selectedAsset.averagePrice.toFixed(2)).replace(".", ",")
+                    : manualCurrentPrice
                 }
-                onChange={(e) => setPrecoAtualManual(e.target.value)}
+                onChange={(e) => setManualCurrentPrice(e.target.value)}
                 placeholder="0,00"
               />
             </Field>
@@ -115,16 +115,16 @@ export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
             <Field label="Novas cotas compradas">
               <Input
                 inputMode="numeric"
-                value={novasCotas}
-                onChange={(e) => setNovasCotas(e.target.value)}
+                value={newShares}
+                onChange={(e) => setNewShares(e.target.value)}
                 placeholder="0"
               />
             </Field>
             <Field label="Preço pago por cota (R$)">
               <Input
                 inputMode="decimal"
-                value={precoNovo}
-                onChange={(e) => setPrecoNovo(e.target.value)}
+                value={newPrice}
+                onChange={(e) => setNewPrice(e.target.value)}
                 placeholder="0,00"
               />
             </Field>
@@ -133,7 +133,7 @@ export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
 
         {/* Resultado */}
         <div className="flex min-h-40 flex-col justify-center rounded-lg border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-950/50">
-          {!resultado ? (
+          {!result ? (
             <div className="flex flex-col items-center gap-2 text-center">
               <CalculatorIcon
                 size={22}
@@ -152,7 +152,7 @@ export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
                     Preço médio atual
                   </p>
                   <p className="text-xl font-semibold tabular-nums text-zinc-500 dark:text-zinc-400">
-                    {formatBRL(precoAtual)}
+                    {formatBRL(currentPrice)}
                   </p>
                 </div>
                 <ArrowRightIcon
@@ -164,7 +164,7 @@ export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
                     Novo preço médio
                   </p>
                   <p className="text-3xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
-                    {formatBRL(resultado.novoPrecoMedio)}
+                    {formatBRL(result.newAveragePrice)}
                   </p>
                 </div>
               </div>
@@ -172,19 +172,19 @@ export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
               <div
                 className={cn(
                   "flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium",
-                  baixou
+                  downloaded
                     ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                     : "bg-orange-500/10 text-orange-600 dark:text-orange-400",
                 )}
               >
-                {baixou ? (
+                {downloaded ? (
                   <TrendDownIcon size={16} />
                 ) : (
                   <TrendUpIcon size={16} />
                 )}
-                Preço médio {baixou ? "cai" : "sobe"}{" "}
-                {formatBRL(Math.abs(resultado.variacao))} (
-                {formatPctSinal(resultado.variacaoPct)})
+                Preço médio {downloaded ? "cai" : "sobe"}{" "}
+                {formatBRL(Math.abs(result.variation))} (
+                {formatSignedPct(result.variationPct)})
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-sm">
@@ -193,7 +193,7 @@ export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
                     Total de cotas
                   </p>
                   <p className="font-semibold tabular-nums">
-                    {formatNumber(resultado.totalCotas)}
+                    {formatNumber(result.totalShares)}
                   </p>
                 </div>
                 <div className="rounded-lg bg-zinc-100 px-3 py-2 dark:bg-zinc-800/60">
@@ -201,7 +201,7 @@ export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
                     Aporte
                   </p>
                   <p className="font-semibold tabular-nums">
-                    {formatBRL(resultado.aporte)}
+                    {formatBRL(result.contribution)}
                   </p>
                 </div>
                 <div className="col-span-2 rounded-lg bg-zinc-100 px-3 py-2 dark:bg-zinc-800/60">
@@ -209,15 +209,15 @@ export function PrecoMedioCalc({ ativos, onRegistrar }: PrecoMedioCalcProps) {
                     Novo total investido
                   </p>
                   <p className="font-semibold tabular-nums">
-                    {formatBRL(resultado.novoTotalInvestido)}
+                    {formatBRL(result.newTotalInvested)}
                   </p>
                 </div>
               </div>
 
-              {podeRegistrar && (
+              {canRecord && (
                 <Button
                   variant="outline"
-                  onClick={() => onRegistrar(ativoSelecionado, qtdNova, pNovo)}
+                  onClick={() => onRecord(selectedAsset, newQty, newP)}
                 >
                   <PlusMinusIcon size={16} /> Registrar esta compra
                 </Button>

@@ -1,32 +1,32 @@
-export interface ResultadoMagicNumber {
+export interface MagicNumberResult {
   magicNumber: number;
-  faltam: number;
-  progresso: number;
-  atingiu: boolean;
-  aporteFaltante: number;
+  missing: number;
+  progress: number;
+  reached: boolean;
+  missingContribution: number;
 }
 
 /** Magic number = cotação ÷ dividendo por cota, arredondado para cima. */
-export function calcularMagicNumber(
-  dividendo: number,
-  cotacao: number,
-  cotasAtuais: number,
-): ResultadoMagicNumber | null {
+export function calculateMagicNumber(
+  dividend: number,
+  quote: number,
+  currentShares: number,
+): MagicNumberResult | null {
   if (
-    !Number.isFinite(dividendo) ||
-    dividendo <= 0 ||
-    !Number.isFinite(cotacao) ||
-    cotacao <= 0
+    !Number.isFinite(dividend) ||
+    dividend <= 0 ||
+    !Number.isFinite(quote) ||
+    quote <= 0
   ) {
     return null;
   }
-  const magicNumber = Math.ceil(cotacao / dividendo);
-  const faltam = Math.max(0, magicNumber - cotasAtuais);
+  const magicNumber = Math.ceil(quote / dividend);
+  const missing = Math.max(0, magicNumber - currentShares);
   return {
     magicNumber,
-    faltam,
-    progresso: Math.min(100, (cotasAtuais / magicNumber) * 100),
-    atingiu: cotasAtuais >= magicNumber,
-    aporteFaltante: faltam * cotacao,
+    missing,
+    progress: Math.min(100, (currentShares / magicNumber) * 100),
+    reached: currentShares >= magicNumber,
+    missingContribution: missing * quote,
   };
 }

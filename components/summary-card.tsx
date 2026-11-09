@@ -1,8 +1,8 @@
 import type { ComponentType } from "react";
 import { Card } from "./ui/card";
-import { cn, formatBRL, formatNumber, formatPct, formatPctSinal } from "@/lib/format";
-import type { Resumo } from "@/lib/resumo";
-import type { ResumoProventos } from "@/lib/proventos";
+import { cn, formatBRL, formatNumber, formatPct, formatSignedPct } from "@/lib/format";
+import type { Summary } from "@/lib/summary";
+import type { PayoutsSummary } from "@/lib/payouts";
 import {
   CoinsIcon,
   HandCoinsIcon,
@@ -12,36 +12,36 @@ import {
 } from "@phosphor-icons/react";
 
 interface SummaryCardsProps {
-  resumo: Resumo;
-  proventos: ResumoProventos;
+  summary: Summary;
+  payouts: PayoutsSummary;
 }
 
 interface Item {
   label: string;
   value: string;
   sub?: string;
-  subTom?: "positivo" | "negativo";
+  subTone?: "positivo" | "negativo";
   icon: ComponentType<{ size?: number }>;
   highlight?: boolean;
 }
 
-export function SummaryCards({ resumo, proventos }: SummaryCardsProps) {
+export function SummaryCards({ summary, payouts }: SummaryCardsProps) {
   const items: Item[] = [
     {
       label: "Total investido",
-      value: formatBRL(resumo.totalInvestido),
-      sub: `${formatNumber(resumo.ativosAtivos)} ativos · ${formatNumber(resumo.totalCotas)} cotas`,
+      value: formatBRL(summary.totalInvested),
+      sub: `${formatNumber(summary.activeAssets)} ativos · ${formatNumber(summary.totalShares)} cotas`,
       icon: WalletIcon,
       highlight: true,
     },
     {
       label: "Valor atual",
-      value: formatBRL(resumo.valorMercado),
-      sub: resumo.cotacoesCompletas
-        ? `${formatBRL(resumo.resultado)} (${formatPctSinal(resumo.resultadoPct)})`
+      value: formatBRL(summary.marketValue),
+      sub: summary.completeQuotes
+        ? `${formatBRL(summary.result)} (${formatSignedPct(summary.resultPct)})`
         : "informe as cotações na aba Carteira",
-      subTom: resumo.cotacoesCompletas
-        ? resumo.resultado >= 0
+      subTone: summary.completeQuotes
+        ? summary.result >= 0
           ? "positivo"
           : "negativo"
         : undefined,
@@ -49,21 +49,21 @@ export function SummaryCards({ resumo, proventos }: SummaryCardsProps) {
     },
     {
       label: "Renda média mensal",
-      value: formatBRL(proventos.mediaMensal),
-      sub: `${formatBRL(proventos.total12m)} em 12 meses`,
+      value: formatBRL(payouts.monthlyAverage),
+      sub: `${formatBRL(payouts.total12m)} em 12 meses`,
       icon: HandCoinsIcon,
     },
     {
       label: "Yield on cost (12m)",
-      value: formatPct(proventos.dyOnCost, 2),
+      value: formatPct(payouts.dyOnCost, 2),
       sub: "proventos ÷ total investido",
-      icon: proventos.total12m > 0 ? CoinsIcon : StackIcon,
+      icon: payouts.total12m > 0 ? CoinsIcon : StackIcon,
     },
   ];
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {items.map(({ label, value, sub, subTom, icon: Icon, highlight }) => (
+      {items.map(({ label, value, sub, subTone, icon: Icon, highlight }) => (
         <Card key={label} className="flex items-center gap-4">
           <div
             className={cn(
@@ -93,9 +93,9 @@ export function SummaryCards({ resumo, proventos }: SummaryCardsProps) {
               <p
                 className={cn(
                   "truncate text-xs",
-                  subTom === "positivo" && "text-emerald-600 dark:text-emerald-400",
-                  subTom === "negativo" && "text-red-600 dark:text-red-400",
-                  !subTom && "text-zinc-400 dark:text-zinc-500",
+                  subTone === "positivo" && "text-emerald-600 dark:text-emerald-400",
+                  subTone === "negativo" && "text-red-600 dark:text-red-400",
+                  !subTone && "text-zinc-400 dark:text-zinc-500",
                 )}
               >
                 {sub}

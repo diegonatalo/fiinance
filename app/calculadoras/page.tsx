@@ -1,5 +1,5 @@
-import { CalculadorasPage } from "./calculadoras-page";
+import { CalculatorsPage } from "./calculators-page";
 
 export default function Page() {
-  return <CalculadorasPage />;
+  return <CalculatorsPage />;
 }

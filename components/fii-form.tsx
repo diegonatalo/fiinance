@@ -3,23 +3,23 @@ import { Button } from "./ui/button";
 import { Field } from "./ui/field";
 import { Input, Select } from "./ui/input";
 import { cn } from "@/lib/format";
-import { hoje, dataValida } from "@/lib/data";
-import { parseDecimal } from "@/lib/numero";
-import { TICKER_REGEX } from "@/lib/dados";
+import { today, isValidDate } from "@/lib/date";
+import { parseDecimal } from "@/lib/numbers";
+import { TICKER_REGEX } from "@/lib/data";
 import {
-  SEGMENTOS_PAPEL,
-  SEGMENTOS_TIJOLO,
-  type Ativo,
+  PAPER_SEGMENTS,
+  BRICK_SEGMENTS,
+  type Asset,
   type Fii,
-  type FiiTipo,
-  type Segmento,
+  type FiiType,
+  type Segment,
 } from "@/types/fii";
 import { FloppyDiskIcon, PlusIcon } from "@phosphor-icons/react";
 
 export interface FiiFormValues {
-  ativo: Omit<Ativo, "id">;
+  asset: Omit<Asset, "id">;
   /** presente só ao cadastrar um ativo novo */
-  compra?: { data: string; cotas: number; preco: number };
+  buy?: { date: string; shares: number; price: number };
 }
 
 interface FiiFormProps {
@@ -28,41 +28,41 @@ interface FiiFormProps {
   initial?: Fii | null;
   onCancel?: () => void;
   /** devolve o ativo que já usa o ticker, se houver */
-  tickerEmUso: (ticker: string, ignorarId?: string) => Ativo | undefined;
+  tickerInUse: (ticker: string, ignoreId?: string) => Asset | undefined;
 }
 
 interface FormErrors {
   ticker?: string;
-  data?: string;
-  cotas?: string;
-  precoMedio?: string;
+  date?: string;
+  shares?: string;
+  averagePrice?: string;
 }
 
 export function FiiForm({
   onSubmit,
   initial,
   onCancel,
-  tickerEmUso,
+  tickerInUse,
 }: FiiFormProps) {
   const [ticker, setTicker] = useState(initial?.ticker ?? "");
-  const [tipo, setTipo] = useState<FiiTipo>(initial?.tipo ?? "tijolo");
-  const [segmento, setSegmento] = useState<Segmento>(
-    initial?.segmento ?? "lajes",
+  const [type, setType] = useState<FiiType>(initial?.type ?? "tijolo");
+  const [segment, setSegment] = useState<Segment>(
+    initial?.segment ?? "lajes",
   );
-  const [data, setData] = useState(hoje);
-  const [cotas, setCotas] = useState("");
-  const [preco, setPreco] = useState("");
+  const [date, setDate] = useState(today);
+  const [shares, setShares] = useState("");
+  const [price, setPrice] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const segmentos = tipo === "papel" ? SEGMENTOS_PAPEL : SEGMENTOS_TIJOLO;
+  const segments = type === "papel" ? PAPER_SEGMENTS : BRICK_SEGMENTS;
   const tickerNormalizado = ticker.trim().toUpperCase();
-  const duplicado = tickerNormalizado
-    ? tickerEmUso(tickerNormalizado, initial?.id)
+  const duplicate = tickerNormalizado
+    ? tickerInUse(tickerNormalizado, initial?.id)
     : undefined;
 
-  function handleTipo(novo: FiiTipo) {
-    setTipo(novo);
-    setSegmento(novo === "papel" ? "IPCA" : "lajes");
+  function handleType(fresh: FiiType) {
+    setType(fresh);
+    setSegment(fresh === "papel" ? "IPCA" : "lajes");
   }
 
   function validate(): FormErrors {
@@ -70,21 +70,21 @@ export function FiiForm({
     if (!tickerNormalizado) e.ticker = "Informe o ticker";
     else if (!TICKER_REGEX.test(tickerNormalizado))
       e.ticker = "Formato inválido (ex.: HGLG11)";
-    else if (initial && duplicado) e.ticker = "Ticker já cadastrado";
+    else if (initial && duplicate) e.ticker = "Ticker já cadastrado";
 
     if (!initial) {
-      if (!dataValida(data)) e.data = "Data inválida";
-      else if (data > hoje()) e.data = "Data no futuro";
+      if (!isValidDate(date)) e.date = "Data inválida";
+      else if (date > today()) e.date = "Data no futuro";
 
-      const qtd = parseDecimal(cotas);
-      if (!cotas.trim()) e.cotas = "Informe a quantidade";
-      else if (!Number.isInteger(qtd) || qtd <= 0)
-        e.cotas = "Use um número inteiro maior que 0";
+      const qty = parseDecimal(shares);
+      if (!shares.trim()) e.shares = "Informe a quantidade";
+      else if (!Number.isInteger(qty) || qty <= 0)
+        e.shares = "Use um número inteiro maior que 0";
 
-      const valor = parseDecimal(preco);
-      if (!preco.trim()) e.precoMedio = "Informe o preço";
-      else if (!Number.isFinite(valor) || valor <= 0)
-        e.precoMedio = "Deve ser maior que 0";
+      const amount = parseDecimal(price);
+      if (!price.trim()) e.averagePrice = "Informe o preço";
+      else if (!Number.isFinite(amount) || amount <= 0)
+        e.averagePrice = "Deve ser maior que 0";
     }
     return e;
   }
@@ -96,16 +96,16 @@ export function FiiForm({
     if (Object.keys(e).length > 0) return;
 
     onSubmit({
-      ativo: { ticker: tickerNormalizado, tipo, segmento },
-      compra: initial
+      asset: { ticker: tickerNormalizado, type, segment },
+      buy: initial
         ? undefined
-        : { data, cotas: parseDecimal(cotas), preco: parseDecimal(preco) },
+        : { date, shares: parseDecimal(shares), price: parseDecimal(price) },
     });
 
     if (!initial) {
       setTicker("");
-      setCotas("");
-      setPreco("");
+      setShares("");
+      setPrice("");
     }
   }
 
@@ -116,7 +116,7 @@ export function FiiForm({
           label="Ticker"
           error={errors.ticker}
           hint={
-            !initial && duplicado
+            !initial && duplicate
               ? "Já está na carteira: a compra será somada à posição."
               : undefined
           }
@@ -133,15 +133,15 @@ export function FiiForm({
 
         <Field label="Tipo">
           <div className="grid grid-cols-2 gap-2">
-            {(["tijolo", "papel"] as FiiTipo[]).map((t) => (
+            {(["tijolo", "papel"] as FiiType[]).map((t) => (
               <button
                 key={t}
                 type="button"
-                onClick={() => handleTipo(t)}
-                aria-pressed={tipo === t}
+                onClick={() => handleType(t)}
+                aria-pressed={type === t}
                 className={cn(
                   "rounded-lg border px-3 py-2 text-sm font-medium capitalize transition-colors",
-                  tipo === t
+                  type === t
                     ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                     : "border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800",
                 )}
@@ -156,11 +156,11 @@ export function FiiForm({
       <div className={cn("grid gap-4", !initial && "sm:grid-cols-2")}>
         <Field label="Segmento">
           <Select
-            value={segmento}
-            onChange={(e) => setSegmento(e.target.value as Segmento)}
+            value={segment}
+            onChange={(e) => setSegment(e.target.value as Segment)}
             className="capitalize"
           >
-            {segmentos.map((s) => (
+            {segments.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>
@@ -169,13 +169,13 @@ export function FiiForm({
         </Field>
 
         {!initial && (
-          <Field label="Data da compra" error={errors.data}>
+          <Field label="Data da compra" error={errors.date}>
             <Input
               type="date"
-              value={data}
-              max={hoje()}
-              onChange={(e) => setData(e.target.value)}
-              error={!!errors.data}
+              value={date}
+              max={today()}
+              onChange={(e) => setDate(e.target.value)}
+              error={!!errors.date}
             />
           </Field>
         )}
@@ -183,23 +183,23 @@ export function FiiForm({
 
       {!initial && (
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Qtd. de cotas" error={errors.cotas}>
+          <Field label="Qtd. de cotas" error={errors.shares}>
             <Input
               inputMode="numeric"
-              value={cotas}
-              onChange={(e) => setCotas(e.target.value)}
+              value={shares}
+              onChange={(e) => setShares(e.target.value)}
               placeholder="100"
-              error={!!errors.cotas}
+              error={!!errors.shares}
             />
           </Field>
 
-          <Field label="Preço pago por cota (R$)" error={errors.precoMedio}>
+          <Field label="Preço pago por cota (R$)" error={errors.averagePrice}>
             <Input
               inputMode="decimal"
-              value={preco}
-              onChange={(e) => setPreco(e.target.value)}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
               placeholder="150,00"
-              error={!!errors.precoMedio}
+              error={!!errors.averagePrice}
             />
           </Field>
         </div>

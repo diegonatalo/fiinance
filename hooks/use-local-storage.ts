@@ -1,34 +1,34 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
-const EVENTO = "fiinance:storage";
+const EVENT = "fiinance:storage";
 
 // Fallback em memória para quando o localStorage está bloqueado ou cheio.
-const memoria = new Map<string, string>();
+const memory = new Map<string, string>();
 
-function ler(key: string): string | null {
+function read(key: string): string | null {
   try {
-    return window.localStorage.getItem(key) ?? memoria.get(key) ?? null;
+    return window.localStorage.getItem(key) ?? memory.get(key) ?? null;
   } catch {
-    return memoria.get(key) ?? null;
+    return memory.get(key) ?? null;
   }
 }
 
-function escrever(key: string, valor: string) {
-  memoria.set(key, valor);
+function write(key: string, amount: string) {
+  memory.set(key, amount);
   try {
-    window.localStorage.setItem(key, valor);
+    window.localStorage.setItem(key, amount);
   } catch {
     // storage cheio/desativado: o valor segue válido nesta sessão
   }
-  window.dispatchEvent(new Event(EVENTO));
+  window.dispatchEvent(new Event(EVENT));
 }
 
 function subscribe(callback: () => void) {
   window.addEventListener("storage", callback);
-  window.addEventListener(EVENTO, callback);
+  window.addEventListener(EVENT, callback);
   return () => {
     window.removeEventListener("storage", callback);
-    window.removeEventListener(EVENTO, callback);
+    window.removeEventListener(EVENT, callback);
   };
 }
 
@@ -44,7 +44,7 @@ export function useLocalStorage<T>(
 ) {
   const raw = useSyncExternalStore(
     subscribe,
-    () => ler(key),
+    () => read(key),
     () => null,
   );
 
@@ -60,11 +60,11 @@ export function useLocalStorage<T>(
 
   const setValue = useCallback(
     (next: T | ((prev: T) => T)) => {
-      const atual = ler(key);
+      const current = read(key);
       let prev = initialValue;
-      if (atual !== null) {
+      if (current !== null) {
         try {
-          const parsed: unknown = JSON.parse(atual);
+          const parsed: unknown = JSON.parse(current);
           prev = sanitize ? sanitize(parsed) : (parsed as T);
         } catch {
           // valor corrompido: parte do inicial
@@ -72,7 +72,7 @@ export function useLocalStorage<T>(
       }
       const resolved =
         typeof next === "function" ? (next as (p: T) => T)(prev) : next;
-      escrever(key, JSON.stringify(resolved));
+      write(key, JSON.stringify(resolved));
     },
     [key, initialValue, sanitize],
   );

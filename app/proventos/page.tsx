@@ -1,5 +1,5 @@
-import { ProventosPage } from "./proventos-page";
+import { PayoutsPage } from "./payouts-page";
 
 export default function Page() {
-  return <ProventosPage />;
+  return <PayoutsPage />;
 }

@@ -1,5 +1,5 @@
-import { PainelPage } from "./painel-page";
+import { DashboardPage } from "./dashboard-page";
 
 export default function Page() {
-  return <PainelPage />;
+  return <DashboardPage />;
 }
