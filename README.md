@@ -150,7 +150,7 @@ Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
 
 ```text
 ├── app/          rotas do Next (App Router): layout, páginas, 404, robots e sitemap;
-│                 a tela de cada rota fica ao lado do page.tsx (portfolio-page.tsx…)
+│                 o corpo de cada tela fica em components/ (portfolio-page.tsx…)
 ├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
 ├── lib/          lógica pura: posição, resumo, proventos, metas,
 │                 calculadoras, validação dos dados, exportação, contextos
@@ -178,7 +178,7 @@ Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
 
 ### 🔒 Seus dados
 
-Não há servidor nem conta. Tudo é salvo no `localStorage` do navegador, na chave `fiinance:dados`.
+Não há servidor nem conta. Tudo é salvo no `localStorage` do navegador, na chave `fiinance:data:v1`.
 
 Limpar os dados do navegador apaga a carteira, então use **Carteira → Backup dos dados** de vez em quando.
 Ao ler, o app valida o conteúdo, e um backup corrompido não derruba a tela.

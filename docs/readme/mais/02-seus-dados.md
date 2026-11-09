@@ -1,6 +1,6 @@
 ### 🔒 Seus dados
 
-Não há servidor nem conta. Tudo é salvo no `localStorage` do navegador, na chave `fiinance:dados`.
+Não há servidor nem conta. Tudo é salvo no `localStorage` do navegador, na chave `fiinance:data:v1`.
 
 Limpar os dados do navegador apaga a carteira, então use **Carteira → Backup dos dados** de vez em quando.
 Ao ler, o app valida o conteúdo, e um backup corrompido não derruba a tela.
