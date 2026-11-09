@@ -1,8 +1,8 @@
 Requer [Node.js](https://nodejs.org) e [pnpm](https://pnpm.io).
 
 ```bash
-git clone https://github.com/diegonatalo/FIInance.git
-cd FIInance
+git clone https://github.com/diegonatalo/fiinance.git
+cd fiinance
 pnpm install
 pnpm dev        # http://localhost:3000
 ```

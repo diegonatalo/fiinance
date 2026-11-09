@@ -1,12 +1,12 @@
 <!-- Arquivo gerado pelo readme-kit. Não edite aqui: altere docs/readme/ e rode "readme-kit build". -->
 <div align="center">
 
-<img src="docs/assets/banner.svg" alt="FIInance: Sua carteira de FIIs, sem planilha. github.com/diegonatalo/FIInance. Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4" width="100%" />
+<img src="docs/assets/banner.svg" alt="FIInance: Sua carteira de FIIs, sem planilha. github.com/diegonatalo/fiinance. Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4" width="100%" />
 
 <br />
 
 <a href="https://fiinance1.vercel.app"><img src="docs/assets/btn-demo.svg" alt="Abrir o app ↗" height="46" /></a>
-<a href="https://github.com/diegonatalo/FIInance"><img src="docs/assets/btn-code.svg" alt="Código ↗" height="46" /></a>
+<a href="https://github.com/diegonatalo/fiinance"><img src="docs/assets/btn-code.svg" alt="Código ↗" height="46" /></a>
 
 <br />
 
@@ -119,8 +119,8 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 Requer [Node.js](https://nodejs.org) e [pnpm](https://pnpm.io).
 
 ```bash
-git clone https://github.com/diegonatalo/FIInance.git
-cd FIInance
+git clone https://github.com/diegonatalo/fiinance.git
+cd fiinance
 pnpm install
 pnpm dev        # http://localhost:3000
 ```
