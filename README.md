@@ -151,7 +151,6 @@ No repositório, `.env.production` já aponta para `https://fiinance1.vercel.app
 </div>
 
 ```text
-src/
 ├── app/          rotas do Next (App Router): layout, páginas, 404, robots e sitemap
 ├── models/       tipos do domínio: Ativo, Transacao, Provento, Dados
 ├── lib/          lógica pura, sem React: posição, resumo, proventos, metas,
@@ -175,10 +174,10 @@ src/
 
 ### 🧩 Como adicionar uma página nova
 
-1. Crie `src/views/nome-page.tsx` exportando o componente da tela (com `"use client"` no topo).
-2. Crie a rota em `src/app/nome/page.tsx`, renderizando esse componente.
-3. Inclua o item em `navItems`, no `src/components/app-shell.tsx`, para aparecer no menu.
-4. Adicione o caminho em `ROTAS`, no `src/lib/site.ts`, para entrar no `sitemap.xml`.
+1. Crie `views/nome-page.tsx` exportando o componente da tela (com `"use client"` no topo).
+2. Crie a rota em `app/nome/page.tsx`, renderizando esse componente.
+3. Inclua o item em `navItems`, no `components/app-shell.tsx`, para aparecer no menu.
+4. Adicione o caminho em `ROTAS`, no `lib/site.ts`, para entrar no `sitemap.xml`.
 
 ### 🔒 Seus dados
 

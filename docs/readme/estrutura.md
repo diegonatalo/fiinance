@@ -1,5 +1,4 @@
 ```text
-src/
 ├── app/          rotas do Next (App Router): layout, páginas, 404, robots e sitemap
 ├── models/       tipos do domínio: Ativo, Transacao, Provento, Dados
 ├── lib/          lógica pura, sem React: posição, resumo, proventos, metas,
