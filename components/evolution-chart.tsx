@@ -19,7 +19,7 @@ interface EvolutionChartProps {
   theme: Theme;
 }
 
-export function EvolutionChart({ data, theme }: EvolutionChartProps) {
+export const EvolutionChart = ({ data, theme }: EvolutionChartProps) => {
   const isDark = theme === "dark";
   const axis = isDark ? "#a1a1aa" : "#71717a";
 
@@ -85,4 +85,4 @@ export function EvolutionChart({ data, theme }: EvolutionChartProps) {
       )}
     </Card>
   );
-}
+};

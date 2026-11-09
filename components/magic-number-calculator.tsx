@@ -24,11 +24,11 @@ function toField(n: number) {
   return String(n).replace(".", ",");
 }
 
-export function MagicNumberCalc({
+export const MagicNumberCalc = ({
   assets,
   payouts,
   quotes,
-}: MagicNumberCalcProps) {
+}: MagicNumberCalcProps) => {
   const [assetId, setAssetId] = useState<string>("");
   const [dividend, setDividend] = useState("");
   const [quote, setQuote] = useState("");
@@ -199,4 +199,4 @@ export function MagicNumberCalc({
       </div>
     </Card>
   );
-}
+};

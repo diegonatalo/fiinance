@@ -48,7 +48,7 @@ function buildRow(asset: Fii, quotes: Record<string, Quote>): Row {
   };
 }
 
-function Result({ row }: { row: Row }) {
+const Result = ({ row }: { row: Row }) => {
   if (row.result === undefined || row.resultPct === undefined) {
     return <span className="text-zinc-400 dark:text-zinc-600">—</span>;
   }
@@ -66,9 +66,9 @@ function Result({ row }: { row: Row }) {
       <span className="text-xs">({formatSignedPct(row.resultPct)})</span>
     </span>
   );
-}
+};
 
-function TypeBadge({ asset }: { asset: Fii }) {
+const TypeBadge = ({ asset }: { asset: Fii }) => {
   return (
     <span
       className={
@@ -80,7 +80,7 @@ function TypeBadge({ asset }: { asset: Fii }) {
       {asset.type} · {asset.segment}
     </span>
   );
-}
+};
 
 interface ThProps {
   c: FieldName;
@@ -91,7 +91,7 @@ interface ThProps {
   right?: boolean;
 }
 
-function Th({ c, asset, asc, onSort, children, right }: ThProps) {
+const Th = ({ c, asset, asc, onSort, children, right }: ThProps) => {
   return (
     <th
       className={cn("px-3 py-3 font-medium", right && "text-right")}
@@ -109,16 +109,16 @@ function Th({ c, asset, asc, onSort, children, right }: ThProps) {
       </button>
     </th>
   );
-}
+};
 
-export function FiiTable({
+export const FiiTable = ({
   assets,
   quotes,
   total,
   onEdit,
   onDelete,
   onOperation,
-}: FiiTableProps) {
+}: FiiTableProps) => {
   const [field, setField] = useState<FieldName>("ticker");
   const [asc, setAsc] = useState(true);
   const [filter, setFilter] = useState<Filter>("todos");
@@ -346,4 +346,4 @@ export function FiiTable({
       </div>
     </div>
   );
-}
+};

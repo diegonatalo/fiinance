@@ -24,7 +24,7 @@ interface OperationModalProps {
   onClose: () => void;
 }
 
-export function OperationModal({ asset, initialValues, onClose }: OperationModalProps) {
+export const OperationModal = ({ asset, initialValues, onClose }: OperationModalProps) => {
   return (
     <Modal
       open={!!asset}
@@ -41,7 +41,7 @@ export function OperationModal({ asset, initialValues, onClose }: OperationModal
       )}
     </Modal>
   );
-}
+};
 
 interface OperationFormProps {
   asset: Fii;
@@ -49,7 +49,7 @@ interface OperationFormProps {
   onClose: () => void;
 }
 
-function OperationForm({ asset, initialValues, onClose }: OperationFormProps) {
+const OperationForm = ({ asset, initialValues, onClose }: OperationFormProps) => {
   const { data, recordOperation } = usePortfolioContext();
   const notify = useToast();
   const [type, setType] = useState<OperationType>(initialValues?.type ?? "compra");
@@ -162,4 +162,4 @@ function OperationForm({ asset, initialValues, onClose }: OperationFormProps) {
       </div>
     </form>
   );
-}
+};

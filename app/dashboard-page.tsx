@@ -11,7 +11,7 @@ import { monthOf } from "@/lib/date";
 import { useToday } from "@/hooks/use-today";
 import { summarizePayouts } from "@/lib/payouts";
 
-export function DashboardPage() {
+export const DashboardPage = () => {
   const { theme } = useTheme();
   const today = useToday();
   const { assets, data, summary } = usePortfolioContext();
@@ -41,4 +41,4 @@ export function DashboardPage() {
       </section>
     </>
   );
-}
+};

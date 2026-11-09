@@ -18,7 +18,7 @@ interface PayoutsChartProps {
   theme: Theme;
 }
 
-export function PayoutsChart({ series, theme }: PayoutsChartProps) {
+export const PayoutsChart = ({ series, theme }: PayoutsChartProps) => {
   const isDark = theme === "dark";
   const axis = isDark ? "#a1a1aa" : "#71717a";
 
@@ -68,4 +68,4 @@ export function PayoutsChart({ series, theme }: PayoutsChartProps) {
       </div>
     </Card>
   );
-}
+};

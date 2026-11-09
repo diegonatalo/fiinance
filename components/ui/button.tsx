@@ -19,12 +19,12 @@ const variants: Record<Variant, string> = {
     "text-zinc-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 focus-visible:ring-red-500",
 };
 
-export function Button({
+export const Button = ({
   children,
   variant = "primary",
   className,
   ...props
-}: ButtonProps) {
+}: ButtonProps) => {
   return (
     <button
       className={cn(
@@ -37,4 +37,4 @@ export function Button({
       {children}
     </button>
   );
-}
+};

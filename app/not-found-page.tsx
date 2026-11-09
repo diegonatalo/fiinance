@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CompassIcon } from "@phosphor-icons/react";
 
-export function NotFoundPage() {
+export const NotFoundPage = () => {
   // o servidor só sabe que é uma 404 (não o endereço digitado): lê no navegador
   const pathname = useSyncExternalStore(
     () => () => {},
@@ -37,4 +37,4 @@ export function NotFoundPage() {
       </Link>
     </div>
   );
-}
+};

@@ -21,7 +21,7 @@ interface AveragePriceCalcProps {
   onRecord: (asset: Fii, shares: number, price: number) => void;
 }
 
-export function AveragePriceCalc({ assets, onRecord }: AveragePriceCalcProps) {
+export const AveragePriceCalc = ({ assets, onRecord }: AveragePriceCalcProps) => {
   const [assetId, setAssetId] = useState<string>("");
   const [manualCurrentShares, setManualCurrentShares] = useState("");
   const [manualCurrentPrice, setManualCurrentPrice] = useState("");
@@ -228,4 +228,4 @@ export function AveragePriceCalc({ assets, onRecord }: AveragePriceCalcProps) {
       </div>
     </Card>
   );
-}
+};

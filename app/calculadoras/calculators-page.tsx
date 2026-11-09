@@ -10,7 +10,7 @@ import {
 import { usePortfolioContext } from "@/lib/portfolio-context";
 import type { Fii } from "@/types/fii";
 
-export function CalculatorsPage() {
+export const CalculatorsPage = () => {
   const { assets, data } = usePortfolioContext();
   const [record, setRecord] = useState<{
     asset: Fii;
@@ -39,4 +39,4 @@ export function CalculatorsPage() {
       />
     </>
   );
-}
+};

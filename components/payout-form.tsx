@@ -11,7 +11,7 @@ import { parseDecimal } from "@/lib/numbers";
 import { sharesOn } from "@/lib/position";
 import { PlusIcon } from "@phosphor-icons/react";
 
-export function PayoutForm() {
+export const PayoutForm = () => {
   const { assets, data, addPayout } = usePortfolioContext();
   const notify = useToast();
   const [assetId, setAssetId] = useState("");
@@ -97,4 +97,4 @@ export function PayoutForm() {
       </div>
     </form>
   );
-}
+};

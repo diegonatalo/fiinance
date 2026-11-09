@@ -7,7 +7,7 @@ interface FieldProps {
   children: ReactNode;
 }
 
-export function Field({ label, error, hint, children }: FieldProps) {
+export const Field = ({ label, error, hint, children }: FieldProps) => {
   return (
     <label className="grid gap-1.5">
       <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
@@ -25,4 +25,4 @@ export function Field({ label, error, hint, children }: FieldProps) {
       )}
     </label>
   );
-}
+};

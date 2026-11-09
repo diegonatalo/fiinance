@@ -13,7 +13,7 @@ import { useToday } from "@/hooks/use-today";
 import { payoutTotal, lastMonths } from "@/lib/payouts";
 import { TrashSimpleIcon } from "@phosphor-icons/react";
 
-export function PayoutsPage() {
+export const PayoutsPage = () => {
   const { data, removePayout } = usePortfolioContext();
   const { theme } = useTheme();
   const notify = useToast();
@@ -74,4 +74,4 @@ export function PayoutsPage() {
       )}
     </>
   );
-}
+};

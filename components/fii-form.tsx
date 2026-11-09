@@ -39,12 +39,12 @@ interface FormErrors {
   averagePrice?: string;
 }
 
-export function FiiForm({
+export const FiiForm = ({
   onSubmit,
   initial,
   onCancel,
   tickerInUse,
-}: FiiFormProps) {
+}: FiiFormProps) => {
   const [ticker, setTicker] = useState(initial?.ticker ?? "");
   const [type, setType] = useState<FiiType>(initial?.type ?? "tijolo");
   const [segment, setSegment] = useState<Segment>(
@@ -228,4 +228,4 @@ export function FiiForm({
       </div>
     </form>
   );
-}
+};

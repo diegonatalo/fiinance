@@ -6,7 +6,7 @@ import { cn, formatBRL, formatNumber } from "@/lib/format";
 import { formatDate } from "@/lib/date";
 import { TrashSimpleIcon } from "@phosphor-icons/react";
 
-export function HistoryCard() {
+export const HistoryCard = () => {
   const { data, removeTransaction } = usePortfolioContext();
   const notify = useToast();
   const tickers = new Map(data.assets.map((a) => [a.id, a.ticker]));
@@ -60,4 +60,4 @@ export function HistoryCard() {
       </ul>
     </Card>
   );
-}
+};

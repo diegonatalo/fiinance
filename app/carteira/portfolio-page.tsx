@@ -13,7 +13,7 @@ import { usePortfolioContext } from "@/lib/portfolio-context";
 import { useToast } from "@/lib/toast-context";
 import type { Fii } from "@/types/fii";
 
-export function PortfolioPage() {
+export const PortfolioPage = () => {
   const {
     assets,
     data,
@@ -97,4 +97,4 @@ export function PortfolioPage() {
       <OperationModal asset={currentOperating} onClose={() => setOperating(null)} />
     </>
   );
-}
+};

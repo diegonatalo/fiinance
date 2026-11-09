@@ -17,7 +17,7 @@ function sanitizeToken(raw: unknown): string {
   return typeof raw === "string" ? raw : "";
 }
 
-export function QuotesCard() {
+export const QuotesCard = () => {
   const { assets, data, setQuotes } = usePortfolioContext();
   const notify = useToast();
   const [token, setToken] = useLocalStorage(TOKEN_KEY, "", sanitizeToken);
@@ -129,4 +129,4 @@ export function QuotesCard() {
       )}
     </Card>
   );
-}
+};

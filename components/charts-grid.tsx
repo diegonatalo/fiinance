@@ -12,7 +12,7 @@ interface ChartsGridProps {
   theme: "light" | "dark";
 }
 
-export function ChartsGrid({ assets, theme }: ChartsGridProps) {
+export const ChartsGrid = ({ assets, theme }: ChartsGridProps) => {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <PieChartCard
@@ -37,4 +37,4 @@ export function ChartsGrid({ assets, theme }: ChartsGridProps) {
       />
     </div>
   );
-}
+};

@@ -23,7 +23,7 @@ const COLORS = [
   "#84cc16", // lime-500
 ];
 
-export function PieChartCard({ title, data, theme }: PieChartCardProps) {
+export const PieChartCard = ({ title, data, theme }: PieChartCardProps) => {
   const total = data.reduce((acc, d) => acc + d.amount, 0);
   const isDark = theme === "dark";
 
@@ -103,4 +103,4 @@ export function PieChartCard({ title, data, theme }: PieChartCardProps) {
       )}
     </Card>
   );
-}
+};

@@ -7,7 +7,7 @@ interface ToastState {
   action?: ToastAction;
 }
 
-export function ToastProvider({ children }: { children: ReactNode }) {
+export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [toast, setToast] = useState<ToastState | null>(null);
 
   const notify = useCallback((message: string, action?: ToastAction) => {
@@ -25,4 +25,4 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       />
     </ToastContext>
   );
-}
+};

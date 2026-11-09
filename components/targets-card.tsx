@@ -8,7 +8,7 @@ import { parseDecimal } from "@/lib/numbers";
 import { positionValue } from "@/lib/summary";
 import { TargetIcon } from "@phosphor-icons/react";
 
-function Bar({
+const Bar = ({
   name,
   current,
   target,
@@ -16,7 +16,7 @@ function Bar({
   name: string;
   current: number;
   target: number | null;
-}) {
+}) => {
   return (
     <div className="grid gap-1">
       <div className="flex justify-between text-xs">
@@ -43,9 +43,9 @@ function Bar({
       </div>
     </div>
   );
-}
+};
 
-export function TargetsCard() {
+export const TargetsCard = () => {
   const { assets, data, setPaperTarget } = usePortfolioContext();
   const [draft, setDraft] = useState<string | null>(null);
 
@@ -122,4 +122,4 @@ export function TargetsCard() {
       </div>
     </Card>
   );
-}
+};

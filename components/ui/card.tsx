@@ -6,7 +6,7 @@ interface CardProps {
   className?: string;
 }
 
-export function Card({ children, className }: CardProps) {
+export const Card = ({ children, className }: CardProps) => {
   return (
     <div
       className={cn(
@@ -17,9 +17,9 @@ export function Card({ children, className }: CardProps) {
       {children}
     </div>
   );
-}
+};
 
-export function CardTitle({ children, className }: CardProps) {
+export const CardTitle = ({ children, className }: CardProps) => {
   return (
     <h2
       className={cn(
@@ -30,4 +30,4 @@ export function CardTitle({ children, className }: CardProps) {
       {children}
     </h2>
   );
-}
+};

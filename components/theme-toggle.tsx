@@ -6,7 +6,7 @@ interface ThemeToggleProps {
   onToggle: () => void;
 }
 
-export function ThemeToggle({ theme, onToggle }: ThemeToggleProps) {
+export const ThemeToggle = ({ theme, onToggle }: ThemeToggleProps) => {
   return (
     <button
       onClick={onToggle}
@@ -16,4 +16,4 @@ export function ThemeToggle({ theme, onToggle }: ThemeToggleProps) {
       {theme === "dark" ? <SunIcon size={18} /> : <MoonIcon size={18} />}
     </button>
   );
-}
+};

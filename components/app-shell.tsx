@@ -14,7 +14,7 @@ const navItems = [
   { to: "/calculadoras", label: "Calculadoras", end: false },
 ];
 
-export function AppShell({ children }: { children: ReactNode }) {
+export const AppShell = ({ children }: { children: ReactNode }) => {
   const { theme, toggle } = useTheme();
   const pathname = usePathname() ?? "";
 
@@ -64,4 +64,4 @@ export function AppShell({ children }: { children: ReactNode }) {
       </main>
     </div>
   );
-}
+};

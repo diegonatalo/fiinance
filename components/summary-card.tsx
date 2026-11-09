@@ -25,7 +25,7 @@ interface Item {
   highlight?: boolean;
 }
 
-export function SummaryCards({ summary, payouts }: SummaryCardsProps) {
+export const SummaryCards = ({ summary, payouts }: SummaryCardsProps) => {
   const items: Item[] = [
     {
       label: "Total investido",
@@ -106,4 +106,4 @@ export function SummaryCards({ summary, payouts }: SummaryCardsProps) {
       ))}
     </div>
   );
-}
+};

@@ -15,7 +15,7 @@ import {
   UploadSimpleIcon,
 } from "@phosphor-icons/react";
 
-export function BackupCard() {
+export const BackupCard = () => {
   const { data, importData } = usePortfolioContext();
   const notify = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -81,4 +81,4 @@ export function BackupCard() {
       </div>
     </Card>
   );
-}
+};

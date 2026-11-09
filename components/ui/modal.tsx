@@ -11,7 +11,7 @@ interface ModalProps {
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export function Modal({ open, title, onClose, children }: ModalProps) {
+export const Modal = ({ open, title, onClose, children }: ModalProps) => {
   const dashboard = useRef<HTMLDivElement>(null);
   const close = useEffectEvent(onClose);
 
@@ -83,4 +83,4 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
       </div>
     </div>
   );
-}
+};

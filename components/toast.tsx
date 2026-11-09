@@ -8,7 +8,7 @@ interface ToastProps {
   onDone: () => void;
 }
 
-export function Toast({ message, action, onDone }: ToastProps) {
+export const Toast = ({ message, action, onDone }: ToastProps) => {
   useEffect(() => {
     if (!message) return;
     const t = setTimeout(onDone, action ? 6000 : 2400);
@@ -37,4 +37,4 @@ export function Toast({ message, action, onDone }: ToastProps) {
       )}
     </div>
   );
-}
+};

@@ -14,14 +14,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
 }
 
-export function Input({ error, className, ...props }: InputProps) {
+export const Input = ({ error, className, ...props }: InputProps) => {
   return <input className={cn(base, border(error), className)} {...props} />;
-}
+};
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   error?: boolean;
 }
 
-export function Select({ error, className, ...props }: SelectProps) {
+export const Select = ({ error, className, ...props }: SelectProps) => {
   return <select className={cn(base, border(error), className)} {...props} />;
-}
+};
