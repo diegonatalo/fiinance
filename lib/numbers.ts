@@ -14,7 +14,7 @@ export function parseDecimal(text: string): number {
 }
 
 /** Como `parseDecimal`, mas devolve 0 quando inválido (útil para campos opcionais). */
-export function parseDecimalOuZero(text: string): number {
+export function parseDecimalOrZero(text: string): number {
   const n = parseDecimal(text);
   return Number.isFinite(n) ? n : 0;
 }

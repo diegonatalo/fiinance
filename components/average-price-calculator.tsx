@@ -6,7 +6,7 @@ import { Input, Select } from "./ui/input";
 import { cn } from "@/lib/cn";
 import { formatBRL, formatNumber, formatSignedPct } from "@/lib/format";
 import { simulateAveragePrice } from "@/lib/average-price";
-import { parseDecimal, parseDecimalOuZero } from "@/lib/numbers";
+import { parseDecimal, parseDecimalOrZero } from "@/lib/numbers";
 import type { Fii } from "@/types/fii";
 import {
   ArrowRightIcon,
@@ -33,10 +33,10 @@ export const AveragePriceCalc = ({ assets, onRecord }: AveragePriceCalcProps) =>
 
   const currentShares = selectedAsset
     ? selectedAsset.shares
-    : parseDecimalOuZero(manualCurrentShares);
+    : parseDecimalOrZero(manualCurrentShares);
   const currentPrice = selectedAsset
     ? selectedAsset.averagePrice
-    : parseDecimalOuZero(manualCurrentPrice);
+    : parseDecimalOrZero(manualCurrentPrice);
 
   const newQty = parseDecimal(newShares);
   const newP = parseDecimal(newPrice);

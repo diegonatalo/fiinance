@@ -5,7 +5,7 @@ import { Input, Select } from "./ui/input";
 import { cn } from "@/lib/cn";
 import { formatBRL, formatNumber } from "@/lib/format";
 import { calculateMagicNumber } from "@/lib/magic-number";
-import { parseDecimal, parseDecimalOuZero } from "@/lib/numbers";
+import { parseDecimal, parseDecimalOrZero } from "@/lib/numbers";
 import type { Quote, Fii, Payout } from "@/types/fii";
 import { SparkleIcon, TargetIcon, TrendUpIcon } from "@phosphor-icons/react";
 
@@ -38,7 +38,7 @@ export const MagicNumberCalc = ({
   const selectedAsset = assets.find((a) => a.id === assetId) ?? null;
   const currentShares = selectedAsset
     ? selectedAsset.shares
-    : parseDecimalOuZero(manualShares);
+    : parseDecimalOrZero(manualShares);
 
   const result = calculateMagicNumber(
     parseDecimal(dividend),
