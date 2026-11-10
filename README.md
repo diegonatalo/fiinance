@@ -140,6 +140,16 @@ Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
 |---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | URL pública do site, sem barra final. | Usa `https://fiinance1.vercel.app` (valor padrão em `lib/site.ts`). |
 
+### 🧪 Testes
+
+```bash
+pnpm test
+```
+
+Usa [Vitest](https://vitest.dev). Os testes cobrem os cálculos da carteira (preço médio, número mágico, alocação, sugestão de aporte, proventos), a validação e a exportação dos dados, a formatação de números e datas e a busca de cotações.
+
+Para reexecutar ao salvar: `pnpm test:watch`.
+
 <br />
 
 <div align="center">
@@ -212,7 +222,7 @@ o `robots.txt` e as URLs absolutas de `og:image` e `twitter:image` usadas nos pr
 
 ### 🧭 Próximos passos
 
-- [ ] Testes automatizados e CI, que ainda não existem.
+- [ ] CI rodando lint, tipos e testes a cada push.
 - [ ] Importar cotações e proventos sem token, o que pede um proxy próprio por causa do CORS.
 - [ ] Lucro realizado e imposto de renda sobre vendas.
 - [ ] Paginação do histórico de operações e de proventos, que cresce com o tempo.
