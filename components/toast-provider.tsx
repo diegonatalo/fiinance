@@ -1,6 +1,6 @@
 import { useCallback, useState, type ReactNode } from "react";
 import { Toast } from "./toast";
-import { ToastContext, type ToastAction } from "@/lib/toast-context";
+import { ToastContext, type ToastAction } from "@/hooks/use-toast";
 
 type ToastState = {
   message: string;

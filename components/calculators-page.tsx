@@ -7,7 +7,7 @@ import {
   OperationModal,
   type InitialOperation,
 } from "@/components/operation-modal";
-import { usePortfolioContext } from "@/lib/portfolio-context";
+import { usePortfolioContext } from "@/hooks/use-portfolio-context";
 import type { Fii } from "@/types/fii";
 
 export const CalculatorsPage = () => {

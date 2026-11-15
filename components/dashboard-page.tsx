@@ -5,7 +5,7 @@ import { SummaryCards } from "@/components/summary-card";
 import { ChartsGrid } from "@/components/charts-grid";
 import { TargetsCard } from "@/components/targets-card";
 import { EvolutionChart } from "@/components/evolution-chart";
-import { usePortfolioContext } from "@/lib/portfolio-context";
+import { usePortfolioContext } from "@/hooks/use-portfolio-context";
 import { contributionsEvolution } from "@/lib/evolution";
 import { monthOf } from "@/lib/date";
 import { useToday } from "@/hooks/use-today";
