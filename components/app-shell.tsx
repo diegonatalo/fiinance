@@ -4,19 +4,28 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/hooks/use-theme";
+import { cn } from "@/lib/cn";
 import { ThemeToggle } from "./theme-toggle";
-import { BuildingsIcon } from "@phosphor-icons/react";
+import {
+  BuildingsIcon,
+  CalculatorIcon,
+  CoinsIcon,
+  SquaresFourIcon,
+  WalletIcon,
+} from "@phosphor-icons/react";
 
 const navItems = [
-  { to: "/", label: "Painel", end: true },
-  { to: "/carteira", label: "Carteira", end: false },
-  { to: "/proventos", label: "Proventos", end: false },
-  { to: "/calculadoras", label: "Calculadoras", end: false },
+  { to: "/", label: "Painel", end: true, icon: SquaresFourIcon },
+  { to: "/carteira", label: "Carteira", end: false, icon: WalletIcon },
+  { to: "/proventos", label: "Proventos", end: false, icon: CoinsIcon },
+  { to: "/calculadoras", label: "Calculadoras", end: false, icon: CalculatorIcon },
 ];
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const { theme, toggle } = useTheme();
   const pathname = usePathname() ?? "";
+  const isActive = (item: (typeof navItems)[number]) =>
+    item.end ? pathname === item.to : pathname.startsWith(item.to);
 
   return (
     <div className="min-h-full bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
@@ -37,31 +46,57 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
           </div>
           <ThemeToggle theme={theme} onToggle={toggle} />
         </div>
-        <nav className="mx-auto flex max-w-5xl gap-1 overflow-x-auto px-4">
-          {navItems.map((item) => {
-            const isActive = item.end
-              ? pathname === item.to
-              : pathname.startsWith(item.to);
-            return (
-              <Link
-                key={item.to}
-                href={item.to}
-                className={`-mb-px border-b-2 px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "border-emerald-500 text-emerald-600 dark:text-emerald-400"
-                    : "border-transparent text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+        <nav aria-label="Principal" className="mx-auto hidden max-w-5xl gap-1 px-4 md:flex">
+          {navItems.map((item) => (
+            <Link
+              key={item.to}
+              href={item.to}
+              aria-current={isActive(item) ? "page" : undefined}
+              className={cn(
+                "-mb-px border-b-2 px-3 py-2.5 text-sm font-medium transition-colors",
+                isActive(item)
+                  ? "border-emerald-500 text-emerald-600 dark:text-emerald-400"
+                  : "border-transparent text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100",
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
       </header>
 
-      <main className="mx-auto grid max-w-5xl grid-cols-1 gap-6 px-4 py-6 *:min-w-0">
+      <main className="mx-auto grid max-w-5xl grid-cols-1 gap-6 px-4 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] *:min-w-0 md:pb-6">
         {children}
       </main>
+
+      <nav
+        aria-label="Principal"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200 bg-zinc-50/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-zinc-800 dark:bg-zinc-950/90"
+      >
+        <ul className="grid grid-cols-4">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(item);
+            return (
+              <li key={item.to}>
+                <Link
+                  href={item.to}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500",
+                    active
+                      ? "text-emerald-600 dark:text-emerald-400"
+                      : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100",
+                  )}
+                >
+                  <Icon size={22} weight={active ? "fill" : "regular"} aria-hidden />
+                  {item.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     </div>
   );
 };

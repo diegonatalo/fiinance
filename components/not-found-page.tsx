@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonClasses } from "@/components/ui/button";
 import { CompassIcon } from "@phosphor-icons/react";
 
 export const NotFoundPage = () => {
@@ -32,8 +32,8 @@ export const NotFoundPage = () => {
           </p>
         )}
       </div>
-      <Link href="/" tabIndex={-1}>
-        <Button>Voltar ao painel</Button>
+      <Link href="/" className={buttonClasses()}>
+        Voltar ao painel
       </Link>
     </div>
   );
