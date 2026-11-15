@@ -19,6 +19,14 @@ const variants: Record<Variant, string> = {
     "text-zinc-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 focus-visible:ring-red-500",
 };
 
+/** Classes do botão, também usadas em links com aparência de botão. */
+export const buttonClasses = (variant: Variant = "primary", className?: string) =>
+  cn(
+    "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-offset-zinc-900",
+    variants[variant],
+    className,
+  );
+
 export const Button = ({
   children,
   variant = "primary",
@@ -26,14 +34,7 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   return (
-    <button
-      className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-offset-zinc-900",
-        variants[variant],
-        className,
-      )}
-      {...props}
-    >
+    <button className={buttonClasses(variant, className)} {...props}>
       {children}
     </button>
   );

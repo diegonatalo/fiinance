@@ -20,7 +20,7 @@ export const Toast = ({ message, action, onDone }: ToastProps) => {
   return (
     <div
       role="status"
-      className="fixed bottom-4 left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-3 rounded-lg border border-emerald-500/30 bg-white px-4 py-2.5 text-sm font-medium text-zinc-900 shadow-lg dark:bg-zinc-900 dark:text-zinc-50"
+      className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] md:bottom-4 left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-3 rounded-lg border border-emerald-500/30 bg-white px-4 py-2.5 text-sm font-medium text-zinc-900 shadow-lg dark:bg-zinc-900 dark:text-zinc-50"
     >
       <CheckCircleIcon size={18} className="shrink-0 text-emerald-500" />
       <span>{message}</span>
