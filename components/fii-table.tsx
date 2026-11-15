@@ -21,8 +21,8 @@ type FiiTableProps = {
   onOperation: (fii: Fii) => void;
 };
 
-type FieldName = "ticker" | "investido" | "resultado";
-type Filter = "todos" | FiiType;
+type FieldName = "ticker" | "invested" | "result";
+type Filter = "all" | FiiType;
 
 type Row = {
   asset: Fii;
@@ -122,7 +122,7 @@ export const FiiTable = ({
 }: FiiTableProps) => {
   const [field, setField] = useState<FieldName>("ticker");
   const [asc, setAsc] = useState(true);
-  const [filter, setFilter] = useState<Filter>("todos");
+  const [filter, setFilter] = useState<Filter>("all");
 
   if (assets.length === 0) {
     return (
@@ -143,12 +143,12 @@ export const FiiTable = ({
   }
 
   const rows = assets
-    .filter((a) => filter === "todos" || a.type === filter)
+    .filter((a) => filter === "all" || a.type === filter)
     .map((a) => buildRow(a, quotes))
     .toSorted((x, y) => {
       const direction = asc ? 1 : -1;
       if (field === "ticker") return x.asset.ticker.localeCompare(y.asset.ticker) * direction;
-      if (field === "investido") return (x.invested - y.invested) * direction;
+      if (field === "invested") return (x.invested - y.invested) * direction;
       // sem cotação vai sempre para o fim
       if (x.resultPct === undefined) return 1;
       if (y.resultPct === undefined) return -1;
@@ -196,7 +196,7 @@ export const FiiTable = ({
   return (
     <div className="grid gap-3">
       <div className="flex gap-1.5" role="group" aria-label="Filtrar por tipo">
-        {(["todos", "tijolo", "papel"] as Filter[]).map((f) => (
+        {(["all", "tijolo", "papel"] as Filter[]).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
@@ -208,7 +208,7 @@ export const FiiTable = ({
                 : "border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800",
             )}
           >
-            {f}
+            {f === "all" ? "todos" : f}
           </button>
         ))}
       </div>
@@ -279,10 +279,10 @@ export const FiiTable = ({
               <th className="px-3 py-3 text-right font-medium uppercase tracking-wide">
                 Cotação
               </th>
-              <Th c="investido" asset={field} asc={asc} onSort={sort} right>
+              <Th c="invested" asset={field} asc={asc} onSort={sort} right>
                 Investido
               </Th>
-              <Th c="resultado" asset={field} asc={asc} onSort={sort} right>
+              <Th c="result" asset={field} asc={asc} onSort={sort} right>
                 Resultado
               </Th>
               <th className="px-3 py-3 text-right font-medium uppercase tracking-wide">
