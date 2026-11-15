@@ -84,25 +84,25 @@ const TypeBadge = ({ asset }: { asset: Fii }) => {
 };
 
 type ThProps = {
-  c: FieldName;
-  asset: FieldName;
+  column: FieldName;
+  sortField: FieldName;
   asc: boolean;
   onSort: (c: FieldName) => void;
   children: string;
   right?: boolean;
 };
 
-const Th = ({ c, asset, asc, onSort, children, right }: ThProps) => {
+const Th = ({ column, sortField, asc, onSort, children, right }: ThProps) => {
   return (
     <th
       className={cn("px-3 py-3 font-medium", right && "text-right")}
-      aria-sort={asset === c ? (asc ? "ascending" : "descending") : "none"}
+      aria-sort={sortField === column ? (asc ? "ascending" : "descending") : "none"}
     >
       <button
-        onClick={() => onSort(c)}
+        onClick={() => onSort(column)}
         className={cn(
           "inline-flex items-center gap-1 uppercase tracking-wide outline-none hover:text-zinc-900 focus-visible:text-zinc-900 dark:hover:text-zinc-100 dark:focus-visible:text-zinc-100",
-          asset === c && "text-zinc-900 dark:text-zinc-100",
+          sortField === column && "text-zinc-900 dark:text-zinc-100",
         )}
       >
         {children}
@@ -269,7 +269,7 @@ export const FiiTable = ({
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-zinc-200 text-left text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-              <Th c="ticker" asset={field} asc={asc} onSort={sort}>Ativo</Th>
+              <Th column="ticker" sortField={field} asc={asc} onSort={sort}>Ativo</Th>
               <th className="px-3 py-3 text-right font-medium uppercase tracking-wide">
                 Cotas
               </th>
@@ -279,10 +279,10 @@ export const FiiTable = ({
               <th className="px-3 py-3 text-right font-medium uppercase tracking-wide">
                 Cotação
               </th>
-              <Th c="invested" asset={field} asc={asc} onSort={sort} right>
+              <Th column="invested" sortField={field} asc={asc} onSort={sort} right>
                 Investido
               </Th>
-              <Th c="result" asset={field} asc={asc} onSort={sort} right>
+              <Th column="result" sortField={field} asc={asc} onSort={sort} right>
                 Resultado
               </Th>
               <th className="px-3 py-3 text-right font-medium uppercase tracking-wide">

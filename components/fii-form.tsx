@@ -58,9 +58,9 @@ export const FiiForm = ({
   const [errors, setErrors] = useState<FormErrors>({});
 
   const segments = type === "papel" ? PAPER_SEGMENTS : BRICK_SEGMENTS;
-  const tickerNormalizado = ticker.trim().toUpperCase();
-  const duplicate = tickerNormalizado
-    ? tickerInUse(tickerNormalizado, initial?.id)
+  const normalizedTicker = ticker.trim().toUpperCase();
+  const duplicate = normalizedTicker
+    ? tickerInUse(normalizedTicker, initial?.id)
     : undefined;
 
   function handleType(fresh: FiiType) {
@@ -70,8 +70,8 @@ export const FiiForm = ({
 
   function validate(): FormErrors {
     const e: FormErrors = {};
-    if (!tickerNormalizado) e.ticker = "Informe o ticker";
-    else if (!TICKER_REGEX.test(tickerNormalizado))
+    if (!normalizedTicker) e.ticker = "Informe o ticker";
+    else if (!TICKER_REGEX.test(normalizedTicker))
       e.ticker = "Formato inválido (ex.: HGLG11)";
     else if (initial && duplicate) e.ticker = "Ticker já cadastrado";
 
@@ -99,7 +99,7 @@ export const FiiForm = ({
     if (Object.keys(e).length > 0) return;
 
     onSubmit({
-      asset: { ticker: tickerNormalizado, type, segment },
+      asset: { ticker: normalizedTicker, type, segment },
       buy: initial
         ? undefined
         : { date, shares: parseDecimal(shares), price: parseDecimal(price) },
