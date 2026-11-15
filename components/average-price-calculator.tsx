@@ -51,7 +51,7 @@ export const AveragePriceCalc = ({ assets, onRecord }: AveragePriceCalcProps) =>
   }
 
   // baixou o preço médio = bom (verde), subiu = laranja
-  const downloaded = result ? result.variation <= 0 : false;
+  const lowered = result ? result.variation <= 0 : false;
   const canRecord =
     !!selectedAsset && !!result && Number.isInteger(newQty);
 
@@ -173,17 +173,17 @@ export const AveragePriceCalc = ({ assets, onRecord }: AveragePriceCalcProps) =>
               <div
                 className={cn(
                   "flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium",
-                  downloaded
+                  lowered
                     ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                     : "bg-orange-500/10 text-orange-600 dark:text-orange-400",
                 )}
               >
-                {downloaded ? (
+                {lowered ? (
                   <TrendDownIcon size={16} />
                 ) : (
                   <TrendUpIcon size={16} />
                 )}
-                Preço médio {downloaded ? "cai" : "sobe"}{" "}
+                Preço médio {lowered ? "cai" : "sobe"}{" "}
                 {formatBRL(Math.abs(result.variation))} (
                 {formatSignedPct(result.variationPct)})
               </div>

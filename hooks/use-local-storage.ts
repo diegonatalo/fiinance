@@ -3,22 +3,28 @@ import { useCallback, useMemo, useSyncExternalStore } from "react";
 const EVENT = "fiinance:storage";
 
 // Fallback em memória para quando o localStorage está bloqueado ou cheio.
+// Só vale para as chaves cuja gravação falhou (ou com o storage inacessível):
+// nos outros casos o localStorage é a fonte, inclusive quando a chave some.
 const memory = new Map<string, string>();
+const failed = new Set<string>();
 
 function read(key: string): string | null {
+  if (failed.has(key)) return memory.get(key) ?? null;
   try {
-    return window.localStorage.getItem(key) ?? memory.get(key) ?? null;
+    return window.localStorage.getItem(key);
   } catch {
     return memory.get(key) ?? null;
   }
 }
 
-function write(key: string, amount: string) {
-  memory.set(key, amount);
+function write(key: string, value: string) {
+  memory.set(key, value);
   try {
-    window.localStorage.setItem(key, amount);
+    window.localStorage.setItem(key, value);
+    failed.delete(key);
   } catch {
     // storage cheio/desativado: o valor segue válido nesta sessão
+    failed.add(key);
   }
   window.dispatchEvent(new Event(EVENT));
 }

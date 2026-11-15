@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
-import { usePortfolioContext } from "@/lib/portfolio-context";
+import { usePortfolioContext } from "@/hooks/use-portfolio-context";
 import { formatBRL, formatPct } from "@/lib/format";
 import { currentAllocation, suggestContribution } from "@/lib/targets";
 import { parseDecimal } from "@/lib/numbers";

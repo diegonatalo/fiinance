@@ -9,8 +9,8 @@ import { HistoryCard } from "@/components/history-card";
 import { BackupCard } from "@/components/backup-card";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
-import { usePortfolioContext } from "@/lib/portfolio-context";
-import { useToast } from "@/lib/toast-context";
+import { usePortfolioContext } from "@/hooks/use-portfolio-context";
+import { useToast } from "@/hooks/use-toast";
 import type { Fii } from "@/types/fii";
 
 export const PortfolioPage = () => {
