@@ -1,14 +1,5 @@
 import type { AppData } from "@/types/fii";
 
-export function downloadFile(name: string, content: string, type: string) {
-  const url = URL.createObjectURL(new Blob([content], { type }));
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 export function dataToJson(data: AppData): string {
   return JSON.stringify(data, null, 2);
 }
