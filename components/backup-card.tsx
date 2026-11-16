@@ -3,8 +3,8 @@ import { Card, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { usePortfolioContext } from "@/hooks/use-portfolio-context";
 import { useToast } from "@/hooks/use-toast";
+import { useDownload } from "@/hooks/use-download";
 import {
-  downloadFile,
   dataToJson,
   transactionsToCsv,
 } from "@/lib/export-data";
@@ -17,6 +17,7 @@ import {
 
 export const BackupCard = () => {
   const { data, importData } = usePortfolioContext();
+  const downloadFile = useDownload();
   const notify = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
 
