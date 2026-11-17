@@ -7,6 +7,7 @@ import { PayoutsChart } from "@/components/payouts-chart";
 import { usePortfolioContext } from "@/hooks/use-portfolio-context";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/hooks/use-theme";
+import { THEME_KEY } from "@/lib/storage-keys";
 import { formatBRL, formatNumber } from "@/lib/format";
 import { formatDate, monthOf } from "@/lib/date";
 import { useToday } from "@/hooks/use-today";
@@ -15,7 +16,7 @@ import { TrashSimpleIcon } from "@phosphor-icons/react";
 
 export const PayoutsPage = () => {
   const { data, removePayout } = usePortfolioContext();
-  const { theme } = useTheme();
+  const { theme } = useTheme(THEME_KEY);
   const notify = useToast();
   const today = useToday();
 

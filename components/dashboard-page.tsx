@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "@/hooks/use-theme";
+import { THEME_KEY } from "@/lib/storage-keys";
 import { SummaryCards } from "@/components/summary-card";
 import { ChartsGrid } from "@/components/charts-grid";
 import { TargetsCard } from "@/components/targets-card";
@@ -12,7 +13,7 @@ import { useToday } from "@/hooks/use-today";
 import { summarizePayouts } from "@/lib/payouts";
 
 export const DashboardPage = () => {
-  const { theme } = useTheme();
+  const { theme } = useTheme(THEME_KEY);
   const today = useToday();
   const { assets, data, summary } = usePortfolioContext();
   const payouts = summarizePayouts(

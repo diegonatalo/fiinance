@@ -11,7 +11,7 @@ import { Card, CardTitle } from "./ui/card";
 import { formatBRL } from "@/lib/format";
 import { formatMonth } from "@/lib/date";
 import type { PayoutMonth } from "@/lib/payouts";
-import type { Theme } from "@/hooks/use-theme";
+import type { Theme } from "@/lib/theme";
 
 type PayoutsChartProps = {
   series: PayoutMonth[];
