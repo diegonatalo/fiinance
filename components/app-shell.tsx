@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/hooks/use-theme";
+import { THEME_KEY } from "@/lib/storage-keys";
 import { cn } from "@/lib/cn";
 import { ThemeToggle } from "./theme-toggle";
 import {
@@ -22,7 +23,7 @@ const navItems = [
 ];
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
-  const { theme, toggle } = useTheme();
+  const { theme, toggle } = useTheme(THEME_KEY);
   const pathname = usePathname() ?? "";
   const isActive = (item: (typeof navItems)[number]) =>
     item.end ? pathname === item.to : pathname.startsWith(item.to);

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useLocalStorage } from "./use-local-storage";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { EMPTY_DATA, sanitizeData, sanitizeOrEmpty } from "@/lib/data";
 import { DATA_KEY } from "@/lib/storage-keys";
 import { uid } from "@/lib/id";

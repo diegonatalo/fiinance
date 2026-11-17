@@ -11,7 +11,7 @@ import { Card, CardTitle } from "./ui/card";
 import { formatBRL } from "@/lib/format";
 import { formatMonth } from "@/lib/date";
 import type { EvolutionPoint } from "@/lib/evolution";
-import type { Theme } from "@/hooks/use-theme";
+import type { Theme } from "@/lib/theme";
 import { ChartLineIcon } from "@phosphor-icons/react";
 
 type EvolutionChartProps = {

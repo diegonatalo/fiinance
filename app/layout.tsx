@@ -5,6 +5,8 @@ import "./globals.css";
 import { AppShell } from "@/components/app-shell";
 import { Providers } from "@/components/providers";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+import { THEME_KEY } from "@/lib/storage-keys";
+import { themeScript } from "@/lib/theme";
 
 const inter = Inter({ subsets: ["latin"], variable: "--nf-inter", display: "swap" });
 
@@ -40,16 +42,6 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#10b981" };
 
-// aplica o tema antes do primeiro paint, evitando flash de tema errado
-const THEME_BEFORE_PAINT = `
-try {
-  var t = JSON.parse(
-    localStorage.getItem("fiinance:theme:v1") || "null",
-  );
-  var dark = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-  document.documentElement.classList.toggle("dark", dark);
-} catch (e) {}
-`;
 
 export default function RootLayout({
   children,
@@ -59,7 +51,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={inter.variable} suppressHydrationWarning>
       <body>
         <Script id="tema" strategy="beforeInteractive">
-          {THEME_BEFORE_PAINT}
+          {themeScript(THEME_KEY)}
         </Script>
         <Providers>
           <AppShell>{children}</AppShell>

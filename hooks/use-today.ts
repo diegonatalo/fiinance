@@ -1,12 +1,21 @@
 import { useSyncExternalStore } from "react";
-import { today } from "@/lib/date";
 
-const subscribe = () => () => {};
+const pad = (value: number) => String(value).padStart(2, "0");
+
+const todayKey = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+};
+
+const subscribe = (onChange: () => void) => {
+  // O dia pode virar com o app aberto.
+  const id = window.setInterval(onChange, 60_000);
+  return () => window.clearInterval(id);
+};
 
 /**
- * Data de hoje (yyyy-mm-dd) para usar na renderização. No servidor e na hidratação
- * vale "" (a data só existe no navegador); depois da hidratação vira a data local.
+ * Data local de hoje no formato "AAAA-MM-DD". Vazia no servidor e na
+ * hidratação: a data só é calculada no navegador (sem `new Date()` no render).
  */
-export function useToday(): string {
-  return useSyncExternalStore(subscribe, today, () => "");
-}
+export const useToday = (): string =>
+  useSyncExternalStore(subscribe, todayKey, () => "");

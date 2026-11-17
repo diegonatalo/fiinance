@@ -1,47 +1,87 @@
-import { useEffect, useSyncExternalStore } from "react";
-import { useLocalStorage } from "./use-local-storage";
-import { THEME_KEY } from "@/lib/storage-keys";
+import { useCallback, useSyncExternalStore } from "react";
+import {
+  DARK_QUERY,
+  parseTheme,
+  type Theme,
+  type ThemeColors,
+} from "@/lib/theme";
 
-export type Theme = "light" | "dark";
+const CHANGE_EVENT = "theme:change";
 
-function sanitizeTheme(raw: unknown): Theme | null {
-  return raw === "dark" || raw === "light" ? raw : null;
-}
+const readChoice = (key: string): Theme | null => {
+  try {
+    return parseTheme(localStorage.getItem(key));
+  } catch {
+    return null;
+  }
+};
 
-const DARK_QUERY = "(prefers-color-scheme: dark)";
+const systemTheme = (): Theme =>
+  window.matchMedia(DARK_QUERY).matches ? "dark" : "light";
 
-function observeSystem(onChange: () => void) {
-  const query = window.matchMedia(DARK_QUERY);
-  query.addEventListener("change", onChange);
-  return () => query.removeEventListener("change", onChange);
-}
+const applyTheme = (theme: Theme, colors?: ThemeColors) => {
+  document.documentElement.classList.toggle("dark", theme === "dark");
+  if (colors) {
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", colors[theme]);
+  }
+};
 
-/** No servidor não há janela: assume claro e o navegador corrige ao hidratar. */
-function useSystemTheme(): Theme {
-  const dark = useSyncExternalStore(
-    observeSystem,
-    () => window.matchMedia(DARK_QUERY).matches,
-    () => false,
+/** Tema em uso: a classe `dark` do `<html>`, aplicada antes da pintura por `themeScript`. */
+const getSnapshot = (): Theme =>
+  document.documentElement.classList.contains("dark") ? "dark" : "light";
+
+// No servidor não há tema; o navegador corrige logo após a hidratação.
+const getServerSnapshot = (): Theme => "light";
+
+/**
+ * Tema claro/escuro. Só grava em `key` quando o usuário escolhe; sem escolha,
+ * acompanha o sistema. Sincroniza entre componentes e abas.
+ * `colors` deve ser uma constante de módulo.
+ */
+export const useTheme = (key: string, colors?: ThemeColors) => {
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      const media = window.matchMedia(DARK_QUERY);
+      const sync = () => {
+        applyTheme(readChoice(key) ?? systemTheme(), colors);
+        onChange();
+      };
+      const onStorage = (event: StorageEvent) => {
+        if (event.key === key || event.key === null) sync();
+      };
+      media.addEventListener("change", sync);
+      window.addEventListener("storage", onStorage);
+      window.addEventListener(CHANGE_EVENT, onChange);
+      return () => {
+        media.removeEventListener("change", sync);
+        window.removeEventListener("storage", onStorage);
+        window.removeEventListener(CHANGE_EVENT, onChange);
+      };
+    },
+    [key, colors],
   );
-  return dark ? "dark" : "light";
-}
 
-export function useTheme() {
-  const [stored, setTheme] = useLocalStorage<Theme | null>(
-    THEME_KEY,
-    null,
-    sanitizeTheme,
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  const setTheme = useCallback(
+    (next: Theme) => {
+      applyTheme(next, colors);
+      try {
+        localStorage.setItem(key, next);
+      } catch {
+        // Armazenamento bloqueado: o tema vale só nesta visita.
+      }
+      window.dispatchEvent(new Event(CHANGE_EVENT));
+    },
+    [key, colors],
   );
-  const system = useSystemTheme();
-  const theme = stored ?? system;
 
-  // O script inline do layout aplica a classe antes do primeiro paint;
-  // aqui só mantemos sincronizado quando o usuário alterna.
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme]);
+  const toggle = useCallback(
+    () => setTheme(getSnapshot() === "dark" ? "light" : "dark"),
+    [setTheme],
+  );
 
-  const toggle = () => setTheme(theme === "dark" ? "light" : "dark");
-
-  return { theme, toggle };
-}
+  return { theme, setTheme, toggle };
+};
