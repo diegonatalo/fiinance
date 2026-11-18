@@ -1,4 +1,5 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { chartTheme } from "@/lib/chart-theme";
 import { formatBRL } from "@/lib/format";
 import type { Slice } from "@/lib/distribution";
 import { Card, CardTitle } from "./ui/card";
@@ -25,7 +26,7 @@ const COLORS = [
 
 export const PieChartCard = ({ title, data, theme }: PieChartCardProps) => {
   const total = data.reduce((acc, d) => acc + d.amount, 0);
-  const isDark = theme === "dark";
+  const colors = chartTheme(theme);
 
   return (
     <Card className="flex min-w-0 flex-col">
@@ -66,15 +67,7 @@ export const PieChartCard = ({ title, data, theme }: PieChartCardProps) => {
                     formatBRL(value as number),
                     name as string,
                   ]}
-                  contentStyle={{
-                    borderRadius: 8,
-                    border: `1px solid ${isDark ? "#3f3f46" : "#e4e4e7"}`,
-                    background: isDark ? "#18181b" : "#ffffff",
-                    fontSize: 12,
-                    color: isDark ? "#fafafa" : "#18181b",
-                  }}
-                  labelStyle={{ color: isDark ? "#fafafa" : "#18181b" }}
-                  itemStyle={{ color: isDark ? "#fafafa" : "#18181b" }}
+                  {...colors.tooltip}
                 />
               </PieChart>
             </ResponsiveContainer>
