@@ -131,6 +131,7 @@ pnpm dev        # http://localhost:3000
 | `pnpm build` | Checa os tipos e gera o build de produção em `.next/` |
 | `pnpm start` | Serve o build de produção |
 | `pnpm lint` | Roda o ESLint |
+| `pnpm test:e2e` | Roda os testes de ponta a ponta (Playwright) |
 
 ### 🔑 Variáveis de ambiente
 
@@ -150,6 +151,13 @@ Usa [Vitest](https://vitest.dev). Os testes cobrem os cálculos da carteira (pre
 
 Para reexecutar ao salvar: `pnpm test:watch`.
 
+Os testes de ponta a ponta (Playwright, em `e2e/`) abrem o app no Chromium e percorrem os fluxos inteiros: adicionar um FII e recarregar, somar uma segunda compra, buscar cotações (com a brapi simulada), exportar e importar o backup, e abrir todas as páginas sem erros.
+
+```bash
+pnpm exec playwright install chromium   # só na primeira vez
+pnpm test:e2e                           # gera o build e testa contra ele
+```
+
 <br />
 
 <div align="center">
@@ -165,6 +173,7 @@ Para reexecutar ao salvar: `pnpm test:watch`.
 ├── lib/          lógica pura: posição, resumo, proventos, metas,
 │                 calculadoras, validação dos dados, exportação, contextos
 ├── hooks/        use-portfolio (estado e ações), use-local-storage, use-theme
+├── e2e/          testes de ponta a ponta (Playwright)
 └── components/   interface (ui/: Button, Card, Modal, Field, Input), providers
 ```
 

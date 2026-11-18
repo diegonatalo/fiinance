@@ -5,6 +5,7 @@
 ├── lib/          lógica pura: posição, resumo, proventos, metas,
 │                 calculadoras, validação dos dados, exportação, contextos
 ├── hooks/        use-portfolio (estado e ações), use-local-storage, use-theme
+├── e2e/          testes de ponta a ponta (Playwright)
 └── components/   interface (ui/: Button, Card, Modal, Field, Input), providers
 ```
 
