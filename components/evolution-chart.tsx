@@ -8,6 +8,7 @@ import {
   YAxis,
 } from "recharts";
 import { Card, CardTitle } from "./ui/card";
+import { chartTheme } from "@/lib/chart-theme";
 import { formatBRL } from "@/lib/format";
 import { formatMonth } from "@/lib/date";
 import type { EvolutionPoint } from "@/lib/evolution";
@@ -20,8 +21,7 @@ type EvolutionChartProps = {
 };
 
 export const EvolutionChart = ({ data, theme }: EvolutionChartProps) => {
-  const isDark = theme === "dark";
-  const axis = isDark ? "#a1a1aa" : "#71717a";
+  const colors = chartTheme(theme);
 
   return (
     <Card className="min-w-0">
@@ -39,13 +39,13 @@ export const EvolutionChart = ({ data, theme }: EvolutionChartProps) => {
             <AreaChart data={data} margin={{ left: 0, right: 8, top: 4 }}>
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke={isDark ? "#27272a" : "#e4e4e7"}
+                stroke={colors.grid}
                 vertical={false}
               />
               <XAxis
                 dataKey="month"
                 tickFormatter={formatMonth}
-                tick={{ fill: axis, fontSize: 11 }}
+                tick={{ fill: colors.axis, fontSize: 11 }}
                 tickLine={false}
                 axisLine={false}
               />
@@ -53,7 +53,7 @@ export const EvolutionChart = ({ data, theme }: EvolutionChartProps) => {
                 tickFormatter={(v: number) =>
                   v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)
                 }
-                tick={{ fill: axis, fontSize: 11 }}
+                tick={{ fill: colors.axis, fontSize: 11 }}
                 tickLine={false}
                 axisLine={false}
                 width={40}
@@ -61,21 +61,13 @@ export const EvolutionChart = ({ data, theme }: EvolutionChartProps) => {
               <Tooltip
                 formatter={(value) => [formatBRL(value as number), "Aportado"]}
                 labelFormatter={(month) => formatMonth(month as string)}
-                contentStyle={{
-                  borderRadius: 8,
-                  border: `1px solid ${isDark ? "#3f3f46" : "#e4e4e7"}`,
-                  background: isDark ? "#18181b" : "#ffffff",
-                  fontSize: 12,
-                  color: isDark ? "#fafafa" : "#18181b",
-                }}
-                labelStyle={{ color: isDark ? "#fafafa" : "#18181b" }}
-                itemStyle={{ color: isDark ? "#fafafa" : "#18181b" }}
+                {...colors.tooltip}
               />
               <Area
                 type="monotone"
                 dataKey="contributed"
-                stroke="#10b981"
-                fill="#10b981"
+                stroke={colors.series}
+                fill={colors.series}
                 fillOpacity={0.15}
                 strokeWidth={2}
               />
