@@ -13,6 +13,7 @@ pnpm dev        # http://localhost:3000
 | `pnpm build` | Checa os tipos e gera o build de produção em `.next/` |
 | `pnpm start` | Serve o build de produção |
 | `pnpm lint` | Roda o ESLint |
+| `pnpm test:e2e` | Roda os testes de ponta a ponta (Playwright) |
 
 ### 🔑 Variáveis de ambiente
 
