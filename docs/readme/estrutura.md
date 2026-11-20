@@ -1,5 +1,5 @@
 ```text
-├── app/          rotas do Next (App Router): layout, páginas, 404, robots e sitemap;
+├── app/          rotas do Next (App Router): landing (/), app (/app/...), /privacidade, /termos, 404, robots e sitemap;
 │                 o corpo de cada tela fica em components/ (portfolio-page.tsx…)
 ├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
 ├── lib/          lógica pura: posição, resumo, proventos, metas,

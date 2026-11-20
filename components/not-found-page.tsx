@@ -14,7 +14,7 @@ export const NotFoundPage = () => {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
+    <main className="flex min-h-full flex-col items-center justify-center gap-4 px-4 py-20 text-center">
       <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500">
         <CompassIcon size={28} />
       </div>
@@ -22,7 +22,7 @@ export const NotFoundPage = () => {
         <p className="text-5xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
           404
         </p>
-        <h2 className="mt-2 text-lg font-semibold">Página não encontrada</h2>
+        <h1 className="mt-2 text-lg font-semibold">Página não encontrada</h1>
         {pathname && (
           <p className="mt-1 break-all text-sm text-zinc-500 dark:text-zinc-400">
             Não existe nada em{" "}
@@ -32,9 +32,14 @@ export const NotFoundPage = () => {
           </p>
         )}
       </div>
-      <Link href="/" className={buttonClasses()}>
-        Voltar ao painel
-      </Link>
-    </div>
+      <div className="flex flex-wrap justify-center gap-3">
+        <Link href="/app" className={buttonClasses()}>
+          Abrir o painel
+        </Link>
+        <Link href="/" className={buttonClasses("outline")}>
+          Voltar ao início
+        </Link>
+      </div>
+    </main>
   );
 };

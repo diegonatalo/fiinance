@@ -6,8 +6,17 @@ export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://fiinance1.vercel.app"
 ).replace(/\/+$/, "");
 
-/** Rotas públicas do app (mantenha em sincronia com app). */
-export const ROUTES = ["/", "/carteira", "/proventos", "/calculadoras"];
+/** Rotas públicas, usadas pelo sitemap (mantenha em sincronia com app). */
+export const ROUTES = ["/", "/app", "/app/carteira", "/app/proventos", "/app/calculadoras", "/privacidade", "/termos"];
+
+/**
+ * Contato para pedidos sobre dados pessoais (LGPD, art. 18), mostrado em `/privacidade`.
+ * TODO: trocar pelo e-mail definitivo; o standard-kit avisa enquanto este for o provisório.
+ */
+export const PRIVACY_EMAIL = "contato@exemplo.com.br";
+
+/** Repositório público, no rodapé. */
+export const SOURCE_URL = "https://github.com/diegonatalo/fiinance";
 
 export const SITE_NAME = "FIInance";
 export const SITE_DESCRIPTION =

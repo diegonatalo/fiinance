@@ -30,8 +30,11 @@ export const ErrorScreen = ({ error, retry }: ErrorScreenProps) => {
         <button type="button" onClick={() => retry()} className={buttonClasses()}>
           Tentar de novo
         </button>
-        <Link href="/" className={buttonClasses("outline")}>
+        <Link href="/app" className={buttonClasses("outline")}>
           Voltar ao painel
+        </Link>
+        <Link href="/" className={buttonClasses("outline")}>
+          Página inicial
         </Link>
       </div>
     </div>

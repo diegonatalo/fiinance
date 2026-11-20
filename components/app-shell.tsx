@@ -16,10 +16,10 @@ import {
 } from "@phosphor-icons/react";
 
 const navItems = [
-  { to: "/", label: "Painel", end: true, icon: SquaresFourIcon },
-  { to: "/carteira", label: "Carteira", end: false, icon: WalletIcon },
-  { to: "/proventos", label: "Proventos", end: false, icon: CoinsIcon },
-  { to: "/calculadoras", label: "Calculadoras", end: false, icon: CalculatorIcon },
+  { to: "/app", label: "Painel", end: true, icon: SquaresFourIcon },
+  { to: "/app/carteira", label: "Carteira", end: false, icon: WalletIcon },
+  { to: "/app/proventos", label: "Proventos", end: false, icon: CoinsIcon },
+  { to: "/app/calculadoras", label: "Calculadoras", end: false, icon: CalculatorIcon },
 ];
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
@@ -32,7 +32,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
     <div className="min-h-full bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-zinc-50/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4">
-          <div className="flex items-center gap-2.5">
+          <Link href="/" aria-label="FIInance, página inicial" className="flex items-center gap-2.5 rounded-lg">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500 text-white">
               <BuildingsIcon size={20} />
             </div>
@@ -44,7 +44,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                 transforme dados em decisões
               </p>
             </div>
-          </div>
+          </Link>
           <ThemeToggle theme={theme} onToggle={toggle} />
         </div>
         <nav aria-label="Principal" className="mx-auto hidden max-w-5xl gap-1 px-4 md:flex">
