@@ -39,7 +39,7 @@ test("pede confirmação antes de substituir dados existentes", async ({ page },
 });
 
 test("recusa um arquivo que não é backup", async ({ page }) => {
-  await page.goto("/carteira");
+  await page.goto("/app/carteira");
   await page.locator('input[type="file"]').setInputFiles({
     name: "qualquer.json",
     mimeType: "application/json",

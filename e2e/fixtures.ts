@@ -2,7 +2,7 @@ import { expect, type Page } from "@playwright/test";
 
 /** Compra um FII pela tela da carteira. Preço no formato brasileiro (ex.: "150,50"). */
 export const addFii = async (page: Page, ticker: string, shares: string, price: string) => {
-  await page.goto("/carteira");
+  await page.goto("/app/carteira");
   await page.getByLabel(/^Ticker/).fill(ticker);
   await page.getByLabel(/^Qtd\. de cotas/).fill(shares);
   await page.getByLabel(/^Preço pago/).fill(price);

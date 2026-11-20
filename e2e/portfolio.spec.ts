@@ -26,7 +26,7 @@ test("segunda compra do mesmo FII soma na posição", async ({ page }) => {
 });
 
 test("não adiciona com o formulário vazio", async ({ page }) => {
-  await page.goto("/carteira");
+  await page.goto("/app/carteira");
   await page.getByRole("button", { name: "Adicionar FII" }).click();
   await expect(page.getByText("Informe o ticker")).toBeVisible();
   await expect(page.getByText("Adicione ativos para acompanhar as cotações.")).toBeVisible();

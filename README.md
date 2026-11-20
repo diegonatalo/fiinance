@@ -167,7 +167,7 @@ pnpm test:e2e                           # gera o build e testa contra ele
 </div>
 
 ```text
-├── app/          rotas do Next (App Router): layout, páginas, 404, robots e sitemap;
+├── app/          rotas do Next (App Router): landing (/), app (/app/...), /privacidade, /termos, 404, robots e sitemap;
 │                 o corpo de cada tela fica em components/ (portfolio-page.tsx…)
 ├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
 ├── lib/          lógica pura: posição, resumo, proventos, metas,
@@ -223,7 +223,7 @@ O app guarda **operações**, e a posição de cada fundo é sempre derivada del
 
 ### 🌐 Deploy
 
-O app é publicado na [Vercel](https://vercel.com). A Vercel detecta o Next.js, então não há configuração extra. Atualizar a página em `/carteira`
+O app é publicado na [Vercel](https://vercel.com). A Vercel detecta o Next.js, então não há configuração extra. A landing fica em `/` e o app em `/app` (`/app/carteira`, `/app/proventos`, `/app/calculadoras`); os endereços antigos sem `/app` redirecionam com 308 (`lib/redirects.ts`). Atualizar a página em `/app/carteira`
 funciona, e um endereço inexistente devolve a 404 do próprio app, com status 404.
 
 Ao mudar de domínio, defina `NEXT_PUBLIC_SITE_URL` no build (ou altere o valor padrão em `lib/site.ts`). É ela que gera o `sitemap.xml`,

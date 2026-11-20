@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import { AppShell } from "@/components/app-shell";
-import { Providers } from "@/components/providers";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import { THEME_KEY } from "@/lib/storage-keys";
 import { themeScript } from "@/lib/theme";
@@ -53,9 +51,7 @@ export default function RootLayout({
         <Script id="tema" strategy="beforeInteractive">
           {themeScript(THEME_KEY)}
         </Script>
-        <Providers>
-          <AppShell>{children}</AppShell>
-        </Providers>
+        {children}
       </body>
     </html>
   );

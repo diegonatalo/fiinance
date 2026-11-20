@@ -41,7 +41,8 @@ export const BackupCard = () => {
       <CardTitle className="mb-1">Backup dos dados</CardTitle>
       <p className="mb-4 text-xs text-zinc-500 dark:text-zinc-400">
         Seus dados ficam apenas neste navegador. Exporte um backup para não
-        perdê-los ao limpar o navegador ou trocar de computador.
+        perdê-los ao limpar o navegador ou trocar de computador. O arquivo leva
+        toda a carteira (sem o token da brapi): guarde em lugar seguro.
       </p>
       <div className="flex flex-wrap gap-2">
         <Button
