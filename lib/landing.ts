@@ -90,3 +90,11 @@ export const FAQ: Faq[] = [
     answer: "Não. O FIInance só organiza os seus números; as decisões são suas.",
   },
 ];
+
+export type Photo = { src: string; alt: string };
+
+/** Foto do Unsplash (licença livre), guardada em `public/landing/`. */
+export const PHOTO: Photo = { src: "/landing/predio.webp", alt: "Edifício comercial de vidro e tijolo sob céu claro." };
+
+/** Tipos e segmentos que o app usa para classificar cada fundo (`types/fii.ts`). */
+export const SEGMENTS = ["Tijolo · lajes", "Tijolo · logística", "Tijolo · shoppings", "Tijolo · híbrido", "Papel · CDI", "Papel · IPCA"];
