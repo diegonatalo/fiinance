@@ -123,6 +123,30 @@ export function sanitizeData(raw: unknown): AppData | null {
   return { version: 2, assets, transactions, payouts, quotes, paperTarget };
 }
 
+/** Identifica o backup: um JSON de outro app nunca é lido como carteira. */
+export const BACKUP_APP = "fiinance";
+
+/**
+ * Lê um backup importado. Mais rígido que o `sanitizeData` do storage: confere o app e a
+ * versão, e um registro quebrado recusa o arquivo inteiro (nada é descartado em silêncio).
+ * Backups de antes do campo `app` são aceitos quando o formato inteiro bate.
+ */
+export function parseBackup(raw: unknown): AppData | null {
+  if (!isObj(raw) || (raw.app !== undefined && raw.app !== BACKUP_APP) || raw.version !== 2) return null;
+  const { assets, transactions, payouts, quotes } = raw;
+  if (!Array.isArray(assets) || !Array.isArray(transactions) || !Array.isArray(payouts) || !isObj(quotes)) {
+    return null;
+  }
+  const data = sanitizeData(raw);
+  const complete =
+    data !== null &&
+    data.assets.length === assets.length &&
+    data.transactions.length === transactions.length &&
+    data.payouts.length === payouts.length &&
+    Object.keys(data.quotes).length === Object.keys(quotes).length;
+  return complete ? data : null;
+}
+
 /** Versão para o `useLocalStorage`: nunca falha, cai no estado vazio. */
 export function sanitizeOrEmpty(raw: unknown): AppData {
   return sanitizeData(raw) ?? EMPTY_DATA;

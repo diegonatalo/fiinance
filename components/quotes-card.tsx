@@ -9,9 +9,9 @@ import { useLocalStorage } from "@/hooks/use-local-storage";
 import { fetchQuote } from "@/lib/quotes";
 import { formatBRL } from "@/lib/format";
 import { parseDecimal } from "@/lib/numbers";
+import { TOKEN_KEY } from "@/lib/storage-keys";
 import { ArrowsClockwiseIcon, ChartLineUpIcon } from "@phosphor-icons/react";
 
-const TOKEN_KEY = "fiinance:brapi-token:v1";
 
 function sanitizeToken(raw: unknown): string {
   return typeof raw === "string" ? raw : "";

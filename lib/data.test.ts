@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EMPTY_DATA, TICKER_REGEX, sanitizeData, sanitizeOrEmpty } from "@/lib/data";
+import { EMPTY_DATA, TICKER_REGEX, parseBackup, sanitizeData, sanitizeOrEmpty } from "@/lib/data";
 import { dataToJson, transactionsToCsv } from "@/lib/export-data";
 import type { AppData } from "@/types/fii";
 
@@ -113,5 +113,34 @@ describe("exportação", () => {
       "2026-01-10;MXRF11;compra;10;9.50;95.00",
       "2026-03-01;MXRF11;venda;2;11.00;22.00",
     ]);
+  });
+});
+
+describe("parseBackup", () => {
+  const backup = () => JSON.parse(dataToJson(sanitizeData(valid)!));
+
+  it("lê o que o exportar gera, com o app no arquivo", () => {
+    expect(backup().app).toBe("fiinance");
+    expect(parseBackup(backup())).toEqual(sanitizeData(valid));
+  });
+
+  it("aceita backup de antes do campo app, se o formato inteiro bate", () => {
+    const old = backup();
+    delete old.app;
+    expect(parseBackup(old)).not.toBeNull();
+  });
+
+  it("recusa arquivo de outro app, de outra versão ou incompleto", () => {
+    expect(parseBackup({ ...backup(), app: "aprovaita" })).toBeNull();
+    expect(parseBackup({ ...backup(), version: 1 })).toBeNull();
+    expect(parseBackup({ assets: [] })).toBeNull();
+    // o backup do aprovaita também tem "version": 2
+    expect(parseBackup({ version: 2, topics: {}, quizzes: {}, mistakes: [], attempts: [] })).toBeNull();
+  });
+
+  it("recusa o arquivo inteiro se um registro estiver quebrado", () => {
+    const data = backup();
+    expect(parseBackup({ ...data, transactions: [...data.transactions, { id: "x" }] })).toBeNull();
+    expect(parseBackup({ ...data, assets: [...data.assets, null] })).toBeNull();
   });
 });

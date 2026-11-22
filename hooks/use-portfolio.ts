@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import { EMPTY_DATA, sanitizeData, sanitizeOrEmpty } from "@/lib/data";
+import { EMPTY_DATA, parseBackup, sanitizeOrEmpty } from "@/lib/data";
 import { DATA_KEY } from "@/lib/storage-keys";
 import { uid } from "@/lib/id";
 import { calculatePositions } from "@/lib/position";
@@ -163,7 +163,7 @@ export function usePortfolio() {
   /** Substitui todos os dados por um backup. Retorna false se o conteúdo for inválido. */
   function importData(content: string): boolean {
     try {
-      const fresh = sanitizeData(JSON.parse(content));
+      const fresh = parseBackup(JSON.parse(content));
       if (!fresh) return false;
       setData(fresh);
       return true;

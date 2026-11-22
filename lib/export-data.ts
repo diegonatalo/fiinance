@@ -1,7 +1,9 @@
+import { BACKUP_APP } from "@/lib/data";
 import type { AppData } from "@/types/fii";
 
+/** O arquivo de backup: os dados e de qual app eles são. */
 export function dataToJson(data: AppData): string {
-  return JSON.stringify(data, null, 2);
+  return JSON.stringify({ app: BACKUP_APP, ...data }, null, 2);
 }
 
 export function transactionsToCsv(data: AppData): string {
