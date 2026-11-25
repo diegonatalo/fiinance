@@ -18,13 +18,19 @@
     {
       "pkg": "tailwindcss"
     },
+    {
+      "pkg": "drizzle-orm"
+    },
+    {
+      "pkg": "better-auth"
+    },
     "Phosphor Icons"
   ],
   "badges_extra": [
     {
       "alt": "Privacidade",
       "label": "dados",
-      "message": "só no seu navegador",
+      "message": "na sua conta",
       "color": "7aa7ff"
     }
   ],
@@ -50,8 +56,8 @@
       "desc": "Número mágico e preço médio, já ligados à sua carteira, com opção de registrar a compra simulada."
     },
     {
-      "title": "Backup",
-      "desc": "Exporte tudo em JSON, as operações em CSV, e importe quando precisar."
+      "title": "Conta",
+      "desc": "E-mail e senha: a carteira fica salva no banco e aparece igual no celular e no computador."
     },
     {
       "title": "Tema e celular",

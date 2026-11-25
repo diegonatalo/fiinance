@@ -17,6 +17,26 @@ jobs:
   check:
     name: Lint, testes e build
     runs-on: ubuntu-latest
+    # Postgres descartável, só para o build e o E2E: o CI nunca toca no Neon.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: fiinance
+          POSTGRES_PASSWORD: fiinance
+          POSTGRES_DB: fiinance
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fiinance"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://fiinance:fiinance@localhost:5432/fiinance
+      # Segredo só de teste: as sessões do CI não valem em nenhum outro lugar.
+      BETTER_AUTH_SECRET: ci-only-secret-not-used-anywhere-else-0123456789
+      BETTER_AUTH_URL: http://localhost:3100
     steps:
       - uses: actions/checkout@v7
       # Usa a versão do pnpm do campo packageManager do package.json.
@@ -28,6 +48,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm test
+      - run: pnpm db:migrate
       # A Vercel só publica a main (vercel.json), então o build do PR roda aqui.
       - run: pnpm build
       # E2E só nos projetos com Playwright, contra o build acima.

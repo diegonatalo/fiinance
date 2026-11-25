@@ -3,7 +3,7 @@ import { PrivacyPage } from "@/components/legal-pages";
 
 export const metadata: Metadata = {
   title: "Privacidade | FIInance",
-  description: "O FIInance guarda a sua carteira só no seu navegador. Veja o que fica guardado e como apagar.",
+  description: "O FIInance guarda a sua carteira na sua conta. Veja o que fica guardado, quem recebe e como apagar.",
   alternates: { canonical: "/privacidade" },
 };
 

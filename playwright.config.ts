@@ -1,5 +1,15 @@
 import { createHash } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { parseEnv } from "node:util";
 import { defineConfig, devices } from "@playwright/test";
+import { assertDevDatabase } from "./lib/dev-database";
+
+// Para antes do build se o banco não for de desenvolvimento, lendo os .env como o `next start`.
+const envFiles = [".env", ".env.production", ".env.local", ".env.production.local"]
+  .map((name) => join(__dirname, name))
+  .filter((file) => existsSync(file));
+assertDevDatabase(Object.assign({}, ...envFiles.map((file) => parseEnv(readFileSync(file, "utf8"))), process.env));
 
 const CI = Boolean(process.env.CI);
 // Uma porta por pasta (20000 a 29999), para um projeto nunca testar o servidor de outro,
@@ -26,5 +36,12 @@ export default defineConfig({
     // Porta ocupada é erro: quem está nela pode ser outro app, com outro banco.
     reuseExistingServer: false,
     timeout: 180_000,
+    // O banco vem do DATABASE_URL (no CI, um Postgres só para os testes; aqui,
+    // a branch de dev do Neon no .env.local). Cada teste cria a própria conta,
+    // então o limite de tentativas de login fica desligado.
+    env: {
+      BETTER_AUTH_URL: `http://localhost:${PORT}`,
+      AUTH_RATE_LIMIT: "off",
+    },
   },
 });

@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { test as signedIn } from "./fixtures";
 
 const PAGES = [
   { path: "/app", link: "Painel" },
@@ -17,7 +18,7 @@ const collectErrors = (page: import("@playwright/test").Page) => {
 };
 
 for (const { path, link } of PAGES) {
-  test(`abre ${path} sem erros no console`, async ({ page }) => {
+  signedIn(`abre ${path} sem erros no console`, async ({ page }) => {
     const errors = collectErrors(page);
     await page.goto(path);
     await expect(
@@ -27,10 +28,34 @@ for (const { path, link } of PAGES) {
   });
 }
 
-test("a página inicial apresenta o FIInance e leva ao painel", async ({ page }) => {
+signedIn("abre /app/conta sem erros no console", async ({ page }) => {
+  const errors = collectErrors(page);
+  await page.goto("/app/conta");
+  await expect(page.getByRole("heading", { level: 1, name: "Conta" })).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+for (const path of ["/entrar", "/cadastro"]) {
+  test(`abre ${path} sem erros no console`, async ({ page }) => {
+    const errors = collectErrors(page);
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    expect(errors).toEqual([]);
+  });
+}
+
+test("a página inicial leva para entrar quando não há conta", async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(/carteira de FIIs/);
+  await page.getByRole("main").getByRole("link", { name: "Abrir o app" }).first().click();
+  await expect(page).toHaveURL("/entrar");
+  expect(errors).toEqual([]);
+});
+
+signedIn("com conta, a página inicial leva ao painel e a marca volta para ela", async ({ page }) => {
+  const errors = collectErrors(page);
+  await page.goto("/");
   await page.getByRole("main").getByRole("link", { name: "Abrir o app" }).first().click();
   await expect(page).toHaveURL("/app");
   // A marca no app volta para a página inicial.

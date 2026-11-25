@@ -14,7 +14,7 @@
 ![React](https://img.shields.io/badge/React_19-20232a?style=flat-square&logo=react&logoColor=61dafb)
 ![TypeScript](https://img.shields.io/badge/TypeScript_6-3178c6?style=flat-square&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)
-![Privacidade](https://img.shields.io/badge/dados-s%C3%B3_no_seu_navegador-7aa7ff?style=flat-square)
+![Privacidade](https://img.shields.io/badge/dados-na_sua_conta-7aa7ff?style=flat-square)
 ![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-16a34a?style=flat-square)
 
 </div>
@@ -87,7 +87,7 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 <img src="docs/assets/f-04.svg" alt="Gráficos: Evolução do investido, peso de cada fundo, tijolo por segmento e papel por indexador." width="49%" />
 <br />
 <img src="docs/assets/f-05.svg" alt="Calculadoras: Número mágico e preço médio, já ligados à sua carteira, com opção de registrar a compra simulada." width="49%" />
-<img src="docs/assets/f-06.svg" alt="Backup: Exporte tudo em JSON, as operações em CSV, e importe quando precisar." width="49%" />
+<img src="docs/assets/f-06.svg" alt="Conta: E-mail e senha: a carteira fica salva no banco e aparece igual no celular e no computador." width="49%" />
 <br />
 <img src="docs/assets/f-07.svg" alt="Tema e celular: Tema claro ou escuro, barra de abas e uma carteira em lista no celular." width="49%" />
 
@@ -103,7 +103,7 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 <div align="center">
 
-<img src="docs/assets/stack.svg" alt="Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4, Phosphor Icons" width="100%" />
+<img src="docs/assets/stack.svg" alt="Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4, drizzle-orm, better-auth, Phosphor Icons" width="100%" />
 
 </div>
 
@@ -115,13 +115,15 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 </div>
 
-Requer [Node.js](https://nodejs.org) e [pnpm](https://pnpm.io).
+Requer [Node.js](https://nodejs.org), [pnpm](https://pnpm.io) e um banco Postgres (o projeto usa o [Neon](https://neon.tech)).
 
 ```bash
 git clone https://github.com/diegonatalo/fiinance.git
 cd fiinance
 pnpm install
-pnpm dev        # http://localhost:3000
+cp .env.example .env.local   # preencha o banco de desenvolvimento e o segredo
+pnpm db:migrate              # cria as tabelas
+pnpm dev                     # http://localhost:3000
 ```
 
 | Comando | O que faz |
@@ -131,13 +133,19 @@ pnpm dev        # http://localhost:3000
 | `pnpm start` | Serve o build de produção |
 | `pnpm lint` | Roda o ESLint |
 | `pnpm test:e2e` | Roda os testes de ponta a ponta (Playwright) |
+| `pnpm db:generate` | Gera a migração em `drizzle/` depois de mudar `lib/db/schema.ts` |
+| `pnpm db:migrate` | Aplica as migrações no banco do `.env.local` |
 
 ### 🔑 Variáveis de ambiente
 
-Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
+O modelo está em [`.env.example`](.env.example). Em desenvolvimento, o banco precisa ser de uma branch `dev` do Neon, com o nome terminando em `_dev`: com qualquer outro, o `pnpm dev`, as migrações e o E2E param (`lib/dev-database.ts`).
 
 | Variável | Descrição | Se não for definida |
 |---|---|---|
+| `DATABASE_URL` | URL do Postgres (no Neon, a com pooler). | O app não abre. |
+| `DATABASE_URL_UNPOOLED` | URL sem pooler, usada pelas migrações. | As migrações usam a `DATABASE_URL`. |
+| `BETTER_AUTH_SECRET` | Segredo que assina os cookies de sessão; um diferente em cada ambiente. | O login não funciona. |
+| `BETTER_AUTH_URL` | Endereço local, sem barra final (só em desenvolvimento e nos testes). | Na Vercel, vale o `SITE_URL`. |
 | `NEXT_PUBLIC_SITE_URL` | URL pública do site, sem barra final. | Usa `https://fiinance1.vercel.app` (valor padrão em `lib/site.ts`). |
 
 ### 🧪 Testes
@@ -146,11 +154,11 @@ Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
 pnpm test
 ```
 
-Usa [Vitest](https://vitest.dev). Os testes cobrem os cálculos da carteira (preço médio, número mágico, alocação, sugestão de aporte, proventos), a validação e a exportação dos dados, a formatação de números e datas e a geometria dos gráficos.
+Usa [Vitest](https://vitest.dev). Os testes cobrem os cálculos da carteira (preço médio, número mágico, alocação, sugestão de aporte, proventos), a validação do que chega às Server Actions, a conversão para as linhas do banco (centavos), as regras da conta (Better Auth com o adaptador em memória), a formatação de números e datas e a geometria dos gráficos.
 
 Para reexecutar ao salvar: `pnpm test:watch`.
 
-Os testes de ponta a ponta (Playwright, em `e2e/`) abrem o app no Chromium e percorrem os fluxos inteiros: adicionar um FII e recarregar, somar uma segunda compra, ver o total no painel, ajustar a meta de alocação, exportar e importar o backup, e abrir todas as páginas sem erros.
+Os testes de ponta a ponta (Playwright, em `e2e/`) abrem o app no Chromium, cada um com uma conta nova, e percorrem os fluxos inteiros: cadastro, entrar, sair, senha errada, e-mail repetido, uma conta sem ver a outra, excluir a conta, adicionar um FII e recarregar, somar uma segunda compra, lançar provento, ajustar a meta e abrir todas as páginas sem erros. Eles usam o banco do `.env.local` (a branch `dev` do Neon); no CI, um Postgres descartável.
 
 ```bash
 pnpm exec playwright install chromium   # só na primeira vez
@@ -172,14 +180,17 @@ SCREENSHOTS=1 pnpm test:e2e e2e/screenshots.spec.ts
 </div>
 
 ```text
-├── app/          rotas do Next (App Router): landing (/), app (/app/...), /privacidade, /termos, 404, robots e sitemap;
+├── app/          rotas do Next (App Router): landing (/), app (/app/...), /entrar, /cadastro, /api/auth,
+│                 /privacidade, /termos, 404, robots e sitemap;
 │                 o corpo de cada tela fica em components/ (portfolio-page.tsx…)
 ├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
-├── lib/          lógica pura: posição, resumo, proventos, metas,
-│                 calculadoras, gráficos, validação dos dados, exportação
-├── hooks/        use-portfolio (estado e ações), use-local-storage, use-theme
+├── lib/          lógica pura: posição, resumo, proventos, metas, calculadoras, gráficos, validação;
+│                 db/ (schema e conexão), data/ (leituras e Server Actions), auth (Better Auth)
+├── drizzle/      migrações do banco, geradas por pnpm db:generate
+├── hooks/        use-portfolio (estado e salvamento), use-account, use-theme
 ├── e2e/          testes de ponta a ponta (Playwright)
-└── components/   interface (ui/: Button, Card, Modal, Field, Input), marca, providers
+├── components/   interface (ui/: Button, Card, Modal, Field, Input), marca, providers, telas de conta
+└── proxy.ts      manda para /entrar quem abre o app sem o cookie de sessão
 ```
 
 > [!NOTE]
@@ -202,10 +213,9 @@ SCREENSHOTS=1 pnpm test:e2e e2e/screenshots.spec.ts
 
 ### 🔒 Seus dados
 
-Não há servidor nem conta. Tudo é salvo no `localStorage` do navegador, na chave `fiinance:data:v1`.
+O app pede uma conta (e-mail e senha, com o [Better Auth](https://www.better-auth.com)). A carteira fica no Postgres, ligada à conta, e aparece igual em qualquer aparelho.
 
-Limpar os dados do navegador apaga a carteira, então use **Carteira → Backup dos dados** de vez em quando.
-Ao importar, o app confere se o arquivo é um backup do fiinance e se cada registro está certo; se não estiver, recusa e nada muda.
+Cada tabela do app tem a chave `(user_id, id)`, e cada Server Action confere a sessão e grava só nas linhas da própria pessoa. Dinheiro fica em centavos. Excluir a conta, em **Conta**, apaga tudo em cascata.
 
 O app não busca cotações: os valores são sempre o que você investiu, a partir das compras e vendas que você lança.
 
@@ -228,7 +238,7 @@ O app guarda **operações**, e a posição de cada fundo é sempre derivada del
 
 ### 🌐 Deploy
 
-O app é publicado na [Vercel](https://vercel.com). A Vercel detecta o Next.js, então não há configuração extra. A landing fica em `/` e o app em `/app` (`/app/carteira`, `/app/proventos`, `/app/calculadoras`); os endereços antigos sem `/app` redirecionam com 308 (`lib/redirects.ts`). Atualizar a página em `/app/carteira`
+O app é publicado na [Vercel](https://vercel.com). O banco é o Postgres do Neon, ligado pela integração da Vercel, que cria a `DATABASE_URL` e a `DATABASE_URL_UNPOOLED`. Falta só o `BETTER_AUTH_SECRET` de produção. O script `vercel-build` aplica as migrações (`drizzle-kit migrate`) antes do `next build`, só na `main`. A landing fica em `/` e o app, que pede login, em `/app` (`/app/carteira`, `/app/proventos`, `/app/calculadoras`, `/app/conta`); os endereços antigos sem `/app` redirecionam com 308 (`lib/redirects.ts`). Atualizar a página em `/app/carteira`
 funciona, e um endereço inexistente devolve a 404 do próprio app, com status 404.
 
 Ao mudar de domínio, defina `NEXT_PUBLIC_SITE_URL` no build (ou altere o valor padrão em `lib/site.ts`). É ela que gera o `sitemap.xml`,
@@ -236,10 +246,9 @@ o `robots.txt` e as URLs absolutas de `og:image` e `twitter:image` usadas nos pr
 
 ### 🧭 Próximos passos
 
-- [ ] CI rodando lint, tipos e testes a cada push.
 - [ ] Lucro realizado e imposto de renda sobre vendas.
 - [ ] Paginação do histórico de operações e de proventos, que cresce com o tempo.
-- [ ] Sincronização entre dispositivos. Hoje o caminho é o backup em JSON.
+- [ ] Recuperação de senha e confirmação de e-mail, com um serviço de e-mail.
 
 ### 📄 Créditos e licença
 

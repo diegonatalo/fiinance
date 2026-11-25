@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { PlusIcon } from "@phosphor-icons/react";
-import { BackupCard } from "@/components/backup-card";
 import { FiiForm, type FiiFormValues } from "@/components/fii-form";
 import { FiiTable, type TypeFilter } from "@/components/fii-table";
 import { HistoryCard } from "@/components/history-card";
@@ -123,7 +122,6 @@ export const PortfolioPage = () => {
       )}
 
       <HistoryCard />
-      <BackupCard />
 
       <Modal open={adding} title="Nova operação" onClose={() => setAdding(false)}>
         <FiiForm onSubmit={handleAdd} tickerInUse={tickerInUse} onCancel={() => setAdding(false)} />

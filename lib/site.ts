@@ -6,8 +6,11 @@ export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://fiinance1.vercel.app"
 ).replace(/\/+$/, "");
 
-/** Rotas públicas, usadas pelo sitemap (mantenha em sincronia com app). */
-export const ROUTES = ["/", "/app", "/app/carteira", "/app/proventos", "/app/calculadoras", "/privacidade", "/termos"];
+/**
+ * Páginas públicas, listadas no sitemap. O app (`/app`) pede login e as telas de
+ * entrar e criar conta não são indexadas.
+ */
+export const ROUTES = ["/", "/privacidade", "/termos"];
 
 /**
  * Contato para pedidos sobre dados pessoais (LGPD, art. 18), mostrado em `/privacidade`.

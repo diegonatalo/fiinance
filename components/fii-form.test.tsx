@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import type { Asset, Fii } from "@/types/fii";
@@ -53,6 +53,14 @@ describe("FiiForm (novo ativo)", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  it("o preço tem no máximo 2 casas decimais (o banco guarda centavos)", async () => {
+    const { onSubmit } = setup();
+    await fill("HGLG11", "10", "150,505");
+    await submit();
+    expect(screen.getByText("Use no máximo 2 casas decimais")).toBeInTheDocument();
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
   it("recusa data no futuro", async () => {
     const { onSubmit } = setup();
     await fill("HGLG11", "1", "10");
@@ -60,6 +68,16 @@ describe("FiiForm (novo ativo)", () => {
     await submit();
     expect(screen.getByText("Data no futuro")).toBeInTheDocument();
     expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("o tipo é um grupo com os botões tijolo e papel, cada um com o próprio nome", () => {
+    setup();
+    const group = screen.getByRole("group", { name: "Tipo" });
+    expect(within(group).getAllByRole("button").map((b) => b.getAttribute("aria-label") ?? b.textContent)).toEqual([
+      "tijolo",
+      "papel",
+    ]);
+    expect(screen.getByRole("button", { name: "tijolo" })).toHaveAttribute("aria-pressed", "true");
   });
 
   it("trocar para papel muda a lista de segmentos", async () => {

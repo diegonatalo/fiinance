@@ -1,13 +1,17 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandLink } from "@/components/brand";
 import { CalculatorsIcon, DashboardIcon, PayoutsIcon, PortfolioIcon } from "@/components/nav-icons";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { buttonClasses } from "@/components/ui/button";
+import { useAccount } from "@/hooks/use-account";
+import { usePortfolioContext } from "@/hooks/use-portfolio-context";
 import { useTheme } from "@/hooks/use-theme";
 import { cn } from "@/lib/cn";
+import { paths } from "@/lib/paths";
 import { THEME_COLORS } from "@/lib/site";
 import { THEME_KEY } from "@/lib/storage-keys";
 
@@ -23,9 +27,19 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname() ?? "";
   const isActive = (item: (typeof navItems)[number]) =>
     item.end ? pathname === item.to : pathname.startsWith(item.to);
+  const account = useAccount();
+  const { saving, saveError } = usePortfolioContext();
+
+  // enquanto alguma mudança não chegou ao banco, o navegador avisa antes de fechar a aba
+  useEffect(() => {
+    if (!saving) return;
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [saving]);
 
   return (
-    <div className="min-h-full bg-bg text-fg">
+    <div className="min-h-full bg-bg text-fg" data-saving={saving || undefined}>
       <header className="border-b border-hairline">
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-8 gap-y-4 px-5 py-4 sm:px-8">
           <BrandLink />
@@ -44,11 +58,33 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
               </Link>
             ))}
           </nav>
-          <div className="ml-auto flex items-center gap-4">
+          <div className="ml-auto flex items-center gap-2">
             <ThemeToggle theme={theme} onToggle={toggle} />
+            <Link
+              href={paths.account}
+              aria-label={`Sua conta: ${account.name}`}
+              aria-current={pathname === paths.account ? "page" : undefined}
+              className={cn(
+                "inline-flex size-11 items-center justify-center rounded-xl border text-base font-semibold transition-colors",
+                pathname === paths.account ? "border-fg bg-raised text-fg" : "border-line bg-surface text-fg hover:bg-raised",
+              )}
+            >
+              <span aria-hidden="true">{account.name.trim().charAt(0).toUpperCase() || "?"}</span>
+            </Link>
           </div>
         </div>
       </header>
+
+      {saveError && (
+        <div role="alert" className="border-b border-down/30 bg-down/10">
+          <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-3 px-5 py-3 text-sm text-fg sm:px-8">
+            <span>{saveError}</span>
+            <button type="button" onClick={() => window.location.reload()} className={buttonClasses("outline", "h-10")}>
+              Recarregar
+            </button>
+          </div>
+        </div>
+      )}
 
       <main className="mx-auto flex max-w-[1280px] flex-col gap-6 px-5 pt-6 pb-[calc(6.5rem+env(safe-area-inset-bottom))] *:min-w-0 sm:px-8 md:pt-12 md:pb-18">
         {children}

@@ -11,6 +11,7 @@ import { isValidDate, today } from "@/lib/date";
 import { useToday } from "@/hooks/use-today";
 import { parseDecimal } from "@/lib/numbers";
 import { sharesOn } from "@/lib/position";
+import { LIMITS, toCents } from "@/lib/validation";
 import type { Fii, OperationType } from "@/types/fii";
 
 export type InitialOperation = {
@@ -79,6 +80,7 @@ const OperationForm = ({ asset, initialValues, onClose }: OperationFormProps) =>
     else if (date > today()) e.date = "Data no futuro";
     if (!Number.isInteger(qty) || qty <= 0)
       e.shares = "Use um número inteiro maior que 0";
+    else if (qty > LIMITS.shares) e.shares = "Quantidade grande demais";
     else if (
       type === "venda" &&
       isValidDate(date) &&
@@ -87,6 +89,7 @@ const OperationForm = ({ asset, initialValues, onClose }: OperationFormProps) =>
       e.shares = "Mais cotas do que você tinha nessa data";
     }
     if (!Number.isFinite(amount) || amount <= 0) e.price = "Deve ser maior que 0";
+    else if (toCents(amount, LIMITS.priceCents) === null) e.price = "Use no máximo 2 casas decimais";
 
     setErrorMap(e);
     if (Object.keys(e).length > 0) return;

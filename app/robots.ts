@@ -3,7 +3,8 @@ import { SITE_URL } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
+    // o app pede login e a API não é página
+    rules: { userAgent: "*", allow: "/", disallow: ["/app", "/api/"] },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }
