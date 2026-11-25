@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Button } from "./ui/button";
 import { Field } from "./ui/field";
 import { Input, Select } from "./ui/input";
@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 import { today, isValidDate } from "@/lib/date";
 import { useToday } from "@/hooks/use-today";
 import { parseDecimal } from "@/lib/numbers";
-import { TICKER_REGEX } from "@/lib/data";
+import { LIMITS, TICKER_REGEX, toCents } from "@/lib/validation";
 import {
   PAPER_SEGMENTS,
   BRICK_SEGMENTS,
@@ -56,6 +56,7 @@ export const FiiForm = ({
   const [shares, setShares] = useState("");
   const [price, setPrice] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const typeLabel = useId();
 
   const segments = type === "papel" ? PAPER_SEGMENTS : BRICK_SEGMENTS;
   const normalizedTicker = ticker.trim().toUpperCase();
@@ -83,11 +84,14 @@ export const FiiForm = ({
       if (!shares.trim()) e.shares = "Informe a quantidade";
       else if (!Number.isInteger(qty) || qty <= 0)
         e.shares = "Use um número inteiro maior que 0";
+      else if (qty > LIMITS.shares) e.shares = "Quantidade grande demais";
 
       const amount = parseDecimal(price);
       if (!price.trim()) e.averagePrice = "Informe o preço";
       else if (!Number.isFinite(amount) || amount <= 0)
         e.averagePrice = "Deve ser maior que 0";
+      else if (toCents(amount, LIMITS.priceCents) === null)
+        e.averagePrice = "Use no máximo 2 casas decimais";
     }
     return e;
   }
@@ -134,7 +138,10 @@ export const FiiForm = ({
           />
         </Field>
 
-        <Field label="Tipo">
+        <div role="group" aria-labelledby={typeLabel} className="grid gap-2">
+          <span id={typeLabel} className="text-[13px] text-muted">
+            Tipo
+          </span>
           <div className="grid grid-cols-2 gap-2">
             {(["tijolo", "papel"] as FiiType[]).map((t) => (
               <button
@@ -155,7 +162,7 @@ export const FiiForm = ({
               </button>
             ))}
           </div>
-        </Field>
+        </div>
       </div>
 
       <div className={cn("grid gap-4", !initial && "sm:grid-cols-2")}>

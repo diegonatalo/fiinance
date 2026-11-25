@@ -21,7 +21,7 @@ const ICONS: Record<FeatureIcon, { path: string; tint: string }> = {
     tint: "text-brick",
   },
   device: { path: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM11 18h2", tint: "text-up" },
-  backup: { path: "M12 3v12M7 10l5 5 5-5M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2", tint: "text-paper" },
+  account: { path: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0", tint: "text-paper" },
 };
 
 const WRAP = "mx-auto w-full max-w-[1200px] px-6";
@@ -179,7 +179,7 @@ export const LandingPage = () => (
             </svg>
           </span>
           <p className="flex-[1_1_420px] text-xl leading-normal tracking-[-0.01em]">
-            Sua carteira fica no seu navegador. Nada do que você cadastra vai para um servidor nosso.
+            Sua carteira fica na sua conta, sem propaganda e sem cookie de rastreamento.
           </p>
           <Link href="/privacidade" className="text-[15px] font-medium text-paper underline">
             Ler a política
@@ -210,7 +210,7 @@ export const LandingPage = () => (
           <Link href="/app" className={buttonClasses("primary", undefined, "lg")}>
             Abrir o app
           </Link>
-          <p className="text-sm text-subtle">Grátis, sem cadastro e sem propaganda.</p>
+          <p className="text-sm text-subtle">Grátis e sem propaganda.</p>
         </div>
       </section>
     </main>

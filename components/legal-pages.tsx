@@ -27,7 +27,7 @@ export const PrivacyPage = () => (
   <Shell>
     <LegalPage
       title="Privacidade"
-      summary="O FIInance guarda a sua carteira só no seu navegador. Nada do que você cadastra vai para um servidor nosso."
+      summary="O FIInance guarda a sua carteira na sua conta, num banco de dados, para você ver os mesmos números em qualquer aparelho. Nada é vendido nem usado para propaganda."
       updatedAt={UPDATED_AT}
       sections={[
         {
@@ -36,12 +36,16 @@ export const PrivacyPage = () => (
           content: (
             <>
               <p>
-                Os fundos que você cadastra (ticker, tipo e segmento), as compras e vendas, os proventos e a meta de
-                alocação. E a sua escolha de tema claro ou escuro.
+                <strong>Da conta:</strong> seu nome, seu e-mail e a sua senha, guardada só como hash (não dá para lê-la
+                de volta). Para manter você conectado, também as sessões abertas, com o IP e o navegador de cada uma.
               </p>
               <p>
-                Tudo fica no armazenamento deste navegador (localStorage), neste aparelho. Nós não temos acesso a
-                nada disso.
+                <strong>Da carteira:</strong> os fundos que você cadastra (ticker, tipo e segmento), as compras e vendas,
+                os proventos e a meta de alocação.
+              </p>
+              <p>
+                <strong>Neste navegador:</strong> o cookie de sessão, necessário para entrar, e a sua escolha de tema
+                claro ou escuro. Não usamos outros cookies.
               </p>
             </>
           ),
@@ -50,21 +54,16 @@ export const PrivacyPage = () => (
           id: "terceiros",
           title: "Quem mais recebe dados",
           content: (
-            <p>
-              <strong>Vercel:</strong> a hospedagem do site registra dados técnicos de acesso (como IP e navegador) para
-              entregar as páginas. Nada do que você cadastra é enviado a ela nem a mais ninguém. Não usamos cookies,
-              estatísticas de visita nem propaganda.
-            </p>
-          ),
-        },
-        {
-          id: "backup",
-          title: "Backup",
-          content: (
-            <p>
-              O backup em JSON leva toda a carteira: fundos, operações, proventos e meta. A exportação em CSV leva as
-              operações. Depois de baixados, os arquivos ficam sob o seu cuidado.
-            </p>
+            <>
+              <p>
+                <strong>Neon:</strong> o banco de dados onde ficam a conta e a carteira.
+              </p>
+              <p>
+                <strong>Vercel:</strong> a hospedagem do site e do servidor, que também registra dados técnicos de acesso
+                (como IP e navegador) para entregar as páginas.
+              </p>
+              <p>Ninguém mais recebe seus dados. Não usamos estatísticas de visita nem propaganda.</p>
+            </>
           ),
         },
         {
@@ -72,8 +71,8 @@ export const PrivacyPage = () => (
           title: "Como apagar",
           content: (
             <p>
-              Limpe os dados deste site nas configurações do navegador. A carteira é apagada de vez e só volta se você
-              tiver um backup.
+              Em <strong>Conta → Excluir conta</strong>, com a sua senha. A conta e toda a carteira são apagadas do banco
+              na hora e não podem ser recuperadas.
             </p>
           ),
         },
@@ -82,7 +81,7 @@ export const PrivacyPage = () => (
           title: "Contato",
           content: (
             <p>
-              Dúvidas sobre esta página: <Contact />.
+              Dúvidas ou pedidos sobre os seus dados: <Contact />.
             </p>
           ),
         },
@@ -127,8 +126,8 @@ export const TermsPage = () => (
           title: "Seus dados",
           content: (
             <p>
-              A carteira fica só no seu navegador, e fazer backup é responsabilidade sua: limpar o navegador, trocar
-              de aparelho ou usar uma aba anônima pode apagar tudo. Detalhes em{" "}
+              A carteira fica na sua conta, e você é responsável por manter a sua senha em segredo. Você pode excluir a
+              conta e todos os dados quando quiser, em Conta. Detalhes em{" "}
               <Link href="/privacidade" className={linkClass}>
                 Privacidade
               </Link>

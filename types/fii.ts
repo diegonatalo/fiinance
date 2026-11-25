@@ -57,8 +57,8 @@ export type Payout = {
   shares: number;
 };
 
+/** A carteira da pessoa logada, como o app usa. */
 export type AppData = {
-  version: 2;
   assets: Asset[];
   transactions: Transaction[];
   payouts: Payout[];

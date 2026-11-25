@@ -9,6 +9,7 @@ import { useToday } from "@/hooks/use-today";
 import { formatBRL, formatNumber } from "@/lib/format";
 import { parseDecimal } from "@/lib/numbers";
 import { sharesOn } from "@/lib/position";
+import { normalizePayout } from "@/lib/validation";
 import { PlusIcon } from "@phosphor-icons/react";
 
 type PayoutFormProps = {
@@ -43,6 +44,8 @@ export const PayoutForm = ({ onDone }: PayoutFormProps) => {
     else if (asset && shares <= 0) e.date = "Você não tinha cotas nessa data";
     if (!Number.isFinite(numericValue) || numericValue <= 0)
       e.amount = "Deve ser maior que 0";
+    else if (asset && shares > 0 && !normalizePayout({ id: "x", assetId: asset.id, date, valuePerShare: numericValue, shares }))
+      e.amount = "Valor fora do limite";
     setErrorMap(e);
     if (Object.keys(e).length > 0 || !asset) return;
 

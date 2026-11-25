@@ -5,7 +5,7 @@ export const HERO = {
   title: "Sua carteira de FIIs em papel e tijolo.",
   subtitle:
     "O FIInance mostra quanto você investiu, quanto a carteira vale hoje e quanto ela rende por mês. E diz quanto falta aportar em papel e em tijolo para chegar na alocação que você quer.",
-  note: "Grátis e sem cadastro. Seus dados ficam só no seu navegador.",
+  note: "Grátis. Crie uma conta e sua carteira fica salva em qualquer aparelho.",
 };
 
 export type Step = { title: string; text: string };
@@ -25,7 +25,7 @@ export const STEPS: Step[] = [
   },
 ];
 
-export type FeatureIcon = "chart" | "coins" | "target" | "calculator" | "device" | "backup";
+export type FeatureIcon = "chart" | "coins" | "target" | "calculator" | "device" | "account";
 
 export type Feature = { icon: FeatureIcon; title: string; text: string };
 
@@ -56,9 +56,9 @@ export const FEATURES: Feature[] = [
     text: "Tema claro ou escuro, barra de abas no celular e uma carteira que vira lista em telas pequenas.",
   },
   {
-    icon: "backup",
-    title: "Backup e planilha",
-    text: "Exporte tudo em JSON para guardar ou levar para outro computador, e as operações em CSV para o Excel.",
+    icon: "account",
+    title: "Na sua conta",
+    text: "A carteira fica salva na sua conta e aparece igual no celular e no computador.",
   },
 ];
 
@@ -74,16 +74,15 @@ export const SCREENSHOT: Screenshot = {
 export type Faq = { question: string; answer: string };
 
 export const FAQ: Faq[] = [
-  { question: "É grátis?", answer: "É. Não tem plano pago nem cadastro." },
+  { question: "É grátis?", answer: "É. Não tem plano pago nem propaganda; só pede uma conta com e-mail e senha." },
   {
     question: "Onde ficam os meus dados?",
     answer:
-      "Só no seu navegador. Nada do que você cadastra vai para um servidor nosso, e não tem conta nem cookie de rastreamento.",
+      "Na sua conta, num banco de dados (Neon), com o site hospedado na Vercel. Ninguém mais recebe seus dados, e você pode excluir a conta e tudo o que está nela quando quiser.",
   },
   {
-    question: "Como levo a carteira para outro computador?",
-    answer:
-      "Exporte o backup em JSON num computador e importe no outro. Limpar os dados do navegador apaga a carteira, então guarde um backup.",
+    question: "Como vejo a carteira em outro aparelho?",
+    answer: "É só entrar com a mesma conta. A carteira é a mesma no celular e no computador.",
   },
   {
     question: "É recomendação de investimento?",

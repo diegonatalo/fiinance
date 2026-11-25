@@ -1,14 +1,35 @@
-import { act, renderHook } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
-import { usePortfolio } from "@/hooks/use-portfolio";
-import { DATA_KEY } from "@/lib/storage-keys";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { SAVE_ERROR, usePortfolio, type Persistence } from "@/hooks/use-portfolio";
+import { EMPTY_DATA } from "@/lib/validation";
 
 const mxrf = { ticker: "MXRF11", type: "papel" as const, segment: "CDI" as const };
 const buy = (shares: number, price: number) => ({ date: "2026-01-10", shares, price });
 
-const setup = () => renderHook(() => usePortfolio()).result;
+/** Persistência falsa: grava cada chamada, na ordem. */
+const fakePersistence = () => {
+  const calls: [string, ...unknown[]][] = [];
+  const record =
+    (name: string) =>
+    async (...args: unknown[]) => {
+      calls.push([name, ...args]);
+    };
+  const persistence: Persistence = {
+    addAsset: record("addAsset"),
+    updateAsset: record("updateAsset"),
+    removeAsset: record("removeAsset"),
+    restoreAsset: record("restoreAsset"),
+    recordOperation: record("recordOperation"),
+    removeTransaction: record("removeTransaction"),
+    addPayout: record("addPayout"),
+    removePayout: record("removePayout"),
+    setPaperTarget: record("setPaperTarget"),
+  };
+  return { calls, persistence };
+};
 
-beforeEach(() => localStorage.clear());
+const setup = (persistence = fakePersistence().persistence) =>
+  renderHook(() => usePortfolio(EMPTY_DATA, persistence)).result;
 
 describe("usePortfolio", () => {
   it("cria o ativo com a primeira compra e calcula a posição", () => {
@@ -18,7 +39,6 @@ describe("usePortfolio", () => {
     });
     expect(p.current.data.assets).toHaveLength(1);
     expect(p.current.assets[0]).toMatchObject({ ticker: "MXRF11", shares: 10, averagePrice: 10 });
-    expect(JSON.parse(localStorage.getItem(DATA_KEY)!).assets).toHaveLength(1);
   });
 
   it("comprar um ticker que já existe soma à posição, sem duplicar o ativo", () => {
@@ -107,29 +127,48 @@ describe("usePortfolio", () => {
     expect(p.current.data.paperTarget).toBe(60);
   });
 
-  it("importar troca tudo por um backup válido e recusa conteúdo inválido", () => {
-    const p = setup();
-    let ok = true;
+  it("grava cada mudança no banco, na ordem em que aconteceu", async () => {
+    const { calls, persistence } = fakePersistence();
+    const p = setup(persistence);
     act(() => {
-      ok = p.current.importData("não é json");
+      p.current.addAsset(mxrf, buy(10, 10));
     });
-    expect(ok).toBe(false);
-    act(() => {
-      ok = p.current.importData(JSON.stringify({ versao: 99 }));
-    });
-    expect(ok).toBe(false);
+    const id = p.current.data.assets[0].id;
+    act(() => p.current.addPayout({ assetId: id, date: "2026-02-15", valuePerShare: 0.1, shares: 10 }));
+    act(() => p.current.setPaperTarget(40));
+    expect(p.current.saving).toBe(true);
+    await waitFor(() => expect(p.current.saving).toBe(false));
+    expect(calls.map(([name]) => name)).toEqual(["addAsset", "addPayout", "setPaperTarget"]);
+    expect(calls[0][1]).toMatchObject({ id, ticker: "MXRF11" });
+    expect(calls[0][2]).toMatchObject({ assetId: id, type: "compra", shares: 10, price: 10 });
+    expect(calls[2][1]).toBe(40);
+    expect(p.current.saveError).toBeNull();
+  });
 
-    const backup = {
-      version: 2,
-      assets: [{ id: "a", ticker: "HGLG11", type: "tijolo", segment: "logística" }],
-      transactions: [{ id: "t", assetId: "a", type: "compra", date: "2026-01-01", shares: 2, price: 160 }],
-      payouts: [],
-      paperTarget: null,
-    };
+  it("mostra o erro quando o banco recusa e continua com as próximas mudanças", async () => {
+    const { persistence } = fakePersistence();
+    const updateAsset = vi.fn().mockRejectedValue(new Error("falhou"));
+    const p = setup({ ...persistence, updateAsset });
     act(() => {
-      ok = p.current.importData(JSON.stringify(backup));
+      p.current.addAsset(mxrf, buy(1, 10));
     });
-    expect(ok).toBe(true);
-    expect(p.current.assets[0]).toMatchObject({ ticker: "HGLG11", shares: 2 });
+    const id = p.current.data.assets[0].id;
+    act(() => p.current.updateAsset(id, { ...mxrf, segment: "IPCA" }));
+    await waitFor(() => expect(p.current.saveError).toBe(SAVE_ERROR));
+    // a tela mantém o que a pessoa fez
+    expect(p.current.data.assets[0].segment).toBe("IPCA");
+    await waitFor(() => expect(p.current.saving).toBe(false));
+  });
+
+  it("começa com a carteira que veio do servidor", () => {
+    const initial = {
+      ...EMPTY_DATA,
+      assets: [{ id: "a", ticker: "HGLG11", type: "tijolo" as const, segment: "logística" as const }],
+      transactions: [{ id: "t", assetId: "a", type: "compra" as const, date: "2026-01-01", shares: 2, price: 160 }],
+      paperTarget: 30,
+    };
+    const p = renderHook(() => usePortfolio(initial, fakePersistence().persistence)).result;
+    expect(p.current.assets[0]).toMatchObject({ ticker: "HGLG11", shares: 2, averagePrice: 160 });
+    expect(p.current.data.paperTarget).toBe(30);
   });
 });

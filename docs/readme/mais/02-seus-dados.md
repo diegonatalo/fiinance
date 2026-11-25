@@ -1,8 +1,7 @@
 ### 🔒 Seus dados
 
-Não há servidor nem conta. Tudo é salvo no `localStorage` do navegador, na chave `fiinance:data:v1`.
+O app pede uma conta (e-mail e senha, com o [Better Auth](https://www.better-auth.com)). A carteira fica no Postgres, ligada à conta, e aparece igual em qualquer aparelho.
 
-Limpar os dados do navegador apaga a carteira, então use **Carteira → Backup dos dados** de vez em quando.
-Ao importar, o app confere se o arquivo é um backup do fiinance e se cada registro está certo; se não estiver, recusa e nada muda.
+Cada tabela do app tem a chave `(user_id, id)`, e cada Server Action confere a sessão e grava só nas linhas da própria pessoa. Dinheiro fica em centavos. Excluir a conta, em **Conta**, apaga tudo em cascata.
 
 O app não busca cotações: os valores são sempre o que você investiu, a partir das compras e vendas que você lança.
