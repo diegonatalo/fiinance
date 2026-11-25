@@ -17,8 +17,9 @@ pnpm dev        # http://localhost:3000
 
 ### 🔑 Variáveis de ambiente
 
-Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
+São duas. O modelo está em [`.env.example`](.env.example).
 
 | Variável | Descrição | Se não for definida |
 |---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | URL pública do site, sem barra final. | Usa `https://fiinance1.vercel.app` (valor padrão em `lib/site.ts`). |
+| `BRAPI_TOKEN` | Token da [brapi](https://brapi.dev), só no servidor, para as cotações dos FIIs. | O app funciona, mas o selo mostra "Cotações indisponíveis". |

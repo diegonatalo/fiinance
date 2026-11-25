@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fetchQuote } from "@/lib/quotes";
+import { fetchPortfolioQuotes, fetchQuote, parseQuotesResult, parseTickers, quotesAreStale } from "@/lib/quotes";
 
 const respond = (status: number, body: unknown = {}) =>
   vi.fn().mockResolvedValue({
@@ -49,5 +49,67 @@ describe("fetchQuote", () => {
   ])("recusa cotação indisponível (%j)", async (body) => {
     vi.stubGlobal("fetch", respond(200, body));
     await expect(fetchQuote("MXRF11", "x")).rejects.toThrow("Cotação de MXRF11 indisponível");
+  });
+});
+
+describe("parseTickers", () => {
+  it("normaliza e tira repetidos", () => {
+    expect(parseTickers(" hglg11,MXRF11,hglg11 ")).toEqual(["HGLG11", "MXRF11"]);
+  });
+
+  it.each([null, undefined, "", "HGLG11,", "HGLG", "HGLG11;MXRF11", 12])("recusa %j", (raw) => {
+    expect(parseTickers(raw)).toBeNull();
+  });
+
+  it("recusa mais de 30 tickers", () => {
+    const many = Array.from({ length: 31 }, (_, i) => `ABCD${String(i).padStart(2, "0")}`).join(",");
+    expect(parseTickers(many)).toBeNull();
+  });
+});
+
+describe("parseQuotesResult", () => {
+  it("fica só com preços e tickers válidos", () => {
+    expect(
+      parseQuotesResult({
+        prices: { HGLG11: 160, MXRF11: 0, XPML11: "10", bad: 5 },
+        failed: ["KNRI11", 3, "x"],
+      }),
+    ).toEqual({ prices: { HGLG11: 160 }, failed: ["KNRI11"] });
+  });
+
+  it("devolve vazio para resposta fora do formato", () => {
+    expect(parseQuotesResult(null)).toEqual({ prices: {}, failed: [] });
+    expect(parseQuotesResult("oi")).toEqual({ prices: {}, failed: [] });
+  });
+});
+
+describe("fetchPortfolioQuotes", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("chama a rota do app com os tickers", async () => {
+    const fetchMock = respond(200, { prices: { HGLG11: 160 }, failed: [] });
+    vi.stubGlobal("fetch", fetchMock);
+    await expect(fetchPortfolioQuotes(["HGLG11", "MXRF11"])).resolves.toEqual({ prices: { HGLG11: 160 }, failed: [] });
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/quotes?tickers=HGLG11,MXRF11");
+  });
+
+  it("lança erro quando a rota falha", async () => {
+    vi.stubGlobal("fetch", respond(400));
+    await expect(fetchPortfolioQuotes(["HGLG11"])).rejects.toThrow("Falha ao buscar as cotações (400)");
+  });
+});
+
+describe("quotesAreStale", () => {
+  const now = Date.parse("2026-11-24T12:00:00Z");
+
+  it("sem fundos, nada a buscar", () => {
+    expect(quotesAreStale([], now)).toBe(false);
+  });
+
+  it("busca quando falta cotação ou a mais antiga passou de 15 minutos", () => {
+    expect(quotesAreStale([undefined], now)).toBe(true);
+    expect(quotesAreStale(["2026-11-24T11:50:00Z"], now)).toBe(false);
+    expect(quotesAreStale(["2026-11-24T11:50:00Z", "2026-11-24T11:40:00Z"], now)).toBe(true);
+    expect(quotesAreStale(["data ruim"], now)).toBe(true);
   });
 });

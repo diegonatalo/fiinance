@@ -1,11 +1,15 @@
 import { expect, test } from "@playwright/test";
-import { addFii, assetRow, mockBrapi } from "./fixtures";
+import { addFii, assetRow, mockQuotes } from "./fixtures";
+
+test.beforeEach(async ({ page }) => {
+  // por padrão, nenhuma cotação: cada teste diz quais preços a rota devolve
+  await mockQuotes(page, {});
+});
 
 test("adiciona um FII e mantém depois de recarregar", async ({ page }) => {
   await addFii(page, "HGLG11", "10", "150,50");
-
-  const row = assetRow(page, "HGLG11");
-  await expect(row).toContainText("R$ 1.505,00");
+  await expect(page.getByText("HGLG11 adicionado à carteira")).toBeVisible();
+  await expect(assetRow(page, "HGLG11")).toContainText("R$ 1.505,00");
 
   await page.reload();
   await expect(assetRow(page, "HGLG11")).toContainText("R$ 150,50");
@@ -13,10 +17,7 @@ test("adiciona um FII e mantém depois de recarregar", async ({ page }) => {
 
 test("segunda compra do mesmo FII soma na posição", async ({ page }) => {
   await addFii(page, "XPML11", "10", "100,00");
-  await page.getByLabel(/^Ticker/).fill("XPML11");
-  await page.getByLabel(/^Qtd\. de cotas/).fill("10");
-  await page.getByLabel(/^Preço pago/).fill("120,00");
-  await page.getByRole("button", { name: "Adicionar FII" }).click();
+  await addFii(page, "XPML11", "10", "120,00");
   await expect(page.getByText("Compra somada à posição de XPML11")).toBeVisible();
 
   // 20 cotas, preço médio de R$ 110,00
@@ -27,24 +28,38 @@ test("segunda compra do mesmo FII soma na posição", async ({ page }) => {
 
 test("não adiciona com o formulário vazio", async ({ page }) => {
   await page.goto("/app/carteira");
-  await page.getByRole("button", { name: "Adicionar FII" }).click();
+  await expect(page.getByText("Carteira vazia")).toBeVisible();
+  await page.getByRole("main").getByRole("button", { name: "Nova operação" }).first().click();
+  await page.getByRole("dialog").getByRole("button", { name: "Adicionar FII" }).click();
   await expect(page.getByText("Informe o ticker")).toBeVisible();
-  await expect(page.getByText("Adicione ativos para acompanhar as cotações.")).toBeVisible();
 });
 
-test("busca as cotações na brapi e mostra na tabela", async ({ page }) => {
-  await mockBrapi(page, { HGLG11: 160 });
+test("busca as cotações sozinho e mostra na tabela e no painel", async ({ page }) => {
+  await mockQuotes(page, { HGLG11: 160 });
   await addFii(page, "HGLG11", "10", "150,00");
 
-  await page.getByRole("button", { name: "Atualizar cotações" }).click();
-  await expect(page.getByText("Cotações atualizadas")).toBeVisible();
   await expect(assetRow(page, "HGLG11")).toContainText("R$ 160,00");
+  await expect(assetRow(page, "HGLG11")).toContainText("+6,67%");
+  await expect(page.getByRole("status").filter({ hasText: "Cotações de hoje" }).first()).toBeVisible();
+
+  await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Painel" }).click();
+  await expect(page.getByRole("main")).toContainText("R$ 1.600,00");
 });
 
-test("avisa quando a brapi recusa o token", async ({ page }) => {
-  await page.route("https://brapi.dev/**", (route) => route.fulfill({ status: 401, json: {} }));
+test("avisa quando as cotações não chegam", async ({ page }) => {
+  await page.route("**/api/quotes?**", (route) => route.fulfill({ status: 500, json: {} }));
   await addFii(page, "HGLG11", "10", "150,00");
+  await expect(page.getByText("Cotações indisponíveis").first()).toBeVisible();
+  await expect(assetRow(page, "HGLG11")).toContainText("—");
+});
 
-  await page.getByRole("button", { name: "Atualizar cotações" }).click();
-  await expect(page.getByText(/Token da brapi ausente ou inválido/)).toBeVisible();
+test("a meta de alocação diz onde aportar", async ({ page }) => {
+  await addFii(page, "HGLG11", "10", "100,00");
+  await page.goto("/app");
+  await page.getByRole("button", { name: "Aumentar meta" }).click();
+  await expect(page.getByLabel("Meta em papel")).toHaveValue("5%");
+  await expect(page.getByText("Próximo aporte")).toBeVisible();
+  await expect(page.getByText("em papel", { exact: true })).toBeVisible();
+  await page.reload();
+  await expect(page.getByLabel("Meta em papel")).toHaveValue("5%");
 });

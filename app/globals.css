@@ -2,8 +2,86 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme {
-  --font-sans: var(--nf-inter), ui-sans-serif, system-ui, sans-serif;
+/*
+ * Identidade do FIInance: papel em azul, tijolo em terracota, o resto é tinta e números.
+ * Cada cor existe nos dois temas; os componentes usam só os nomes (bg-surface, text-paper...).
+ */
+:root {
+  --c-bg: #f5f4f0;
+  --c-sunken: #efeee9;
+  --c-surface: #ffffff;
+  --c-raised: #eceae4;
+  --c-hairline: #eceae4;
+  --c-line: #e2e0da;
+  --c-line-strong: #d3d0c8;
+  --c-track: #cfcbc3;
+  --c-fg: #16181d;
+  --c-fg-soft: #3a404a;
+  --c-muted: #5c6370;
+  --c-subtle: #6b7280;
+  --c-faint: #6e7581;
+  --c-paper: #2f6be0;
+  --c-paper-strong: #1f55c2;
+  --c-paper-deep: #9dbbf5;
+  --c-brick: #c2602f;
+  --c-brick-strong: #9c4519;
+  --c-brick-deep: #8a3d18;
+  --c-brick-light: #edb08e;
+  --c-up: #12814b;
+  --c-down: #c8344a;
+}
+
+.dark {
+  --c-bg: #0b0d10;
+  --c-sunken: #0f1216;
+  --c-surface: #13161b;
+  --c-raised: #1a1e25;
+  --c-hairline: #1c2028;
+  --c-line: #252a33;
+  --c-line-strong: #2a303a;
+  --c-track: #3a404b;
+  --c-fg: #eef0f3;
+  --c-fg-soft: #c9ced6;
+  --c-muted: #9ba3af;
+  --c-subtle: #848c99;
+  --c-faint: #6b7380;
+  --c-paper: #7aa7ff;
+  --c-paper-strong: #a9c6ff;
+  --c-paper-deep: #3f66b8;
+  --c-brick: #e8875a;
+  --c-brick-strong: #f2ae8c;
+  --c-brick-deep: #b5603b;
+  --c-brick-light: #f6c4a9;
+  --c-up: #5fd39a;
+  --c-down: #ff8a98;
+}
+
+@theme inline {
+  --font-sans: var(--nf-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--nf-geist-mono), ui-monospace, monospace;
+
+  --color-bg: var(--c-bg);
+  --color-sunken: var(--c-sunken);
+  --color-surface: var(--c-surface);
+  --color-raised: var(--c-raised);
+  --color-hairline: var(--c-hairline);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-track: var(--c-track);
+  --color-fg: var(--c-fg);
+  --color-fg-soft: var(--c-fg-soft);
+  --color-muted: var(--c-muted);
+  --color-subtle: var(--c-subtle);
+  --color-faint: var(--c-faint);
+  --color-paper: var(--c-paper);
+  --color-paper-strong: var(--c-paper-strong);
+  --color-paper-deep: var(--c-paper-deep);
+  --color-brick: var(--c-brick);
+  --color-brick-strong: var(--c-brick-strong);
+  --color-brick-deep: var(--c-brick-deep);
+  --color-brick-light: var(--c-brick-light);
+  --color-up: var(--c-up);
+  --color-down: var(--c-down);
 }
 
 html,
@@ -12,16 +90,19 @@ body {
 }
 
 html {
-  background-color: #fafafa; /* zinc-50 */
-}
-
-html.dark {
-  background-color: #09090b; /* zinc-950 */
+  background-color: var(--c-bg);
+  color: var(--c-fg);
 }
 
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Foco sempre visível, na cor do texto. */
+:focus-visible {
+  outline: 2px solid var(--c-paper);
+  outline-offset: 2px;
 }
 
 /* Smooth theme transition */

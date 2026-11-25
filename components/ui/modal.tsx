@@ -55,7 +55,7 @@ export const Modal = ({ open, title, onClose, children }: ModalProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-zinc-950/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -64,17 +64,18 @@ export const Modal = ({ open, title, onClose, children }: ModalProps) => {
       <div
         ref={dashboard}
         tabIndex={-1}
-        className="max-h-full w-full max-w-lg overflow-y-auto rounded-t-2xl border border-zinc-200 bg-white p-5 shadow-xl outline-none dark:border-zinc-800 dark:bg-zinc-900 sm:rounded-2xl"
+        className="max-h-full w-full max-w-lg overflow-y-auto rounded-t-3xl border border-line bg-surface p-6 text-fg shadow-2xl outline-none sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <h2 className="text-xl font-semibold tracking-tight">
             {title}
           </h2>
           <button
             onClick={onClose}
             aria-label="Fechar"
-            className="rounded-lg p-1 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            type="button"
+            className="inline-flex size-10 items-center justify-center rounded-[10px] text-muted transition-colors hover:bg-raised hover:text-fg"
           >
             <XIcon size={18} />
           </button>

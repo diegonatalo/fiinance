@@ -2,7 +2,7 @@
 
 export const HERO = {
   kicker: "Carteira de fundos imobiliários",
-  title: "Sua carteira de FIIs num painel só, sem planilha.",
+  title: "Sua carteira de FIIs em papel e tijolo.",
   subtitle:
     "O FIInance mostra quanto você investiu, quanto a carteira vale hoje e quanto ela rende por mês. E diz quanto falta aportar em papel e em tijolo para chegar na alocação que você quer.",
   note: "Grátis e sem cadastro. Seus dados ficam só no seu navegador.",
@@ -52,8 +52,8 @@ export const FEATURES: Feature[] = [
   },
   {
     icon: "quote",
-    title: "Cotações opcionais",
-    text: "Com um token gratuito da brapi, o painel atualiza o preço atual de cada fundo.",
+    title: "Cotações automáticas",
+    text: "O preço de cada fundo chega sozinho quando você abre o app. Sem token e sem digitar.",
   },
   {
     icon: "backup",
@@ -68,7 +68,7 @@ export type Screenshot = { light: string; dark: string; alt: string };
 export const SCREENSHOT: Screenshot = {
   light: "/landing/painel-claro.webp",
   dark: "/landing/painel-escuro.webp",
-  alt: "Painel do FIInance com resumo da carteira, gráficos de distribuição e evolução.",
+  alt: "Painel do FIInance com patrimônio, evolução, alocação e o peso de cada fundo.",
 };
 
 export type Faq = { question: string; answer: string };
@@ -78,7 +78,7 @@ export const FAQ: Faq[] = [
   {
     question: "Onde ficam os meus dados?",
     answer:
-      "Só no seu navegador. Nada vai para um servidor nosso. Se você usar as cotações, os códigos dos fundos e o seu token vão para a brapi, que devolve o preço.",
+      "Só no seu navegador. Para buscar as cotações, apenas os códigos dos fundos passam pelo nosso servidor, que pergunta o preço à brapi. Quantidades, preços pagos e proventos nunca saem do seu aparelho.",
   },
   {
     question: "Como levo a carteira para outro computador?",
@@ -90,11 +90,6 @@ export const FAQ: Faq[] = [
     answer: "Não. O FIInance só organiza os seus números; as decisões são suas.",
   },
 ];
-
-export type Photo = { src: string; alt: string };
-
-/** Foto do Unsplash (licença livre), guardada em `public/landing/`. */
-export const PHOTO: Photo = { src: "/landing/predio.webp", alt: "Edifício comercial de vidro e tijolo sob céu claro." };
 
 /** Tipos e segmentos que o app usa para classificar cada fundo (`types/fii.ts`). */
 export const SEGMENTS = ["Tijolo · lajes", "Tijolo · logística", "Tijolo · shoppings", "Tijolo · híbrido", "Papel · CDI", "Papel · IPCA"];

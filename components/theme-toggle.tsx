@@ -9,9 +9,10 @@ type ThemeToggleProps = {
 export const ThemeToggle = ({ theme, onToggle }: ThemeToggleProps) => {
   return (
     <button
+      type="button"
       onClick={onToggle}
-      aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-600 outline-none transition-colors hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-emerald-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+      aria-label={theme === "dark" ? "Mudar para o tema claro" : "Mudar para o tema escuro"}
+      className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-muted transition-colors hover:text-fg"
     >
       {theme === "dark" ? <SunIcon size={18} /> : <MoonIcon size={18} />}
     </button>

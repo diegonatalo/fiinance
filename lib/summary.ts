@@ -50,3 +50,31 @@ export function calculateSummary(
     resultPct: totalInvested > 0 ? (result / totalInvested) * 100 : 0,
   };
 }
+
+/** Uma linha da carteira: custo, valor de hoje, resultado e peso. */
+export type PositionRow = {
+  asset: Fii;
+  invested: number;
+  quote?: number;
+  /** valor a mercado; sem cotação, o custo */
+  value: number;
+  result?: number;
+  /** variação da cotação sobre o preço médio, em % */
+  resultPct?: number;
+  /** fatia do valor total da carteira, em % */
+  weight: number;
+};
+
+/** Linhas da carteira com o peso de cada fundo no valor de hoje. */
+export function positionRows(assets: Fii[], quotes: Record<string, Quote>): PositionRow[] {
+  const rows = assets.map((asset) => {
+    const invested = positionValue(asset);
+    const quote = quotes[asset.id]?.price;
+    if (quote === undefined || asset.shares === 0) return { asset, invested, quote, value: invested, weight: 0 };
+    const value = asset.shares * quote;
+    const result = value - invested;
+    return { asset, invested, quote, value, result, resultPct: invested > 0 ? (result / invested) * 100 : 0, weight: 0 };
+  });
+  const total = rows.reduce((acc, r) => acc + r.value, 0);
+  return rows.map((r) => ({ ...r, weight: total > 0 ? (r.value / total) * 100 : 0 }));
+}

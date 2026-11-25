@@ -38,13 +38,13 @@ export const BackupCard = () => {
 
   return (
     <Card>
-      <CardTitle className="mb-1">Backup dos dados</CardTitle>
-      <p className="mb-4 text-xs text-zinc-500 dark:text-zinc-400">
+      <CardTitle className="mb-1.5">Backup dos dados</CardTitle>
+      <p className="mb-5 max-w-2xl text-sm leading-relaxed text-muted">
         Seus dados ficam apenas neste navegador. Exporte um backup para não
         perdê-los ao limpar o navegador ou trocar de computador. O arquivo leva
-        toda a carteira (sem o token da brapi): guarde em lugar seguro.
+        toda a carteira: guarde em lugar seguro.
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 *:max-sm:w-full">
         <Button
           variant="outline"
           onClick={() =>
@@ -55,10 +55,10 @@ export const BackupCard = () => {
             )
           }
         >
-          <DownloadSimpleIcon size={16} /> Exportar backup (JSON)
+          <DownloadSimpleIcon size={16} aria-hidden="true" /> Exportar backup (JSON)
         </Button>
         <Button variant="outline" onClick={() => inputRef.current?.click()}>
-          <UploadSimpleIcon size={16} /> Importar backup
+          <UploadSimpleIcon size={16} aria-hidden="true" /> Importar backup
         </Button>
         <Button
           variant="outline"
@@ -71,7 +71,7 @@ export const BackupCard = () => {
             )
           }
         >
-          <FileCsvIcon size={16} /> Exportar operações (CSV)
+          <FileCsvIcon size={16} aria-hidden="true" /> Exportar operações (CSV)
         </Button>
         <input
           ref={inputRef}

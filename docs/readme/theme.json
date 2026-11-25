@@ -1,9 +1,9 @@
 {
-  "bg": "#09090b", "card": "#18181b", "border": "#27272a", "borderStrong": "#3f3f46",
-  "fg": "#f4f4f5", "muted": "#a1a1aa", "subtle": "#71717a",
-  "accent": "#10b981", "accent2": "#3b82f6", "onAccent": "#022c22",
-  "fontSans": "Inter,'Segoe UI',-apple-system,Helvetica,Arial,sans-serif",
-  "fontMono": "ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace",
+  "bg": "#0b0d10", "card": "#13161b", "border": "#252a33", "borderStrong": "#2a303a",
+  "fg": "#eef0f3", "muted": "#9ba3af", "subtle": "#848c99",
+  "accent": "#7aa7ff", "accent2": "#e8875a", "onAccent": "#0b0d10",
+  "fontSans": "Geist,Inter,'Segoe UI',-apple-system,Helvetica,Arial,sans-serif",
+  "fontMono": "'Geist Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace",
   "radiusScale": 1.0,
   "glow": true, "grid": true, "animations": true
 }

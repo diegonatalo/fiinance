@@ -1,9 +1,13 @@
 import { createContext, useContext } from "react";
 import type { Portfolio } from "@/hooks/use-portfolio";
+import type { QuoteFetchState } from "@/lib/quote-status";
 
-export const PortfolioContext = createContext<Portfolio | null>(null);
+/** A carteira e o estado da busca automática de cotações. */
+export type PortfolioValue = Portfolio & { quoteState: QuoteFetchState };
 
-export function usePortfolioContext(): Portfolio {
+export const PortfolioContext = createContext<PortfolioValue | null>(null);
+
+export function usePortfolioContext(): PortfolioValue {
   const ctx = useContext(PortfolioContext);
   if (!ctx) {
     throw new Error("usePortfolioContext deve ser usado dentro de PortfolioProvider");

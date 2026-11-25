@@ -3,76 +3,64 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BrandLink } from "@/components/brand";
+import { CalculatorsIcon, DashboardIcon, PayoutsIcon, PortfolioIcon } from "@/components/nav-icons";
+import { QuoteStatus } from "@/components/quote-status";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useTheme } from "@/hooks/use-theme";
-import { THEME_KEY } from "@/lib/storage-keys";
 import { cn } from "@/lib/cn";
-import { ThemeToggle } from "./theme-toggle";
-import {
-  BuildingsIcon,
-  CalculatorIcon,
-  CoinsIcon,
-  SquaresFourIcon,
-  WalletIcon,
-} from "@phosphor-icons/react";
+import { THEME_COLORS } from "@/lib/site";
+import { THEME_KEY } from "@/lib/storage-keys";
 
 const navItems = [
-  { to: "/app", label: "Painel", end: true, icon: SquaresFourIcon },
-  { to: "/app/carteira", label: "Carteira", end: false, icon: WalletIcon },
-  { to: "/app/proventos", label: "Proventos", end: false, icon: CoinsIcon },
-  { to: "/app/calculadoras", label: "Calculadoras", end: false, icon: CalculatorIcon },
+  { to: "/app", label: "Painel", end: true, icon: DashboardIcon },
+  { to: "/app/carteira", label: "Carteira", end: false, icon: PortfolioIcon },
+  { to: "/app/proventos", label: "Proventos", end: false, icon: PayoutsIcon },
+  { to: "/app/calculadoras", label: "Calculadoras", end: false, icon: CalculatorsIcon },
 ];
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
-  const { theme, toggle } = useTheme(THEME_KEY);
+  const { theme, toggle } = useTheme(THEME_KEY, THEME_COLORS);
   const pathname = usePathname() ?? "";
   const isActive = (item: (typeof navItems)[number]) =>
     item.end ? pathname === item.to : pathname.startsWith(item.to);
 
   return (
-    <div className="min-h-full bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
-      <header className="sticky top-0 z-40 border-b border-zinc-200 bg-zinc-50/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4">
-          <Link href="/" aria-label="FIInance, página inicial" className="flex items-center gap-2.5 rounded-lg">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500 text-white">
-              <BuildingsIcon size={20} />
+    <div className="min-h-full bg-bg text-fg">
+      <header className="border-b border-hairline">
+        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-8 gap-y-4 px-5 py-4 sm:px-8">
+          <BrandLink />
+          <nav aria-label="Principal" className="hidden flex-1 flex-wrap gap-1 md:flex">
+            {navItems.map((item) => (
+              <Link
+                key={item.to}
+                href={item.to}
+                aria-current={isActive(item) ? "page" : undefined}
+                className={cn(
+                  "rounded-[10px] px-3.5 py-2.5 text-sm font-medium transition-colors",
+                  isActive(item) ? "bg-raised text-fg" : "text-muted hover:text-fg",
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="ml-auto flex items-center gap-4">
+            <div className="hidden md:block">
+              <QuoteStatus />
             </div>
-            <div>
-              <h1 className="text-lg font-bold leading-none tracking-tight">
-                FIInance
-              </h1>
-              <p className="hidden text-xs text-zinc-500 dark:text-zinc-400 sm:block">
-                transforme dados em decisões
-              </p>
-            </div>
-          </Link>
-          <ThemeToggle theme={theme} onToggle={toggle} />
+            <ThemeToggle theme={theme} onToggle={toggle} />
+          </div>
         </div>
-        <nav aria-label="Principal" className="mx-auto hidden max-w-5xl gap-1 px-4 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.to}
-              href={item.to}
-              aria-current={isActive(item) ? "page" : undefined}
-              className={cn(
-                "-mb-px border-b-2 px-3 py-2.5 text-sm font-medium transition-colors",
-                isActive(item)
-                  ? "border-emerald-500 text-emerald-600 dark:text-emerald-400"
-                  : "border-transparent text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100",
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
       </header>
 
-      <main className="mx-auto grid max-w-5xl grid-cols-1 gap-6 px-4 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] *:min-w-0 md:pb-6">
+      <main className="mx-auto flex max-w-[1280px] flex-col gap-6 px-5 pt-6 pb-[calc(6.5rem+env(safe-area-inset-bottom))] *:min-w-0 sm:px-8 md:pt-12 md:pb-18">
         {children}
       </main>
 
       <nav
         aria-label="Principal"
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200 bg-zinc-50/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-zinc-800 dark:bg-zinc-950/90"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-sunken/95 px-2 pt-1.5 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur md:hidden"
       >
         <ul className="grid grid-cols-4">
           {navItems.map((item) => {
@@ -84,13 +72,11 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                   href={item.to}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500",
-                    active
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100",
+                    "flex min-h-13 flex-col items-center justify-center gap-1 rounded-xl text-[11px] font-medium transition-colors",
+                    active ? "text-fg" : "text-muted hover:text-fg",
                   )}
                 >
-                  <Icon size={22} weight={active ? "fill" : "regular"} aria-hidden />
+                  <Icon />
                   {item.label}
                 </Link>
               </li>

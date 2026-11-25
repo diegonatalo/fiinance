@@ -31,7 +31,7 @@ test("a página inicial apresenta o FIInance e leva ao painel", async ({ page })
   const errors = collectErrors(page);
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(/carteira de FIIs/);
-  await page.getByRole("main").getByRole("link", { name: "Abrir o painel" }).click();
+  await page.getByRole("main").getByRole("link", { name: "Abrir o app" }).first().click();
   await expect(page).toHaveURL("/app");
   // A marca no app volta para a página inicial.
   await page.getByRole("link", { name: "FIInance, página inicial" }).click();
@@ -65,6 +65,6 @@ test("endereço desconhecido mostra a página 404", async ({ page }) => {
   const response = await page.goto("/nao-existe");
   expect(response?.status()).toBe(404);
   await expect(page.getByText("Página não encontrada")).toBeVisible();
-  await page.getByRole("link", { name: "Voltar ao início" }).click();
+  await page.getByRole("link", { name: "Página inicial", exact: true }).click();
   await expect(page).toHaveURL("/");
 });

@@ -29,7 +29,7 @@ export const OperationModal = ({ asset, initialValues, onClose }: OperationModal
   return (
     <Modal
       open={!!asset}
-      title={asset ? `Registrar operação — ${asset.ticker}` : "Registrar operação"}
+      title={asset ? `Comprar ou vender ${asset.ticker}` : "Comprar ou vender"}
       onClose={onClose}
     >
       {asset && (
@@ -100,7 +100,7 @@ const OperationForm = ({ asset, initialValues, onClose }: OperationFormProps) =>
 
   return (
     <form onSubmit={submit} className="grid gap-4" noValidate>
-      <p className="text-xs text-zinc-500 dark:text-zinc-400">
+      <p className="text-sm text-muted">
         Posição atual: {formatNumber(asset.shares)} cotas
         {asset.shares > 0 && <> a {formatBRL(asset.averagePrice)} (preço médio)</>}.
       </p>
@@ -113,10 +113,8 @@ const OperationForm = ({ asset, initialValues, onClose }: OperationFormProps) =>
             onClick={() => setType(t)}
             aria-pressed={type === t}
             className={cn(
-              "rounded-lg border px-3 py-2 text-sm font-medium capitalize transition-colors",
-              type === t
-                ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                : "border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800",
+              "h-12 rounded-xl border text-[15px] font-medium capitalize transition-colors",
+              type === t ? "border-fg bg-raised text-fg" : "border-line text-muted hover:bg-raised hover:text-fg",
             )}
           >
             {t}
@@ -155,7 +153,7 @@ const OperationForm = ({ asset, initialValues, onClose }: OperationFormProps) =>
         </Field>
       </div>
 
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-wrap justify-end gap-2 pt-1">
         <Button type="button" variant="outline" onClick={onClose}>
           Cancelar
         </Button>

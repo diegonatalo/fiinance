@@ -19,33 +19,31 @@ export const HistoryCard = () => {
 
   return (
     <Card>
-      <CardTitle className="mb-4">Histórico de operações</CardTitle>
-      <ul className="grid divide-y divide-zinc-100 dark:divide-zinc-800/60">
+      <CardTitle className="mb-3">Histórico de operações</CardTitle>
+      <ul className="grid divide-y divide-hairline">
         {sorted.map((t) => (
-          <li key={t.id} className="flex items-center gap-3 py-2 text-sm">
-            <span className="w-20 shrink-0 text-xs tabular-nums text-zinc-500 dark:text-zinc-400">
+          <li key={t.id} className="flex items-center gap-3 py-2.5 text-sm tabular-nums">
+            <span className="w-20 shrink-0 text-[13px] text-muted">
               {formatDate(t.date)}
             </span>
             <span
               className={cn(
-                "w-14 shrink-0 rounded-md px-2 py-0.5 text-center text-xs font-medium",
-                t.type === "compra"
-                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                  : "bg-orange-500/10 text-orange-600 dark:text-orange-400",
+                "w-16 shrink-0 rounded-full py-1 text-center text-xs font-medium",
+                t.type === "compra" ? "bg-up/10 text-up" : "bg-down/10 text-down",
               )}
             >
               {t.type}
             </span>
-            <span className="font-semibold">{tickers.get(t.assetId)}</span>
-            <span className="ml-auto text-right text-xs tabular-nums text-zinc-600 dark:text-zinc-300">
+            <span className="font-mono font-medium">{tickers.get(t.assetId)}</span>
+            <span className="ml-auto text-right text-xs text-muted">
               {formatNumber(t.shares)} × {formatBRL(t.price)}
-              <span className="block font-medium">
+              <span className="block text-sm font-semibold text-fg">
                 {formatBRL(t.shares * t.price)}
               </span>
             </span>
             <Button
               variant="danger"
-              className="px-2!"
+              size="icon"
               aria-label={`Excluir operação de ${tickers.get(t.assetId)}`}
               onClick={() => {
                 if (window.confirm("Excluir esta operação? O preço médio será recalculado.")) {
@@ -54,7 +52,7 @@ export const HistoryCard = () => {
                 }
               }}
             >
-              <TrashSimpleIcon size={16} />
+              <TrashSimpleIcon size={18} />
             </Button>
           </li>
         ))}
