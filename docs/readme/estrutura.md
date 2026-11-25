@@ -3,10 +3,10 @@
 │                 o corpo de cada tela fica em components/ (portfolio-page.tsx…)
 ├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
 ├── lib/          lógica pura: posição, resumo, proventos, metas,
-│                 calculadoras, validação dos dados, exportação, contextos
+│                 calculadoras, gráficos, validação dos dados, exportação
 ├── hooks/        use-portfolio (estado e ações), use-local-storage, use-theme
 ├── e2e/          testes de ponta a ponta (Playwright)
-└── components/   interface (ui/: Button, Card, Modal, Field, Input), providers
+└── components/   interface (ui/: Button, Card, Modal, Field, Input), marca, providers
 ```
 
 > [!NOTE]

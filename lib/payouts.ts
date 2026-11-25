@@ -54,3 +54,38 @@ export function summarizePayouts(
     dyOnCost: totalInvested > 0 ? (total12m / totalInvested) * 100 : 0,
   };
 }
+
+export type LatestMonth = {
+  month: string;
+  total: number;
+  /** variação sobre o mês anterior, em %; null sem mês anterior com proventos */
+  changePct: number | null;
+};
+
+/** O mês mais recente da série que teve proventos, comparado com o anterior. */
+export function latestPayoutMonth(series: PayoutMonth[]): LatestMonth | null {
+  for (let i = series.length - 1; i >= 0; i--) {
+    if (series[i].total <= 0) continue;
+    const previous = series[i - 1]?.total ?? 0;
+    return {
+      month: series[i].month,
+      total: series[i].total,
+      changePct: previous > 0 ? ((series[i].total - previous) / previous) * 100 : null,
+    };
+  }
+  return null;
+}
+
+/** Proventos agrupados por mês (aaaa-mm), do mais recente para o mais antigo. */
+export function payoutsByMonth(payouts: Payout[]): { month: string; total: number; items: Payout[] }[] {
+  const groups = new Map<string, Payout[]>();
+  for (const p of payouts.toSorted((a, b) => b.date.localeCompare(a.date))) {
+    const month = monthOf(p.date);
+    groups.set(month, [...(groups.get(month) ?? []), p]);
+  }
+  return Array.from(groups.entries()).map(([month, items]) => ({
+    month,
+    total: items.reduce((acc, p) => acc + payoutTotal(p), 0),
+    items,
+  }));
+}

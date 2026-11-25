@@ -20,9 +20,9 @@ export const Toast = ({ message, action, onDone }: ToastProps) => {
   return (
     <div
       role="status"
-      className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] md:bottom-4 left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-3 rounded-lg border border-emerald-500/30 bg-white px-4 py-2.5 text-sm font-medium text-zinc-900 shadow-lg dark:bg-zinc-900 dark:text-zinc-50"
+      className="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 text-sm font-medium text-fg shadow-xl md:bottom-6"
     >
-      <CheckCircleIcon size={18} className="shrink-0 text-emerald-500" />
+      <CheckCircleIcon size={18} className="shrink-0 text-up" />
       <span>{message}</span>
       {action && (
         <button
@@ -30,7 +30,8 @@ export const Toast = ({ message, action, onDone }: ToastProps) => {
             action.onClick();
             onDone();
           }}
-          className="shrink-0 rounded-md px-2 py-0.5 font-semibold text-emerald-600 outline-none hover:bg-emerald-500/10 focus-visible:ring-2 focus-visible:ring-emerald-500 dark:text-emerald-400"
+          type="button"
+          className="shrink-0 rounded-lg px-2 py-1 font-semibold text-paper hover:bg-paper/10"
         >
           {action.label}
         </button>

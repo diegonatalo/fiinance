@@ -93,36 +93,13 @@ describe("sharesOn", () => {
 });
 
 describe("calculateSummary", () => {
-  it("usa o custo quando falta cotação e sinaliza cotações incompletas", () => {
-    const positions = [fii("a", 10, 10), fii("b", 5, 20)];
-    const summary = calculateSummary(positions, {
-      a: { price: 12, updatedAt: "" },
-    });
-    expect(summary).toMatchObject({
-      totalInvested: 200,
-      totalShares: 15,
-      activeAssets: 2,
-      marketValue: 220,
-      completeQuotes: false,
-      result: 20,
-      resultPct: 10,
-    });
+  it("soma o investido e as cotas dos fundos com posição", () => {
+    const summary = calculateSummary([fii("a", 10, 10), fii("b", 5, 20), fii("c", 0, 0)]);
+    expect(summary).toEqual({ totalInvested: 200, totalShares: 15, activeAssets: 2 });
   });
 
-  it("marca as cotações como completas quando todas existem", () => {
-    const summary = calculateSummary([fii("a", 10, 10)], { a: { price: 9, updatedAt: "" } });
-    expect(summary.completeQuotes).toBe(true);
-    expect(summary.result).toBe(-10);
-  });
-
-  it("ignora ativos sem cotas e zera uma carteira vazia", () => {
-    const summary = calculateSummary([fii("a", 0, 0)], {});
-    expect(summary).toMatchObject({
-      activeAssets: 0,
-      totalInvested: 0,
-      resultPct: 0,
-      completeQuotes: false,
-    });
+  it("zera uma carteira vazia", () => {
+    expect(calculateSummary([])).toEqual({ totalInvested: 0, totalShares: 0, activeAssets: 0 });
   });
 });
 

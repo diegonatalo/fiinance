@@ -8,26 +8,12 @@ type CardProps = {
 
 export const Card = ({ children, className }: CardProps) => {
   return (
-    <div
-      className={cn(
-        "rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900",
-        className,
-      )}
-    >
+    <section className={cn("min-w-0 rounded-[20px] border border-line bg-surface p-5 sm:p-7", className)}>
       {children}
-    </div>
+    </section>
   );
 };
 
 export const CardTitle = ({ children, className }: CardProps) => {
-  return (
-    <h2
-      className={cn(
-        "text-sm font-medium tracking-wide text-zinc-500 dark:text-zinc-400",
-        className,
-      )}
-    >
-      {children}
-    </h2>
-  );
+  return <h2 className={cn("text-[17px] font-semibold tracking-tight text-fg", className)}>{children}</h2>;
 };

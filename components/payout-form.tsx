@@ -11,7 +11,12 @@ import { parseDecimal } from "@/lib/numbers";
 import { sharesOn } from "@/lib/position";
 import { PlusIcon } from "@phosphor-icons/react";
 
-export const PayoutForm = () => {
+type PayoutFormProps = {
+  /** chamado depois de salvar (para fechar a janela) */
+  onDone?: () => void;
+};
+
+export const PayoutForm = ({ onDone }: PayoutFormProps) => {
   const { assets, data, addPayout } = usePortfolioContext();
   const notify = useToast();
   const [assetId, setAssetId] = useState("");
@@ -44,11 +49,12 @@ export const PayoutForm = () => {
     addPayout({ assetId: asset.id, date, valuePerShare: numericValue, shares });
     notify(`Provento de ${asset.ticker} registrado`);
     setAmount("");
+    onDone?.();
   }
 
   return (
     <form onSubmit={submit} className="grid gap-4" noValidate>
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Ativo" error={errorMap.asset}>
           <Select
             value={assetId}
@@ -72,6 +78,7 @@ export const PayoutForm = () => {
             error={!!errorMap.date}
           />
         </Field>
+        <div className="sm:col-span-2">
         <Field
           label="Valor por cota (R$)"
           error={errorMap.amount}
@@ -89,10 +96,11 @@ export const PayoutForm = () => {
             error={!!errorMap.amount}
           />
         </Field>
+        </div>
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end pt-1">
         <Button type="submit">
-          <PlusIcon size={16} /> Registrar provento
+          <PlusIcon size={16} weight="bold" aria-hidden="true" /> Registrar provento
         </Button>
       </div>
     </form>

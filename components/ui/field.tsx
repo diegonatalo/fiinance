@@ -9,19 +9,13 @@ type FieldProps = {
 
 export const Field = ({ label, error, hint, children }: FieldProps) => {
   return (
-    <label className="grid gap-1.5">
-      <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-        {label}
-      </span>
+    <label className="grid gap-2">
+      <span className="text-[13px] text-muted">{label}</span>
       {children}
       {error ? (
-        <span className="text-xs text-red-500">{error}</span>
+        <span className="text-xs text-down">{error}</span>
       ) : (
-        hint && (
-          <span className="text-xs text-zinc-400 dark:text-zinc-500">
-            {hint}
-          </span>
-        )
+        hint && <span className="text-xs text-subtle">{hint}</span>
       )}
     </label>
   );

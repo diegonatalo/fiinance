@@ -19,5 +19,8 @@ export const PRIVACY_EMAIL = "contato@exemplo.com.br";
 export const SOURCE_URL = "https://github.com/diegonatalo/fiinance";
 
 export const SITE_NAME = "FIInance";
+
+/** Cor da barra do navegador em cada tema (o fundo da página). */
+export const THEME_COLORS = { light: "#f5f4f0", dark: "#0b0d10" } as const;
 export const SITE_DESCRIPTION =
   "Gerencie sua carteira de Fundos Imobiliários (FIIs) com gráficos e cálculos de alocação.";

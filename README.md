@@ -1,7 +1,7 @@
 <!-- Arquivo gerado pelo readme-kit. Não edite aqui: altere docs/readme/ e rode "readme-kit build". -->
 <div align="center">
 
-<img src="docs/assets/banner.svg" alt="FIInance: Sua carteira de FIIs, sem planilha. github.com/diegonatalo/fiinance. Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4" width="100%" />
+<img src="docs/assets/banner.svg" alt="FIInance: Sua carteira de FIIs em papel e tijolo. github.com/diegonatalo/fiinance. Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4" width="100%" />
 
 <br />
 
@@ -14,7 +14,7 @@
 ![React](https://img.shields.io/badge/React_19-20232a?style=flat-square&logo=react&logoColor=61dafb)
 ![TypeScript](https://img.shields.io/badge/TypeScript_6-3178c6?style=flat-square&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)
-![Privacidade](https://img.shields.io/badge/dados-s%C3%B3_no_seu_navegador-10b981?style=flat-square)
+![Privacidade](https://img.shields.io/badge/dados-s%C3%B3_no_seu_navegador-7aa7ff?style=flat-square)
 ![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-16a34a?style=flat-square)
 
 </div>
@@ -27,7 +27,7 @@
 
 </div>
 
-**Sua carteira de FIIs, sem planilha.**<br />
+**Sua carteira de FIIs em papel e tijolo.**<br />
 Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes direto no navegador.
 
 <br />
@@ -42,29 +42,29 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 <sub>Capturas com dados fictícios, só para demonstração.</sub>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/shot-01.svg" /><img src="docs/assets/shot-01-light.svg" alt="Painel com resumo da carteira, meta de alocação, gráficos de distribuição e evolução dos aportes" width="380" /></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/shot-01.svg" /><img src="docs/assets/shot-01-light.svg" alt="Painel com o total investido, a evolução, a meta de alocação e o peso de cada fundo" width="100%" /></picture>
 
 <br />
 
-<img src="docs/assets/shot-02.svg" alt="Tabela de ativos com cotas, preço médio, cotação e resultado" width="100%" />
+<img src="docs/assets/shot-02.svg" alt="Tabela de fundos com cotas, preço médio, valor investido e peso" width="380" />
 <br />
-<sub><b>Carteira</b>: posição, cotação e resultado de cada fundo.</sub>
+<sub><b>Carteira</b>: posição, preço médio e peso de cada fundo.</sub>
 
 <br />
 
-<img src="docs/assets/shot-03.svg" alt="Formulário de proventos, gráfico dos últimos 12 meses e histórico" width="100%" />
+<img src="docs/assets/shot-03.svg" alt="Proventos dos últimos 12 meses em barras e os pagamentos de cada mês" width="380" />
 <br />
 <sub><b>Proventos</b>: renda mensal e histórico de pagamentos.</sub>
 
 <br />
 
-<img src="docs/assets/shot-04.svg" alt="Calculadoras de Magic Number e de Preço Médio lado a lado com seus resultados" width="100%" />
+<img src="docs/assets/shot-04.svg" alt="Calculadoras de preço médio e número mágico lado a lado com seus resultados" width="100%" />
 <br />
-<sub><b>Calculadoras</b>: Magic Number e novo preço médio.</sub>
+<sub><b>Calculadoras</b>: novo preço médio e número mágico.</sub>
 
 <br />
 
-<img src="docs/assets/shot-05.svg" alt="Painel no celular, com os cartões de resumo empilhados, e carteira no celular, com cada ativo em um cartão" width="100%" />
+<img src="docs/assets/shot-05.svg" alt="Painel no celular, com o patrimônio e a meta de alocação, e carteira no celular, com cada fundo em uma linha" width="100%" />
 <br />
 <sub><b>No celular</b>: o layout se adapta à tela.</sub>
 
@@ -81,16 +81,15 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 <div align="center">
 
 <img src="docs/assets/f-01.svg" alt="Operações: Lance compras e vendas. Cotas e preço médio saem delas, e comprar um ticker repetido soma à posição." width="49%" />
-<img src="docs/assets/f-02.svg" alt="Resultado: Informe a cotação de cada fundo e veja valor atual e lucro ou prejuízo, em R$ e em %." width="49%" />
+<img src="docs/assets/f-02.svg" alt="Proventos: O app confere quantas cotas você tinha na data e calcula renda mensal e yield on cost de 12 meses." width="49%" />
 <br />
-<img src="docs/assets/f-03.svg" alt="Proventos: O app confere quantas cotas você tinha na data e calcula renda mensal e yield on cost de 12 meses." width="49%" />
-<img src="docs/assets/f-04.svg" alt="Meta de alocação: Defina quanto quer em papel e em tijolo e veja o aporte que falta para chegar lá." width="49%" />
+<img src="docs/assets/f-03.svg" alt="Meta de alocação: Defina quanto quer em papel e em tijolo e veja o aporte que falta para chegar lá." width="49%" />
+<img src="docs/assets/f-04.svg" alt="Gráficos: Evolução do investido, peso de cada fundo, tijolo por segmento e papel por indexador." width="49%" />
 <br />
-<img src="docs/assets/f-05.svg" alt="Gráficos: Distribuição por ativo, tipo, segmento e indexador, mais a evolução dos aportes mês a mês." width="49%" />
-<img src="docs/assets/f-06.svg" alt="Calculadoras: Magic Number e Preço Médio, já ligadas à sua carteira, com opção de registrar a compra simulada." width="49%" />
+<img src="docs/assets/f-05.svg" alt="Calculadoras: Número mágico e preço médio, já ligados à sua carteira, com opção de registrar a compra simulada." width="49%" />
+<img src="docs/assets/f-06.svg" alt="Backup: Exporte tudo em JSON, as operações em CSV, e importe quando precisar." width="49%" />
 <br />
-<img src="docs/assets/f-07.svg" alt="Backup: Exporte tudo em JSON, as operações em CSV, e importe quando precisar." width="49%" />
-<img src="docs/assets/f-08.svg" alt="Tema e celular: Tema claro ou escuro, e uma tabela que vira cartões em telas pequenas." width="49%" />
+<img src="docs/assets/f-07.svg" alt="Tema e celular: Tema claro ou escuro, barra de abas e uma carteira em lista no celular." width="49%" />
 
 </div>
 
@@ -104,7 +103,7 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 <div align="center">
 
-<img src="docs/assets/stack.svg" alt="Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4, Recharts, Phosphor Icons" width="100%" />
+<img src="docs/assets/stack.svg" alt="Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4, Phosphor Icons" width="100%" />
 
 </div>
 
@@ -147,15 +146,21 @@ Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
 pnpm test
 ```
 
-Usa [Vitest](https://vitest.dev). Os testes cobrem os cálculos da carteira (preço médio, número mágico, alocação, sugestão de aporte, proventos), a validação e a exportação dos dados, a formatação de números e datas e a busca de cotações.
+Usa [Vitest](https://vitest.dev). Os testes cobrem os cálculos da carteira (preço médio, número mágico, alocação, sugestão de aporte, proventos), a validação e a exportação dos dados, a formatação de números e datas e a geometria dos gráficos.
 
 Para reexecutar ao salvar: `pnpm test:watch`.
 
-Os testes de ponta a ponta (Playwright, em `e2e/`) abrem o app no Chromium e percorrem os fluxos inteiros: adicionar um FII e recarregar, somar uma segunda compra, buscar cotações (com a brapi simulada), exportar e importar o backup, e abrir todas as páginas sem erros.
+Os testes de ponta a ponta (Playwright, em `e2e/`) abrem o app no Chromium e percorrem os fluxos inteiros: adicionar um FII e recarregar, somar uma segunda compra, ver o total no painel, ajustar a meta de alocação, exportar e importar o backup, e abrir todas as páginas sem erros.
 
 ```bash
 pnpm exec playwright install chromium   # só na primeira vez
 pnpm test:e2e                           # gera o build e testa contra ele
+```
+
+Os prints da landing (`public/landing/`) e do README (`docs/screenshots/`) também saem do Playwright, com uma carteira de exemplo:
+
+```bash
+SCREENSHOTS=1 pnpm test:e2e e2e/screenshots.spec.ts
 ```
 
 <br />
@@ -171,10 +176,10 @@ pnpm test:e2e                           # gera o build e testa contra ele
 │                 o corpo de cada tela fica em components/ (portfolio-page.tsx…)
 ├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
 ├── lib/          lógica pura: posição, resumo, proventos, metas,
-│                 calculadoras, validação dos dados, exportação, contextos
+│                 calculadoras, gráficos, validação dos dados, exportação
 ├── hooks/        use-portfolio (estado e ações), use-local-storage, use-theme
 ├── e2e/          testes de ponta a ponta (Playwright)
-└── components/   interface (ui/: Button, Card, Modal, Field, Input), providers
+└── components/   interface (ui/: Button, Card, Modal, Field, Input), marca, providers
 ```
 
 > [!NOTE]
@@ -202,8 +207,7 @@ Não há servidor nem conta. Tudo é salvo no `localStorage` do navegador, na ch
 Limpar os dados do navegador apaga a carteira, então use **Carteira → Backup dos dados** de vez em quando.
 Ao importar, o app confere se o arquivo é um backup do fiinance e se cada registro está certo; se não estiver, recusa e nada muda.
 
-Para buscar cotações, o app consulta a [brapi](https://brapi.dev), que exige um token para FIIs.
-Sem ele a API responde 401, e dá para digitar a cotação à mão. O token fica só no navegador e não entra no backup.
+O app não busca cotações: os valores são sempre o que você investiu, a partir das compras e vendas que você lança.
 
 ### 🧠 Como funciona
 
@@ -215,7 +219,8 @@ O app guarda **operações**, e a posição de cada fundo é sempre derivada del
 | **Venda** | Reduz as cotas e mantém o preço médio. Não deixa vender mais do que havia na data. |
 | **Provento** | `valor por cota × cotas em carteira na data do pagamento`. |
 | **Yield on cost (12m)** | Proventos dos últimos 12 meses ÷ total investido. |
-| **Magic Number** | `⌈cotação ÷ dividendo por cota⌉`: cotas para os dividendos comprarem uma nova por mês. |
+| **Número mágico** | `⌈preço da cota ÷ provento por cota⌉`: cotas para o provento do mês comprar uma nova. |
+| **Peso** | Fatia de cada fundo no total investido. O app não busca cotações. |
 | **Aporte para a meta** | Menor compra em uma só classe que leva à proporção desejada: `(A + x) / (T + x) = alvo`. |
 
 > Os valores servem para acompanhamento e não substituem a nota de corretagem nem o informe de
@@ -232,15 +237,13 @@ o `robots.txt` e as URLs absolutas de `og:image` e `twitter:image` usadas nos pr
 ### 🧭 Próximos passos
 
 - [ ] CI rodando lint, tipos e testes a cada push.
-- [ ] Importar cotações e proventos sem token, o que pede um proxy próprio por causa do CORS.
 - [ ] Lucro realizado e imposto de renda sobre vendas.
 - [ ] Paginação do histórico de operações e de proventos, que cresce com o tempo.
 - [ ] Sincronização entre dispositivos. Hoje o caminho é o backup em JSON.
 
 ### 📄 Créditos e licença
 
-- Ícones do [Phosphor Icons](https://phosphoricons.com), gráficos com [Recharts](https://recharts.org)
-e cotações opcionais pela [brapi](https://brapi.dev).
+- Ícones do [Phosphor Icons](https://phosphoricons.com) e fontes [Geist](https://vercel.com/font).
 - Distribuído sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE).
 
 <br />
@@ -263,6 +266,6 @@ e cotações opcionais pela [brapi](https://brapi.dev).
 
 <div align="center">
 
-<img src="docs/assets/footer.svg" alt="© 2026 Diego Natalo. Feito com 💚 para quem investe em FIIs." width="100%" />
+<img src="docs/assets/footer.svg" alt="© 2026 Diego Natalo. Feito com 🧱 para quem investe em FIIs." width="100%" />
 
 </div>

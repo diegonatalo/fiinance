@@ -1,24 +1,17 @@
 import Link from "next/link";
-import { BrandLink } from "@/components/landing/brand-link";
-import { LandingThemeToggle } from "@/components/landing/landing-theme-toggle";
+import { LandingHeader } from "@/components/landing/landing-header";
 import { LegalPage } from "@/components/legal-page";
 import { SiteFooter } from "@/components/site-footer";
 import { PRIVACY_EMAIL, SOURCE_URL } from "@/lib/site";
 
 /** Data da última mudança nos textos (`AAAA-MM-DD`). */
-const UPDATED_AT = "2026-11-20";
+const UPDATED_AT = "2026-11-25";
 
-const linkClass = "font-semibold text-emerald-700 underline underline-offset-2 dark:text-emerald-300";
-
-const Header = () => (
-  <div className="mb-10 flex items-center justify-between gap-3">
-    <BrandLink />
-    <LandingThemeToggle />
-  </div>
-);
+const linkClass = "font-medium text-paper underline underline-offset-2";
 
 const Shell = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex min-h-full flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+  <div className="flex min-h-full flex-col bg-bg text-fg">
+    <LandingHeader sections={false} />
     {children}
     <SiteFooter privacy terms sourceUrl={SOURCE_URL} authorUrl="https://diegonatalo.dev" />
   </div>
@@ -33,7 +26,6 @@ const Contact = () => (
 export const PrivacyPage = () => (
   <Shell>
     <LegalPage
-      header={<Header />}
       title="Privacidade"
       summary="O FIInance guarda a sua carteira só no seu navegador. Nada do que você cadastra vai para um servidor nosso."
       updatedAt={UPDATED_AT}
@@ -44,9 +36,8 @@ export const PrivacyPage = () => (
           content: (
             <>
               <p>
-                Os fundos que você cadastra (ticker, tipo e segmento), as compras e vendas, os proventos, a meta de
-                alocação e as últimas cotações buscadas. Se você informar, também o token da brapi. E a sua escolha de
-                tema claro ou escuro.
+                Os fundos que você cadastra (ticker, tipo e segmento), as compras e vendas, os proventos e a meta de
+                alocação. E a sua escolha de tema claro ou escuro.
               </p>
               <p>
                 Tudo fica no armazenamento deste navegador (localStorage), neste aparelho. Nós não temos acesso a
@@ -59,20 +50,11 @@ export const PrivacyPage = () => (
           id: "terceiros",
           title: "Quem mais recebe dados",
           content: (
-            <>
-              <p>
-                <strong>brapi.dev</strong>: só quando você pede para atualizar as cotações, o navegador envia à brapi o
-                código de cada fundo e, se você informou, o seu token. A brapi devolve o preço atual e tem a{" "}
-                <a href="https://brapi.dev" target="_blank" rel="noopener noreferrer" className={linkClass}>
-                  própria política de privacidade
-                </a>
-                . Quantidades, preços pagos e proventos nunca são enviados.
-              </p>
-              <p>
-                <strong>Vercel</strong>: a hospedagem do site registra dados técnicos de acesso (como IP e navegador)
-                para entregar as páginas. Não usamos cookies, estatísticas de visita nem propaganda.
-              </p>
-            </>
+            <p>
+              <strong>Vercel:</strong> a hospedagem do site registra dados técnicos de acesso (como IP e navegador) para
+              entregar as páginas. Nada do que você cadastra é enviado a ela nem a mais ninguém. Não usamos cookies,
+              estatísticas de visita nem propaganda.
+            </p>
           ),
         },
         {
@@ -80,8 +62,8 @@ export const PrivacyPage = () => (
           title: "Backup",
           content: (
             <p>
-              O backup em JSON leva toda a carteira (fundos, operações, proventos, cotações e meta), mas não o token
-              da brapi. A exportação em CSV leva as operações. Depois de baixados, os arquivos ficam sob o seu cuidado.
+              O backup em JSON leva toda a carteira: fundos, operações, proventos e meta. A exportação em CSV leva as
+              operações. Depois de baixados, os arquivos ficam sob o seu cuidado.
             </p>
           ),
         },
@@ -112,7 +94,6 @@ export const PrivacyPage = () => (
 export const TermsPage = () => (
   <Shell>
     <LegalPage
-      header={<Header />}
       title="Termos de uso"
       summary="As regras para usar o FIInance. Ao usar o app, você concorda com elas."
       updatedAt={UPDATED_AT}
@@ -137,8 +118,7 @@ export const TermsPage = () => (
           content: (
             <p>
               O FIInance só organiza e calcula os números que você informa. Nada nele é recomendação de compra ou
-              venda, e as decisões de investimento são suas. As cotações vêm de um serviço externo e podem atrasar,
-              falhar ou vir erradas; confira na sua corretora antes de decidir.
+              venda, e as decisões de investimento são suas. Confira os números na sua corretora antes de decidir.
             </p>
           ),
         },

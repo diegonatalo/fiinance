@@ -1,80 +1,70 @@
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { Card, CardTitle } from "./ui/card";
-import { chartTheme } from "@/lib/chart-theme";
+import { Card, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/cn";
 import { formatBRL } from "@/lib/format";
-import { formatMonth } from "@/lib/date";
-import type { EvolutionPoint } from "@/lib/evolution";
-import type { Theme } from "@/lib/theme";
-import { ChartLineIcon } from "@phosphor-icons/react";
+import type { EvolutionChart as Chart } from "@/lib/evolution";
 
 type EvolutionChartProps = {
-  data: EvolutionPoint[];
-  theme: Theme;
+  chart: Chart | null;
+  /** o investido acumulado até hoje */
+  invested: number;
+  className?: string;
 };
 
-export const EvolutionChart = ({ data, theme }: EvolutionChartProps) => {
-  const colors = chartTheme(theme);
-
-  return (
-    <Card className="min-w-0">
-      <CardTitle className="mb-3">Aportes acumulados</CardTitle>
-      {data.length < 2 ? (
-        <div className="flex flex-col items-center justify-center gap-2 py-8 text-center">
-          <ChartLineIcon size={22} className="text-zinc-300 dark:text-zinc-600" />
-          <p className="text-xs text-zinc-400 dark:text-zinc-500">
-            Registre operações em pelo menos dois meses para ver a evolução
-          </p>
+/** Valor investido acumulado mês a mês. */
+export const EvolutionChart = ({ chart, invested, className }: EvolutionChartProps) => (
+  <Card className={cn("flex flex-col gap-5", className)}>
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <CardTitle>Evolução</CardTitle>
+      <span className="text-[13px] text-muted">investido acumulado</span>
+    </div>
+    {chart === null ? (
+      <p className="py-16 text-center text-sm text-muted">
+        Registre operações em pelo menos dois meses para ver a evolução.
+      </p>
+    ) : (
+      <div>
+        <div
+          role="img"
+          aria-label={`Valor investido acumulado ao longo dos meses, chegando a ${formatBRL(invested)}`}
+          className="relative h-[260px]"
+        >
+          <svg viewBox="0 0 800 250" preserveAspectRatio="none" className="absolute inset-0 size-full" aria-hidden="true">
+            {chart.grid.map((y) => (
+              <line
+                key={y}
+                x1="0"
+                y1={y}
+                x2="800"
+                y2={y}
+                className="stroke-hairline"
+                strokeWidth="1"
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+            <path d={chart.area} className="fill-fg" fillOpacity="0.05" />
+            <path
+              d={chart.invested}
+              fill="none"
+              className="stroke-fg"
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+          <span
+            className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-fg ring-4 ring-surface"
+            style={{ left: `${(chart.last.x / 800) * 100}%`, top: `${(chart.last.y / 250) * 100}%` }}
+            aria-hidden="true"
+          />
         </div>
-      ) : (
-        <div className="h-52 w-full min-w-0">
-          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-            <AreaChart data={data} margin={{ left: 0, right: 8, top: 4 }}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                stroke={colors.grid}
-                vertical={false}
-              />
-              <XAxis
-                dataKey="month"
-                tickFormatter={formatMonth}
-                tick={{ fill: colors.axis, fontSize: 11 }}
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis
-                tickFormatter={(v: number) =>
-                  v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)
-                }
-                tick={{ fill: colors.axis, fontSize: 11 }}
-                tickLine={false}
-                axisLine={false}
-                width={40}
-              />
-              <Tooltip
-                formatter={(value) => [formatBRL(value as number), "Aportado"]}
-                labelFormatter={(month) => formatMonth(month as string)}
-                {...colors.tooltip}
-              />
-              <Area
-                type="monotone"
-                dataKey="contributed"
-                stroke={colors.series}
-                fill={colors.series}
-                fillOpacity={0.15}
-                strokeWidth={2}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+        <div className="relative h-4 font-mono text-[11px] text-subtle" aria-hidden="true">
+          {chart.labels.map((label) => (
+            <span key={label.left} className="absolute -translate-x-1/2" style={{ left: `${label.left}%` }}>
+              {label.text}
+            </span>
+          ))}
         </div>
-      )}
-    </Card>
-  );
-};
+      </div>
+    )}
+  </Card>
+);

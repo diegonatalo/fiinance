@@ -143,10 +143,12 @@ export const FiiForm = ({
                 onClick={() => handleType(t)}
                 aria-pressed={type === t}
                 className={cn(
-                  "rounded-lg border px-3 py-2 text-sm font-medium capitalize transition-colors",
+                  "h-12 rounded-xl border text-[15px] font-medium capitalize transition-colors",
                   type === t
-                    ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                    : "border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800",
+                    ? t === "papel"
+                      ? "border-paper bg-paper/10 text-paper-strong"
+                      : "border-brick bg-brick/10 text-brick-strong"
+                    : "border-line text-muted hover:bg-raised hover:text-fg",
                 )}
               >
                 {t}
@@ -208,8 +210,8 @@ export const FiiForm = ({
         </div>
       )}
 
-      <div className="flex items-center justify-end gap-2">
-        {initial && onCancel && (
+      <div className="flex flex-wrap items-center justify-end gap-2 pt-1">
+        {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancelar
           </Button>
@@ -217,11 +219,11 @@ export const FiiForm = ({
         <Button type="submit">
           {initial ? (
             <>
-              <FloppyDiskIcon size={16} /> Salvar alterações
+              <FloppyDiskIcon size={16} aria-hidden="true" /> Salvar alterações
             </>
           ) : (
             <>
-              <PlusIcon size={16} /> Adicionar FII
+              <PlusIcon size={16} weight="bold" aria-hidden="true" /> Adicionar FII
             </>
           )}
         </Button>

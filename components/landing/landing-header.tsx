@@ -1,16 +1,34 @@
 import Link from "next/link";
-import { BrandLink } from "@/components/landing/brand-link";
+import { BrandLink } from "@/components/brand";
 import { LandingThemeToggle } from "@/components/landing/landing-theme-toggle";
 import { buttonClasses } from "@/components/ui/button";
 
-export const LandingHeader = () => (
-  <header className="sticky top-0 z-40 border-b border-zinc-200 bg-zinc-50/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
-    <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-4">
-      <BrandLink />
-      <div className="ml-auto flex items-center gap-2">
+const SECTIONS = [
+  { href: "/#como-funciona", label: "Como funciona" },
+  { href: "/#recursos", label: "Recursos" },
+  { href: "/#perguntas", label: "Perguntas" },
+];
+
+/** Cabeçalho da landing e das páginas legais. */
+export const LandingHeader = ({ sections = true }: { sections?: boolean }) => (
+  <header className="border-b border-hairline">
+    <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-8 gap-y-3 px-6 py-4">
+      <div className="flex-1">
+        <BrandLink />
+      </div>
+      {sections && (
+        <nav aria-label="Seções da página" className="hidden gap-1 lg:flex">
+          {SECTIONS.map((s) => (
+            <a key={s.href} href={s.href} className="px-3 py-2.5 text-sm font-medium text-muted hover:text-fg">
+              {s.label}
+            </a>
+          ))}
+        </nav>
+      )}
+      <div className="flex items-center gap-2">
         <LandingThemeToggle />
-        <Link href="/app" className={buttonClasses()}>
-          Abrir o painel
+        <Link href="/app" className={buttonClasses("primary", "px-[18px]")}>
+          Abrir o app
         </Link>
       </div>
     </div>

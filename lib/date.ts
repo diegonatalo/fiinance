@@ -38,3 +38,35 @@ export function isValidDate(iso: string): boolean {
   const d = new Date(`${iso}T00:00:00`);
   return !Number.isNaN(d.getTime()) && d.toLocaleDateString("sv-SE") === iso;
 }
+
+const MONTH_NAMES = [
+  "janeiro",
+  "fevereiro",
+  "março",
+  "abril",
+  "maio",
+  "junho",
+  "julho",
+  "agosto",
+  "setembro",
+  "outubro",
+  "novembro",
+  "dezembro",
+];
+
+/** "2026-10" -> "outubro de 2026" */
+export function formatMonthLong(month: string): string {
+  const [year, m] = month.split("-");
+  return `${MONTH_NAMES[Number(m) - 1]} de ${year}`;
+}
+
+/** "2026-10" -> "outubro" */
+export function monthName(month: string): string {
+  return MONTH_NAMES[Number(month.split("-")[1]) - 1];
+}
+
+/** "2026-10-14" -> "14/10" */
+export function formatDayMonth(iso: string): string {
+  const [, month, day] = iso.split("-");
+  return `${day}/${month}`;
+}

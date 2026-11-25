@@ -57,19 +57,11 @@ export type Payout = {
   shares: number;
 };
 
-export type Quote = {
-  price: number;
-  /** ISO datetime */
-  updatedAt: string;
-};
-
 export type AppData = {
   version: 2;
   assets: Asset[];
   transactions: Transaction[];
   payouts: Payout[];
-  /** indexado por id do ativo */
-  quotes: Record<string, Quote>;
   /** meta de alocação em papel, de 0 a 100 (o restante vai para tijolo) */
   paperTarget: number | null;
 };

@@ -1,198 +1,217 @@
-import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowsClockwiseIcon,
-  CalculatorIcon,
-  ChartPieSliceIcon,
-  CoinsIcon,
-  DownloadSimpleIcon,
-  ShieldCheckIcon,
-  TargetIcon,
-  TrendUpIcon,
-} from "@phosphor-icons/react/ssr";
+import { BrandMark } from "@/components/brand";
 import { LandingHeader } from "@/components/landing/landing-header";
 import { Screenshot } from "@/components/landing/screenshot";
 import { SiteFooter } from "@/components/site-footer";
 import { buttonClasses } from "@/components/ui/button";
-import { FAQ, FEATURES, HERO, PHOTO, SEGMENTS, STEPS, type FeatureIcon } from "@/lib/landing";
+import { cn } from "@/lib/cn";
+import { FAQ, FEATURES, HERO, SEGMENTS, STEPS, type FeatureIcon } from "@/lib/landing";
 import { SOURCE_URL } from "@/lib/site";
 
-const ICONS: Record<FeatureIcon, typeof CoinsIcon> = {
-  chart: ChartPieSliceIcon,
-  coins: CoinsIcon,
-  target: TargetIcon,
-  calculator: CalculatorIcon,
-  quote: ArrowsClockwiseIcon,
-  backup: DownloadSimpleIcon,
+/** Ícones dos recursos, no traço da identidade, com a cor de cada um. */
+const ICONS: Record<FeatureIcon, { path: string; tint: string }> = {
+  chart: { path: "M4 19h16M6 16V9M11 16V5M16 16v-5", tint: "text-paper" },
+  coins: {
+    path: "M12 3c-4 0-7 1.3-7 3s3 3 7 3 7-1.3 7-3-3-3-7-3zM5 6v6c0 1.7 3 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3 3 7 3s7-1.3 7-3v-6",
+    tint: "text-brick",
+  },
+  target: { path: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 12h.01", tint: "text-paper" },
+  calculator: {
+    path: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01",
+    tint: "text-brick",
+  },
+  device: { path: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM11 18h2", tint: "text-up" },
+  backup: { path: "M12 3v12M7 10l5 5 5-5M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2", tint: "text-paper" },
 };
 
-const WRAP = "mx-auto w-full max-w-6xl px-4";
-const H2 = "text-2xl font-bold tracking-tight text-balance sm:text-3xl";
-const PANEL = "rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900";
-const MUTED = "text-zinc-600 dark:text-zinc-400";
+const WRAP = "mx-auto w-full max-w-[1200px] px-6";
+const H2 = "text-[clamp(32px,4vw,44px)] font-semibold tracking-[-0.04em]";
 
-/** Cartão de número por cima da foto, no estilo dos cartões do painel. */
-const StatCard = ({ label, value, note, className }: { label: string; value: string; note: string; className: string }) => (
-  <div className={`${PANEL} absolute w-52 p-4 shadow-xl ${className}`}>
-    <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
-    <p className="mt-1 font-mono text-xl font-semibold tabular-nums">{value}</p>
-    <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{note}</p>
+const ArrowIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+);
+
+/** Prévia ilustrativa do painel no topo da página (valores de exemplo). */
+const HeroPreview = () => (
+  <div aria-hidden="true" className="flex min-w-0 flex-[1_1_420px] flex-col gap-3.5">
+    <div className="flex flex-col gap-3.5 rounded-3xl border border-line bg-surface p-7">
+      <span className="text-sm text-muted">Patrimônio</span>
+      <span className="text-[clamp(36px,4.6vw,52px)] leading-none font-semibold tracking-[-0.045em] tabular-nums">
+        R$ 28.616,91
+      </span>
+      <span className="text-[15px] text-muted tabular-nums">investido em 7 fundos · 932 cotas</span>
+      <svg viewBox="0 0 800 200" preserveAspectRatio="none" className="block h-[120px] w-full">
+        <path
+          d="M20 170 L104 152 L188 132 L272 114 L356 106 L440 78 L524 66 L608 57 L692 46 L776 38 L776 200 L20 200 Z"
+          className="fill-fg"
+          fillOpacity="0.05"
+        />
+        <path
+          d="M20 170 L104 152 L188 132 L272 114 L356 106 L440 78 L524 66 L608 57 L692 46 L776 38"
+          fill="none"
+          className="stroke-fg"
+          strokeWidth="2.5"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
+    <div className="flex flex-wrap gap-3.5">
+      <div className="flex flex-[1_1_180px] flex-col gap-1 rounded-[20px] border border-brick/25 bg-brick/10 p-5">
+        <span className="text-[13px] text-brick-strong">Próximo aporte</span>
+        <span className="text-[22px] font-semibold tracking-[-0.03em] tabular-nums">R$ 8.381,84</span>
+        <span className="text-[13px] text-muted">em tijolo, para a meta 40/60</span>
+      </div>
+      <div className="flex flex-[1_1_180px] flex-col gap-1 rounded-[20px] border border-line bg-surface p-5">
+        <span className="text-[13px] text-muted">Renda por mês</span>
+        <span className="text-[22px] font-semibold tracking-[-0.03em] tabular-nums">R$ 123,14</span>
+        <span className="text-[13px] text-muted">média de 12 meses</span>
+      </div>
+    </div>
   </div>
 );
 
-/** Página inicial: apresenta o FIInance e leva ao painel (`/app`). */
+/** Página inicial: apresenta o FIInance e leva ao app (`/app`). */
 export const LandingPage = () => (
-  <div className="flex min-h-full flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+  <div className="flex min-h-full flex-col bg-bg text-fg">
+    <a
+      href="#conteudo"
+      className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-surface focus:px-4 focus:py-2"
+    >
+      Pular para o conteúdo
+    </a>
     <LandingHeader />
     <main id="conteudo" className="flex flex-1 flex-col">
-      <section className={`${WRAP} grid items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1fr_1.05fr]`} aria-labelledby="titulo">
-        <div className="flex flex-col gap-5">
-          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 font-mono text-xs font-medium text-emerald-700 dark:text-emerald-300">
-            <TrendUpIcon size={14} weight="bold" aria-hidden="true" />
-            {HERO.kicker}
-          </p>
-          <h1 id="titulo" className="text-4xl font-bold tracking-tight text-balance sm:text-5xl">
-            Sua carteira de FIIs num painel só, <span className="text-emerald-600 dark:text-emerald-400">sem planilha.</span>
+      <section className={cn(WRAP, "flex flex-wrap items-center gap-14 pt-14 pb-16 md:pt-22 md:pb-18")} aria-labelledby="titulo">
+        <div className="flex min-w-0 flex-[1_1_460px] flex-col gap-6">
+          <p className="font-mono text-xs tracking-[0.1em] text-muted uppercase">{HERO.kicker}</p>
+          <h1 id="titulo" className="text-[clamp(44px,6.4vw,76px)] leading-none font-semibold tracking-[-0.05em] text-balance">
+            Sua carteira de FIIs em <span className="text-paper">papel</span> e <span className="text-brick">tijolo</span>.
           </h1>
-          <p className={`text-lg text-pretty ${MUTED}`}>{HERO.subtitle}</p>
+          <p className="max-w-[540px] text-lg leading-relaxed text-muted">{HERO.subtitle}</p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/app" className={buttonClasses()}>
-              Abrir o painel
+            <Link href="/app" className={buttonClasses("primary", undefined, "lg")}>
+              Abrir o app <ArrowIcon />
             </Link>
-            <a href="#como-funciona" className={buttonClasses("outline")}>
+            <a href="#como-funciona" className={buttonClasses("outline", undefined, "lg")}>
               Ver como funciona
             </a>
           </div>
-          <p className={`text-sm ${MUTED}`}>{HERO.note}</p>
+          <p className="text-sm text-subtle">{HERO.note}</p>
         </div>
-
-        {/* Prédio (fundos imobiliários são lajes, galpões e shoppings) com cartões do painel por cima. */}
-        <div className="relative pb-10 pl-6 sm:pl-10">
-          <div className="overflow-hidden rounded-3xl">
-            <Image
-              src={PHOTO.src}
-              alt={PHOTO.alt}
-              width={1600}
-              height={900}
-              priority
-              sizes="(min-width: 1024px) 560px, 100vw"
-              className="aspect-[4/3] w-full object-cover"
-            />
-          </div>
-          <StatCard label="Valor investido" value="R$ 17.005,50" note="5 fundos · exemplo" className="-left-0 top-8 max-sm:hidden" />
-          <div className={`${PANEL} absolute bottom-0 right-4 w-60 p-4 shadow-xl`}>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">Meta de alocação · exemplo</p>
-            <div className="mt-3 space-y-2 text-xs">
-              <div>
-                <div className="flex justify-between">
-                  <span>Papel</span>
-                  <span className="font-mono">meta 40%</span>
-                </div>
-                <div className="mt-1 h-2 rounded-full bg-zinc-200 dark:bg-zinc-800">
-                  <div className="h-2 w-[40%] rounded-full bg-emerald-500" />
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between">
-                  <span>Tijolo</span>
-                  <span className="font-mono">meta 60%</span>
-                </div>
-                <div className="mt-1 h-2 rounded-full bg-zinc-200 dark:bg-zinc-800">
-                  <div className="h-2 w-[60%] rounded-full bg-sky-500" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <HeroPreview />
       </section>
 
-      {/* Faixa com os segmentos que o app usa. */}
-      <div className="border-y border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <ul className={`${WRAP} flex flex-wrap items-center justify-center gap-x-8 gap-y-2 py-4 font-mono text-xs uppercase tracking-wider ${MUTED}`}>
+      <section aria-label="Tipos e segmentos" className="border-y border-hairline">
+        <ul className={cn(WRAP, "flex flex-wrap justify-center gap-x-7 gap-y-2.5 py-5 font-mono text-[13px] text-muted")}>
           {SEGMENTS.map((segment) => (
-            <li key={segment} className="flex items-center gap-2">
-              <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+            <li key={segment}>
+              <span className={segment.startsWith("Papel") ? "text-paper" : "text-brick"} aria-hidden="true">
+                ■
+              </span>{" "}
               {segment}
             </li>
           ))}
         </ul>
-      </div>
+      </section>
 
-      <section id="como-funciona" className={`${WRAP} scroll-mt-20 py-20`} aria-labelledby="titulo-como">
+      <section id="como-funciona" className={cn(WRAP, "flex scroll-mt-6 flex-col gap-10 py-24")} aria-labelledby="titulo-como">
         <h2 id="titulo-como" className={H2}>
           Como funciona
         </h2>
-        <ol className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-200 md:grid-cols-3 dark:border-zinc-800 dark:bg-zinc-800">
+        <ol className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6">
           {STEPS.map((step, index) => (
-            <li key={step.title} className="flex flex-col gap-2 bg-white p-6 dark:bg-zinc-900">
-              <span className="font-mono text-sm text-emerald-600 dark:text-emerald-400">passo {index + 1}/3</span>
-              <h3 className="text-lg font-semibold">{step.title}</h3>
-              <p className={MUTED}>{step.text}</p>
+            <li key={step.title} className="flex flex-col gap-3 border-t border-line pt-6">
+              <span className={cn("font-mono text-[13px]", index === STEPS.length - 1 ? "text-brick" : "text-paper")}>
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h3 className="text-xl font-semibold tracking-[-0.02em]">{step.title}</h3>
+              <p className="text-[15px] leading-relaxed text-muted">{step.text}</p>
             </li>
           ))}
         </ol>
       </section>
 
-      <section className={`${WRAP} pb-20`} aria-labelledby="titulo-recursos">
-        <h2 id="titulo-recursos" className={H2}>
-          Tudo o que a planilha fazia, sem a planilha
-        </h2>
-        {/* Grade irregular: o print do painel no centro, recursos em volta. */}
-        <div className="mt-8 grid gap-4 lg:grid-cols-4">
-          <div className="lg:col-span-3 lg:row-span-2">
-            <Screenshot />
-          </div>
-          {FEATURES.map((feature) => {
-            const Icon = ICONS[feature.icon];
-            return (
-              <div key={feature.title} className={`${PANEL} flex flex-col gap-2 p-5`}>
-                <span className="grid size-9 place-items-center rounded-lg bg-emerald-500/10">
-                  <Icon size={20} className="text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
-                </span>
-                <h3 className="font-semibold">{feature.title}</h3>
-                <p className={`text-sm ${MUTED}`}>{feature.text}</p>
-              </div>
-            );
-          })}
+      <section id="recursos" className="scroll-mt-6 border-y border-hairline bg-sunken" aria-labelledby="titulo-recursos">
+        <div className={cn(WRAP, "flex flex-col gap-10 py-24")}>
+          <h2 id="titulo-recursos" className={H2}>
+            Tudo o que a planilha fazia, sem a planilha
+          </h2>
+          <ul className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
+            {FEATURES.map((feature) => {
+              const icon = ICONS[feature.icon];
+              return (
+                <li key={feature.title} className="flex flex-col gap-3 rounded-[20px] border border-line bg-surface p-7">
+                  <span className={cn("inline-flex size-11 items-center justify-center rounded-xl bg-raised", icon.tint)}>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d={icon.path} />
+                    </svg>
+                  </span>
+                  <h3 className="text-lg font-semibold tracking-[-0.02em]">{feature.title}</h3>
+                  <p className="text-[15px] leading-relaxed text-muted">{feature.text}</p>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </section>
 
-      <section className="bg-zinc-900 text-zinc-50 dark:bg-zinc-900" aria-labelledby="titulo-faq">
-        <div className={`${WRAP} grid gap-12 py-20 lg:grid-cols-[1fr_1.6fr]`}>
-          <div className="flex flex-col gap-4">
-            <h2 id="titulo-faq" className={H2}>
-              Perguntas frequentes
-            </h2>
-            <p className="flex items-start gap-3 text-sm text-zinc-300">
-              <ShieldCheckIcon size={22} className="mt-0.5 shrink-0 text-emerald-400" aria-hidden="true" />
-              <span>
-                Privado por padrão: a carteira fica só neste navegador, sem conta nem cookies de rastreamento.{" "}
-                <Link href="/privacidade" className="font-semibold text-emerald-300 underline underline-offset-2">
-                  Leia a política de privacidade
-                </Link>
-                .
-              </span>
-            </p>
-          </div>
-          <dl className="divide-y divide-zinc-700 border-y border-zinc-700">
-            {FAQ.map((item) => (
-              <div key={item.question} className="grid gap-2 py-5 sm:grid-cols-[14rem_1fr] sm:gap-6">
-                <dt className="font-semibold">{item.question}</dt>
-                <dd className="text-zinc-400">{item.answer}</dd>
-              </div>
-            ))}
-          </dl>
+      <section className={cn(WRAP, "flex flex-col gap-8 py-24")} aria-labelledby="titulo-painel">
+        <div className="flex flex-col gap-3">
+          <h2 id="titulo-painel" className={H2}>
+            O painel
+          </h2>
+          <p className="text-base text-muted">Patrimônio, evolução, alocação e o peso de cada fundo numa tela só.</p>
+        </div>
+        <figure className="rounded-[28px] border border-line bg-surface p-3">
+          <Screenshot />
+          <figcaption className="px-2 pt-3.5 pb-1 text-[13px] text-subtle">Print gerado com dados de exemplo.</figcaption>
+        </figure>
+      </section>
+
+      <section className={WRAP}>
+        <div className="flex flex-wrap items-center gap-6 rounded-3xl border border-line p-8 md:p-10">
+          <span className="inline-flex size-14 items-center justify-center rounded-2xl border border-line bg-surface text-up">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="4" y="10" width="16" height="11" rx="2" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+          </span>
+          <p className="flex-[1_1_420px] text-xl leading-normal tracking-[-0.01em]">
+            Sua carteira fica no seu navegador. Nada do que você cadastra vai para um servidor nosso.
+          </p>
+          <Link href="/privacidade" className="text-[15px] font-medium text-paper underline">
+            Ler a política
+          </Link>
         </div>
       </section>
 
-      <section className={`${WRAP} flex flex-col items-center gap-5 py-20 text-center`} aria-labelledby="titulo-final">
-        <h2 id="titulo-final" className={H2}>
-          Comece pelo primeiro fundo
+      <section id="perguntas" className="mx-auto flex w-full max-w-[820px] scroll-mt-6 flex-col gap-8 px-6 py-24" aria-labelledby="titulo-faq">
+        <h2 id="titulo-faq" className={H2}>
+          Perguntas
         </h2>
-        <p className={`max-w-xl ${MUTED}`}>Leva menos de um minuto, e dá para importar um backup depois.</p>
-        <Link href="/app/carteira" className={buttonClasses()}>
-          Cadastrar meus FIIs
-        </Link>
+        <div className="flex flex-col">
+          {FAQ.map((item, index) => (
+            <details key={item.question} open={index === 0} className="group border-t border-line py-[22px]">
+              <summary className="cursor-pointer text-lg font-medium">{item.question}</summary>
+              <p className="mt-3 text-base leading-relaxed text-muted">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-hairline" aria-labelledby="titulo-final">
+        <div className={cn(WRAP, "flex flex-col items-center gap-7 py-28 text-center")}>
+          <BrandMark size={64} />
+          <h2 id="titulo-final" className="max-w-[760px] text-[clamp(36px,5vw,60px)] leading-[1.05] font-semibold tracking-[-0.05em]">
+            Sua renda, tijolo a tijolo.
+          </h2>
+          <Link href="/app" className={buttonClasses("primary", undefined, "lg")}>
+            Abrir o app
+          </Link>
+          <p className="text-sm text-subtle">Grátis, sem cadastro e sem propaganda.</p>
+        </div>
       </section>
     </main>
     <SiteFooter privacy terms sourceUrl={SOURCE_URL} authorUrl="https://diegonatalo.dev" />

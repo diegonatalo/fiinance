@@ -1,202 +1,133 @@
 import { useState } from "react";
-import { Card, CardTitle } from "./ui/card";
-import { Field } from "./ui/field";
-import { Input, Select } from "./ui/input";
+import { Card } from "@/components/ui/card";
+import { Field } from "@/components/ui/field";
+import { Input, Select } from "@/components/ui/input";
 import { cn } from "@/lib/cn";
-import { formatBRL, formatNumber } from "@/lib/format";
+import { formatDayMonth } from "@/lib/date";
+import { formatBRL, formatNumber, formatPct } from "@/lib/format";
 import { calculateMagicNumber } from "@/lib/magic-number";
 import { parseDecimal, parseDecimalOrZero } from "@/lib/numbers";
-import type { Quote, Fii, Payout } from "@/types/fii";
-import { SparkleIcon, TargetIcon, TrendUpIcon } from "@phosphor-icons/react";
+import type { Fii, Payout } from "@/types/fii";
 
 type MagicNumberCalcProps = {
   assets: Fii[];
   payouts: Payout[];
-  quotes: Record<string, Quote>;
+  className?: string;
 };
 
+const MANUAL = "";
+const toField = (n: number) => String(n).replace(".", ",");
+
 function lastPayout(payouts: Payout[], assetId: string) {
-  return payouts
-    .filter((p) => p.assetId === assetId)
-    .toSorted((a, b) => b.date.localeCompare(a.date))[0];
+  return payouts.filter((p) => p.assetId === assetId).toSorted((a, b) => b.date.localeCompare(a.date))[0];
 }
 
-function toField(n: number) {
-  return String(n).replace(".", ",");
-}
-
-export const MagicNumberCalc = ({
-  assets,
-  payouts,
-  quotes,
-}: MagicNumberCalcProps) => {
-  const [assetId, setAssetId] = useState<string>("");
-  const [dividend, setDividend] = useState("");
-  const [quote, setQuote] = useState("");
+export const MagicNumberCalc = ({ assets, payouts, className }: MagicNumberCalcProps) => {
+  const held = assets.filter((a) => a.shares > 0);
+  // null: ainda não escolheu, vale o primeiro fundo da carteira
+  const [picked, setPicked] = useState<string | null>(null);
+  const [typedDividend, setTypedDividend] = useState<string | null>(null);
+  const [price, setPrice] = useState("");
   const [manualShares, setManualShares] = useState("");
 
-  const selectedAsset = assets.find((a) => a.id === assetId) ?? null;
-  const currentShares = selectedAsset
-    ? selectedAsset.shares
-    : parseDecimalOrZero(manualShares);
+  const assetId = picked ?? held[0]?.id ?? MANUAL;
+  const asset = held.find((a) => a.id === assetId) ?? null;
+  const last = asset ? lastPayout(payouts, asset.id) : undefined;
+  const dividend = typedDividend ?? (last ? toField(last.valuePerShare) : "");
+  const currentShares = asset ? asset.shares : parseDecimalOrZero(manualShares);
+  const result = calculateMagicNumber(parseDecimal(dividend), parseDecimal(price), currentShares);
 
-  const result = calculateMagicNumber(
-    parseDecimal(dividend),
-    parseDecimal(quote),
-    currentShares,
-  );
-
-  // Ao escolher um ativo, preenche dividendo (último provento) e cotação (se houver).
-  function handleAsset(id: string) {
-    setAssetId(id);
-    if (!id) return;
-    setManualShares("");
-    const last = lastPayout(payouts, id);
-    if (last) setDividend(toField(last.valuePerShare));
-    const entry = quotes[id];
-    if (entry) setQuote(toField(entry.price));
+  function pick(id: string) {
+    setPicked(id);
+    setTypedDividend(null);
   }
 
   return (
-    <Card>
-      <div className="mb-1 flex items-center gap-2">
-        <SparkleIcon size={16} className="text-emerald-500" />
-        <CardTitle className="text-zinc-900 dark:text-zinc-100">
-          Calculadora de Magic Number
-        </CardTitle>
+    <Card className={cn("flex flex-col gap-[22px]", className)}>
+      <div className="flex flex-col gap-1.5">
+        <h2 className="text-xl font-semibold tracking-[-0.02em]">Número mágico</h2>
+        <p className="text-sm text-muted">Quantas cotas para o provento do mês comprar uma cota nova.</p>
       </div>
-      <p className="mb-4 text-xs text-zinc-500 dark:text-zinc-400">
-        Descubra quantas cotas você precisa para que os dividendos comprem uma
-        nova cota todo mês. Ao escolher um ativo, usamos o último provento e a
-        cotação registrados.
-      </p>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="grid content-start gap-4">
-          <Field label="Usar ativo da carteira (opcional)">
-            <Select
-              value={assetId}
-              onChange={(e) => handleAsset(e.target.value)}
-            >
-              <option value="">Informar cotas manualmente</option>
-              {assets.map((a) => (
+      <div className="grid grid-cols-2 gap-3 md:gap-4">
+        <div className="col-span-2">
+          <Field label="Fundo">
+            <Select value={assetId} onChange={(e) => pick(e.target.value)}>
+              {held.map((a) => (
                 <option key={a.id} value={a.id}>
-                  {a.ticker} — {formatNumber(a.shares)} cotas
+                  {a.ticker} · {formatNumber(a.shares)} cotas
                 </option>
               ))}
+              <option value={MANUAL}>Outro fundo (digitar)</option>
             </Select>
           </Field>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Dividendo por cota (R$)">
-              <Input
-                inputMode="decimal"
-                value={dividend}
-                onChange={(e) => setDividend(e.target.value)}
-                placeholder="0,90"
-              />
-            </Field>
-            <Field label="Cotação atual (R$)">
-              <Input
-                inputMode="decimal"
-                value={quote}
-                onChange={(e) => setQuote(e.target.value)}
-                placeholder="10,30"
-              />
+        </div>
+        <Field
+          label="Provento por cota"
+          hint={typedDividend === null && last ? `último provento, de ${formatDayMonth(last.date)}` : undefined}
+        >
+          <Input inputMode="decimal" value={dividend} onChange={(e) => setTypedDividend(e.target.value)} placeholder="R$ 0,00" />
+        </Field>
+        <Field label="Preço da cota">
+          <Input inputMode="decimal" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="R$ 0,00" />
+        </Field>
+        {!asset && (
+          <div className="col-span-2">
+            <Field label="Cotas que você já possui">
+              <Input inputMode="numeric" value={manualShares} onChange={(e) => setManualShares(e.target.value)} placeholder="0" />
             </Field>
           </div>
+        )}
+      </div>
 
-          <Field label="Cotas que você já possui">
-            <Input
-              inputMode="numeric"
-              disabled={!!selectedAsset}
-              value={selectedAsset ? selectedAsset.shares : manualShares}
-              onChange={(e) => setManualShares(e.target.value)}
-              placeholder="0"
-            />
-          </Field>
-        </div>
-
-        {/* Resultado */}
-        <div className="flex min-h-40 flex-col justify-center rounded-lg border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-950/50">
-          {!result ? (
-            <div className="flex flex-col items-center gap-2 text-center">
-              <TargetIcon
-                size={22}
-                className="text-zinc-300 dark:text-zinc-600"
-              />
-              <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                Preencha o dividendo e a cotação para ver o resultado.
-              </p>
-            </div>
-          ) : (
-            <div className="grid gap-4">
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Magic Number
-                  </p>
-                  <p className="text-3xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
+      <div className="flex flex-col gap-[18px] rounded-2xl border border-line bg-bg p-5 tabular-nums md:p-6">
+        {!result ? (
+          <p className="py-6 text-center text-sm text-muted">Preencha o provento e o preço da cota para ver o resultado.</p>
+        ) : (
+          <>
+            <div className="flex items-end justify-between gap-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-[13px] text-muted">Número mágico</span>
+                <span className="flex items-baseline gap-1.5">
+                  <span className="text-[38px] leading-none font-semibold tracking-[-0.04em] md:text-[40px]">
                     {formatNumber(result.magicNumber)}
-                  </p>
-                  <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                    cotas necessárias
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Você tem
-                  </p>
-                  <p className="text-2xl font-semibold tabular-nums">
-                    {formatNumber(currentShares)}
-                  </p>
-                </div>
+                  </span>
+                  <span className="text-[15px] font-medium text-muted">cotas</span>
+                </span>
               </div>
-
-              <div className="grid gap-1.5">
-                <div
-                  role="progressbar"
-                  aria-valuenow={Math.round(result.progress)}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  className="h-2.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800"
-                >
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-all",
-                      result.reached ? "bg-emerald-500" : "bg-emerald-400",
-                    )}
-                    style={{ width: `${result.progress}%` }}
-                  />
-                </div>
-                <p className="text-right text-xs tabular-nums text-zinc-400 dark:text-zinc-500">
-                  {result.progress.toFixed(1)}%
-                </p>
+              <div className="flex flex-col items-end gap-1">
+                <span className="text-[13px] text-muted">Você tem</span>
+                <span className="text-2xl font-semibold">{formatNumber(currentShares)}</span>
               </div>
-
-              {result.reached ? (
-                <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 px-3 py-2.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                  <TrendUpIcon size={16} />
-                  Meta atingida! Os dividendos já compram uma nova cota.
-                </div>
-              ) : (
-                <div className="rounded-lg bg-zinc-100 px-3 py-2.5 dark:bg-zinc-800/60">
-                  <p className="text-sm text-zinc-700 dark:text-zinc-200">
-                    Faltam{" "}
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                      {formatNumber(result.missing)}
-                    </span>{" "}
-                    cotas — cerca de{" "}
-                    <span className="font-semibold">
-                      {formatBRL(result.missingContribution)}
-                    </span>{" "}
-                    em aportes.
-                  </p>
-                </div>
-              )}
             </div>
-          )}
-        </div>
+            <div className="flex flex-col gap-2">
+              <div
+                role="progressbar"
+                aria-label="Progresso até o número mágico"
+                aria-valuenow={Math.round(result.progress)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                className="h-2.5 rounded-full bg-hairline"
+              >
+                <div
+                  className={cn("h-2.5 rounded-full", result.reached ? "bg-up" : "bg-paper")}
+                  style={{ width: `${result.progress}%` }}
+                />
+              </div>
+              <span className="self-end text-xs text-muted">{formatPct(result.progress)}</span>
+            </div>
+            <p className="border-t border-hairline pt-4 text-[15px] leading-normal text-fg-soft">
+              {result.reached ? (
+                <span className="font-medium text-up">Meta atingida: o provento do mês já compra uma cota nova.</span>
+              ) : (
+                <>
+                  Faltam <span className="font-semibold text-fg">{formatNumber(result.missing)} cotas</span>, cerca de{" "}
+                  <span className="font-semibold text-fg">{formatBRL(result.missingContribution)}</span> em aportes.
+                </>
+              )}
+            </p>
+          </>
+        )}
       </div>
     </Card>
   );

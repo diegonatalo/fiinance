@@ -1,14 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, THEME_COLORS } from "@/lib/site";
 import { THEME_KEY } from "@/lib/storage-keys";
 import { themeScript } from "@/lib/theme";
 
-const inter = Inter({ subsets: ["latin"], variable: "--nf-inter", display: "swap" });
+const geist = Geist({ subsets: ["latin"], variable: "--nf-geist", display: "swap" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--nf-geist-mono", display: "swap" });
 
-const TITLE = "FIInance | Transforme dados em decisões";
+const TITLE = "FIInance | Sua carteira de FIIs em papel e tijolo";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "FIInance: transforme dados em decisões",
+        alt: "FIInance: sua carteira de FIIs em papel e tijolo",
       },
     ],
   },
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: "#10b981" };
+export const viewport: Viewport = { themeColor: THEME_COLORS.dark };
 
 
 export default function RootLayout({
@@ -46,10 +47,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     // a classe "dark" é aplicada pelo script abaixo, antes da hidratação
-    <html lang="pt-BR" className={inter.variable} suppressHydrationWarning>
+    <html lang="pt-BR" className={`${geist.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body>
         <Script id="tema" strategy="beforeInteractive">
-          {themeScript(THEME_KEY)}
+          {themeScript(THEME_KEY, THEME_COLORS)}
         </Script>
         {children}
       </body>
