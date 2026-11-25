@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandLink } from "@/components/brand";
 import { CalculatorsIcon, DashboardIcon, PayoutsIcon, PortfolioIcon } from "@/components/nav-icons";
-import { QuoteStatus } from "@/components/quote-status";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useTheme } from "@/hooks/use-theme";
 import { cn } from "@/lib/cn";
@@ -46,9 +45,6 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-4">
-            <div className="hidden md:block">
-              <QuoteStatus />
-            </div>
             <ThemeToggle theme={theme} onToggle={toggle} />
           </div>
         </div>

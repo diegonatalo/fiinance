@@ -42,13 +42,13 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 <sub>Capturas com dados fictícios, só para demonstração.</sub>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/shot-01.svg" /><img src="docs/assets/shot-01-light.svg" alt="Painel com o patrimônio, a evolução do investido, a meta de alocação e o peso de cada fundo" width="100%" /></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/shot-01.svg" /><img src="docs/assets/shot-01-light.svg" alt="Painel com o total investido, a evolução, a meta de alocação e o peso de cada fundo" width="100%" /></picture>
 
 <br />
 
-<img src="docs/assets/shot-02.svg" alt="Tabela de fundos com cotas, preço médio, cotação do dia, valor de hoje, resultado e peso" width="380" />
+<img src="docs/assets/shot-02.svg" alt="Tabela de fundos com cotas, preço médio, valor investido e peso" width="380" />
 <br />
-<sub><b>Carteira</b>: cotação do dia, resultado e peso de cada fundo.</sub>
+<sub><b>Carteira</b>: posição, preço médio e peso de cada fundo.</sub>
 
 <br />
 
@@ -81,16 +81,15 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 <div align="center">
 
 <img src="docs/assets/f-01.svg" alt="Operações: Lance compras e vendas. Cotas e preço médio saem delas, e comprar um ticker repetido soma à posição." width="49%" />
-<img src="docs/assets/f-02.svg" alt="Resultado: As cotações chegam sozinhas: veja valor de hoje, peso e lucro ou prejuízo de cada fundo, em R$ e em %." width="49%" />
+<img src="docs/assets/f-02.svg" alt="Proventos: O app confere quantas cotas você tinha na data e calcula renda mensal e yield on cost de 12 meses." width="49%" />
 <br />
-<img src="docs/assets/f-03.svg" alt="Proventos: O app confere quantas cotas você tinha na data e calcula renda mensal e yield on cost de 12 meses." width="49%" />
-<img src="docs/assets/f-04.svg" alt="Meta de alocação: Defina quanto quer em papel e em tijolo e veja o aporte que falta para chegar lá." width="49%" />
+<img src="docs/assets/f-03.svg" alt="Meta de alocação: Defina quanto quer em papel e em tijolo e veja o aporte que falta para chegar lá." width="49%" />
+<img src="docs/assets/f-04.svg" alt="Gráficos: Evolução do investido, peso de cada fundo, tijolo por segmento e papel por indexador." width="49%" />
 <br />
-<img src="docs/assets/f-05.svg" alt="Gráficos: Evolução do investido, peso de cada fundo, tijolo por segmento e papel por indexador." width="49%" />
-<img src="docs/assets/f-06.svg" alt="Calculadoras: Número mágico e preço médio, já ligados à sua carteira e à cotação de hoje, com opção de registrar a compra simulada." width="49%" />
+<img src="docs/assets/f-05.svg" alt="Calculadoras: Número mágico e preço médio, já ligados à sua carteira, com opção de registrar a compra simulada." width="49%" />
+<img src="docs/assets/f-06.svg" alt="Backup: Exporte tudo em JSON, as operações em CSV, e importe quando precisar." width="49%" />
 <br />
-<img src="docs/assets/f-07.svg" alt="Backup: Exporte tudo em JSON, as operações em CSV, e importe quando precisar." width="49%" />
-<img src="docs/assets/f-08.svg" alt="Tema e celular: Tema claro ou escuro, barra de abas e uma carteira em lista no celular." width="49%" />
+<img src="docs/assets/f-07.svg" alt="Tema e celular: Tema claro ou escuro, barra de abas e uma carteira em lista no celular." width="49%" />
 
 </div>
 
@@ -135,12 +134,11 @@ pnpm dev        # http://localhost:3000
 
 ### 🔑 Variáveis de ambiente
 
-São duas. O modelo está em [`.env.example`](.env.example).
+Há uma só, e é opcional. O modelo está em [`.env.example`](.env.example).
 
 | Variável | Descrição | Se não for definida |
 |---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | URL pública do site, sem barra final. | Usa `https://fiinance1.vercel.app` (valor padrão em `lib/site.ts`). |
-| `BRAPI_TOKEN` | Token da [brapi](https://brapi.dev), só no servidor, para as cotações dos FIIs. | O app funciona, mas o selo mostra "Cotações indisponíveis". |
 
 ### 🧪 Testes
 
@@ -148,11 +146,11 @@ São duas. O modelo está em [`.env.example`](.env.example).
 pnpm test
 ```
 
-Usa [Vitest](https://vitest.dev). Os testes cobrem os cálculos da carteira (preço médio, número mágico, alocação, sugestão de aporte, proventos), a validação e a exportação dos dados, a formatação de números e datas a busca de cotações (com a rota do servidor) e o selo "Cotações de hoje".
+Usa [Vitest](https://vitest.dev). Os testes cobrem os cálculos da carteira (preço médio, número mágico, alocação, sugestão de aporte, proventos), a validação e a exportação dos dados, a formatação de números e datas e a geometria dos gráficos.
 
 Para reexecutar ao salvar: `pnpm test:watch`.
 
-Os testes de ponta a ponta (Playwright, em `e2e/`) abrem o app no Chromium e percorrem os fluxos inteiros: adicionar um FII e recarregar, somar uma segunda compra, receber as cotações sozinho (com a rota `/api/quotes` simulada), ajustar a meta de alocação, exportar e importar o backup, e abrir todas as páginas sem erros.
+Os testes de ponta a ponta (Playwright, em `e2e/`) abrem o app no Chromium e percorrem os fluxos inteiros: adicionar um FII e recarregar, somar uma segunda compra, ver o total no painel, ajustar a meta de alocação, exportar e importar o backup, e abrir todas as páginas sem erros.
 
 ```bash
 pnpm exec playwright install chromium   # só na primeira vez
@@ -174,13 +172,12 @@ SCREENSHOTS=1 pnpm test:e2e e2e/screenshots.spec.ts
 </div>
 
 ```text
-├── app/          rotas do Next (App Router): landing (/), app (/app/...), /privacidade, /termos, 404, robots, sitemap
-│                 e a rota /api/quotes, que busca as cotações na brapi;
+├── app/          rotas do Next (App Router): landing (/), app (/app/...), /privacidade, /termos, 404, robots e sitemap;
 │                 o corpo de cada tela fica em components/ (portfolio-page.tsx…)
 ├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
 ├── lib/          lógica pura: posição, resumo, proventos, metas,
-│                 calculadoras, cotações, gráficos, validação dos dados, exportação
-├── hooks/        use-portfolio (estado e ações), use-quote-refresh, use-local-storage, use-theme
+│                 calculadoras, gráficos, validação dos dados, exportação
+├── hooks/        use-portfolio (estado e ações), use-local-storage, use-theme
 ├── e2e/          testes de ponta a ponta (Playwright)
 └── components/   interface (ui/: Button, Card, Modal, Field, Input), marca, providers
 ```
@@ -205,14 +202,12 @@ SCREENSHOTS=1 pnpm test:e2e e2e/screenshots.spec.ts
 
 ### 🔒 Seus dados
 
-Não há conta. A carteira é salva no `localStorage` do navegador, na chave `fiinance:data:v1`.
+Não há servidor nem conta. Tudo é salvo no `localStorage` do navegador, na chave `fiinance:data:v1`.
 
 Limpar os dados do navegador apaga a carteira, então use **Carteira → Backup dos dados** de vez em quando.
 Ao importar, o app confere se o arquivo é um backup do fiinance e se cada registro está certo; se não estiver, recusa e nada muda.
 
-As cotações chegam sozinhas: ao abrir o app, ele chama a rota `/api/quotes` com os tickers que você tem.
-A rota consulta a [brapi](https://brapi.dev) no servidor, com o token em `BRAPI_TOKEN`, e guarda cada preço por alguns minutos.
-Quantidades, preços pagos e proventos nunca saem do navegador.
+O app não busca cotações: os valores são sempre o que você investiu, a partir das compras e vendas que você lança.
 
 ### 🧠 Como funciona
 
@@ -224,8 +219,8 @@ O app guarda **operações**, e a posição de cada fundo é sempre derivada del
 | **Venda** | Reduz as cotas e mantém o preço médio. Não deixa vender mais do que havia na data. |
 | **Provento** | `valor por cota × cotas em carteira na data do pagamento`. |
 | **Yield on cost (12m)** | Proventos dos últimos 12 meses ÷ total investido. |
-| **Número mágico** | `⌈cotação ÷ provento por cota⌉`: cotas para o provento do mês comprar uma nova. |
-| **Cotação** | Chega sozinha ao abrir o app e é buscada de novo depois de 15 minutos. |
+| **Número mágico** | `⌈preço da cota ÷ provento por cota⌉`: cotas para o provento do mês comprar uma nova. |
+| **Peso** | Fatia de cada fundo no total investido. O app não busca cotações. |
 | **Aporte para a meta** | Menor compra em uma só classe que leva à proporção desejada: `(A + x) / (T + x) = alvo`. |
 
 > Os valores servem para acompanhamento e não substituem a nota de corretagem nem o informe de
@@ -242,16 +237,13 @@ o `robots.txt` e as URLs absolutas de `og:image` e `twitter:image` usadas nos pr
 ### 🧭 Próximos passos
 
 - [ ] CI rodando lint, tipos e testes a cada push.
-- [ ] Importar os proventos pela brapi, como já acontece com as cotações.
-- [ ] Guardar o patrimônio de cada mês, para o gráfico de evolução mostrar a linha do patrimônio e não só o ponto de hoje.
 - [ ] Lucro realizado e imposto de renda sobre vendas.
 - [ ] Paginação do histórico de operações e de proventos, que cresce com o tempo.
 - [ ] Sincronização entre dispositivos. Hoje o caminho é o backup em JSON.
 
 ### 📄 Créditos e licença
 
-- Ícones do [Phosphor Icons](https://phosphoricons.com), fontes [Geist](https://vercel.com/font)
-e cotações pela [brapi](https://brapi.dev).
+- Ícones do [Phosphor Icons](https://phosphoricons.com) e fontes [Geist](https://vercel.com/font).
 - Distribuído sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE).
 
 <br />

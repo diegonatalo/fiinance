@@ -44,25 +44,24 @@ describe("evolutionChart", () => {
   ];
 
   it("precisa de pelo menos dois meses", () => {
-    expect(evolutionChart(points.slice(0, 1), "", null)).toBeNull();
+    expect(evolutionChart(points.slice(0, 1), "")).toBeNull();
   });
 
-  it("estende o investido até o mês atual e põe o patrimônio no fim", () => {
-    const chart = evolutionChart(points, "2026-05", 2500)!;
+  it("estende o investido até o mês atual e marca o último mês", () => {
+    const chart = evolutionChart(points, "2026-05")!;
     // fev, mar, abr (repete mar) e o mês atual, de x=20 a x=780
     expect(chart.invested.startsWith("M20 ")).toBe(true);
     expect(chart.invested.split(" L")).toHaveLength(4);
-    expect(chart.today?.x).toBe(780);
-    // topo da escala: 2500 × 1,08 → 5000; 2500 fica no meio da altura
-    expect(chart.today?.y).toBe(120);
+    // topo da escala: 2000 × 1,08 → 2500; 2000 fica a 80% da altura
+    expect(chart.last).toEqual({ x: 780, y: 60 });
+    expect(chart.area.endsWith("L780 220 L20 220 Z")).toBe(true);
     expect(chart.labels.map((l) => l.text)).toEqual(["fev", "mar", "abr", "mai"]);
     expect(chart.grid).toEqual([220, 170, 120, 70, 20]);
   });
 
   it("mostra o ano nos meses quando a série atravessa anos", () => {
-    const chart = evolutionChart([{ month: "2025-12", contributed: 10 }, ...points], "", null)!;
+    const chart = evolutionChart([{ month: "2025-12", contributed: 10 }, ...points], "")!;
     expect(chart.labels[0].text).toBe("dez/25");
-    expect(chart.today).toBeNull();
   });
 
   it("com muitos meses, mostra no máximo dez rótulos, sempre com o último", () => {
@@ -70,7 +69,7 @@ describe("evolutionChart", () => {
       month: `${2025 + Math.floor(i / 12)}-${String((i % 12) + 1).padStart(2, "0")}`,
       contributed: (i + 1) * 100,
     }));
-    const chart = evolutionChart(many, "", null)!;
+    const chart = evolutionChart(many, "")!;
     expect(chart.labels.length).toBeLessThanOrEqual(10);
     expect(chart.labels.at(-1)?.text).toBe("dez/26");
   });
@@ -86,15 +85,14 @@ describe("positionRows", () => {
     averagePrice,
   });
 
-  it("calcula valor de hoje, resultado e peso; sem cotação vale o custo", () => {
-    const rows = positionRows([fii("a", 10, 100), fii("b", 10, 50)], { a: { price: 150, updatedAt: "" } });
-    expect(rows[0]).toMatchObject({ invested: 1000, value: 1500, result: 500, resultPct: 50, weight: 75 });
-    expect(rows[1]).toMatchObject({ invested: 500, value: 500, weight: 25 });
-    expect(rows[1].result).toBeUndefined();
+  it("calcula o investido e o peso de cada fundo", () => {
+    const rows = positionRows([fii("a", 10, 150), fii("b", 10, 50)]);
+    expect(rows[0]).toMatchObject({ invested: 1500, weight: 75 });
+    expect(rows[1]).toMatchObject({ invested: 500, weight: 25 });
   });
 
   it("carteira zerada não divide por zero", () => {
-    expect(positionRows([fii("a", 0, 0)], {})[0].weight).toBe(0);
+    expect(positionRows([fii("a", 0, 0)])[0].weight).toBe(0);
   });
 });
 

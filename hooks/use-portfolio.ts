@@ -34,7 +34,6 @@ export type AssetSnapshot = {
   asset: Asset;
   transactions: Transaction[];
   payouts: Payout[];
-  quote: AppData["quotes"][string] | undefined;
 };
 
 export function usePortfolio() {
@@ -49,8 +48,8 @@ export function usePortfolio() {
     [data.assets, data.transactions],
   );
   const summary = useMemo(
-    () => calculateSummary(assets, data.quotes),
-    [assets, data.quotes],
+    () => calculateSummary(assets),
+    [assets],
   );
 
   function tickerInUse(ticker: string, ignoreId?: string) {
@@ -90,29 +89,22 @@ export function usePortfolio() {
       asset,
       transactions: data.transactions.filter((t) => t.assetId === id),
       payouts: data.payouts.filter((p) => p.assetId === id),
-      quote: data.quotes[id],
     };
-    setData((prev) => {
-      const quotes = { ...prev.quotes };
-      delete quotes[id];
-      return {
-        ...prev,
-        assets: prev.assets.filter((a) => a.id !== id),
-        transactions: prev.transactions.filter((t) => t.assetId !== id),
-        payouts: prev.payouts.filter((p) => p.assetId !== id),
-        quotes,
-      };
-    });
+    setData((prev) => ({
+      ...prev,
+      assets: prev.assets.filter((a) => a.id !== id),
+      transactions: prev.transactions.filter((t) => t.assetId !== id),
+      payouts: prev.payouts.filter((p) => p.assetId !== id),
+    }));
     return snapshot;
   }
 
-  function restoreAsset({ asset, transactions, payouts, quote }: AssetSnapshot) {
+  function restoreAsset({ asset, transactions, payouts }: AssetSnapshot) {
     setData((prev) => ({
       ...prev,
       assets: [...prev.assets, asset],
       transactions: [...prev.transactions, ...transactions],
       payouts: [...prev.payouts, ...payouts],
-      quotes: quote ? { ...prev.quotes, [asset.id]: quote } : prev.quotes,
     }));
   }
 
@@ -144,18 +136,6 @@ export function usePortfolio() {
     }));
   }
 
-  function setQuotes(prices: Record<string, number>) {
-    const updatedAt = new Date().toISOString();
-    setData((prev) => {
-      const quotes = { ...prev.quotes };
-      for (const [id, price] of Object.entries(prices)) {
-        if (price > 0) quotes[id] = { price, updatedAt };
-        else delete quotes[id];
-      }
-      return { ...prev, quotes };
-    });
-  }
-
   function setPaperTarget(target: number | null) {
     setData((prev) => ({ ...prev, paperTarget: target }));
   }
@@ -185,7 +165,6 @@ export function usePortfolio() {
     removeTransaction,
     addPayout,
     removePayout,
-    setQuotes,
     setPaperTarget,
     importData,
   };

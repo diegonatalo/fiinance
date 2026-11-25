@@ -1,10 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { addFii, assetRow, mockQuotes } from "./fixtures";
-
-test.beforeEach(async ({ page }) => {
-  // por padrão, nenhuma cotação: cada teste diz quais preços a rota devolve
-  await mockQuotes(page, {});
-});
+import { addFii, assetRow } from "./fixtures";
 
 test("adiciona um FII e mantém depois de recarregar", async ({ page }) => {
   await addFii(page, "HGLG11", "10", "150,50");
@@ -34,23 +29,12 @@ test("não adiciona com o formulário vazio", async ({ page }) => {
   await expect(page.getByText("Informe o ticker")).toBeVisible();
 });
 
-test("busca as cotações sozinho e mostra na tabela e no painel", async ({ page }) => {
-  await mockQuotes(page, { HGLG11: 160 });
+test("o painel mostra o total investido e o peso de cada fundo", async ({ page }) => {
   await addFii(page, "HGLG11", "10", "150,00");
-
-  await expect(assetRow(page, "HGLG11")).toContainText("R$ 160,00");
-  await expect(assetRow(page, "HGLG11")).toContainText("+6,67%");
-  await expect(page.getByRole("status").filter({ hasText: "Cotações de hoje" }).first()).toBeVisible();
-
+  await addFii(page, "MXRF11", "50", "10,00");
   await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Painel" }).click();
-  await expect(page.getByRole("main")).toContainText("R$ 1.600,00");
-});
-
-test("avisa quando as cotações não chegam", async ({ page }) => {
-  await page.route("**/api/quotes?**", (route) => route.fulfill({ status: 500, json: {} }));
-  await addFii(page, "HGLG11", "10", "150,00");
-  await expect(page.getByText("Cotações indisponíveis").first()).toBeVisible();
-  await expect(assetRow(page, "HGLG11")).toContainText("—");
+  await expect(page.getByRole("main")).toContainText("R$ 2.000,00");
+  await expect(page.getByRole("main")).toContainText("75,0%");
 });
 
 test("a meta de alocação diz onde aportar", async ({ page }) => {

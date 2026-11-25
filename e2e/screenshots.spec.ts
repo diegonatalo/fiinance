@@ -1,19 +1,18 @@
 import { test, type Page } from "@playwright/test";
-import { mockQuotes } from "./fixtures";
 
 // Gera os prints da landing em public/landing/ e os do README em docs/screenshots/. Fica fora da suíte normal:
 // rode com `SCREENSHOTS=1 pnpm test:e2e e2e/screenshots.spec.ts`.
 test.skip(!process.env.SCREENSHOTS, "só com SCREENSHOTS=1");
 
-/** Carteira de exemplo (fundos e valores fictícios): ticker, tipo, segmento, cotas, preço pago, cotação, provento. */
-const SAMPLE: [string, "papel" | "tijolo", string, number, number, number, number][] = [
-  ["MXRF11", "papel", "IPCA", 750, 9.82, 10.12, 0.07],
-  ["KNCR11", "papel", "CDI", 50, 102.54, 104.75, 0.38],
-  ["HGLG11", "tijolo", "logística", 30, 153.83, 158.4, 0.4],
-  ["XPML11", "tijolo", "shoppings", 35, 109.34, 105.9, 0.92],
-  ["KNRI11", "tijolo", "híbrido", 20, 159, 161.2, 0.41],
-  ["KNIP11", "papel", "IPCA", 25, 92.4, 94.8, 0.36],
-  ["BTLG11", "tijolo", "logística", 22, 99.8, 102.35, 0.32],
+/** Carteira de exemplo (fundos e valores fictícios): ticker, tipo, segmento, cotas, preço pago, provento. */
+const SAMPLE: [string, "papel" | "tijolo", string, number, number, number][] = [
+  ["MXRF11", "papel", "IPCA", 750, 9.82, 0.07],
+  ["KNCR11", "papel", "CDI", 50, 102.54, 0.38],
+  ["HGLG11", "tijolo", "logística", 30, 153.83, 0.4],
+  ["XPML11", "tijolo", "shoppings", 35, 109.34, 0.92],
+  ["KNRI11", "tijolo", "híbrido", 20, 159, 0.41],
+  ["KNIP11", "papel", "IPCA", 25, 92.4, 0.36],
+  ["BTLG11", "tijolo", "logística", 22, 99.8, 0.32],
 ];
 
 /** Mês `back` meses antes de hoje, no formato aaaa-mm. */
@@ -31,10 +30,9 @@ const sampleData = () => {
     assets: [] as object[],
     transactions: [] as object[],
     payouts: [] as object[],
-    quotes: {} as Record<string, object>,
     paperTarget: 40,
   };
-  SAMPLE.forEach(([ticker, type, segment, shares, price, , dividend], i) => {
+  SAMPLE.forEach(([ticker, type, segment, shares, price, dividend], i) => {
     const id = `exemplo-${i}`;
     const first = Math.floor(shares / 2);
     data.assets.push({ id, ticker, type, segment });
@@ -49,17 +47,14 @@ const sampleData = () => {
   return data;
 };
 
-const PRICES = Object.fromEntries(SAMPLE.map(([ticker, , , , , quote]) => [ticker, quote]));
-
-/** Abre `path` com a carteira de exemplo e as cotações simuladas, pronto para o print. */
+/** Abre `path` com a carteira de exemplo, pronto para o print. */
 const openWithSample = async (page: Page, path: string, scheme: "light" | "dark") => {
   await page.emulateMedia({ colorScheme: scheme });
-  await mockQuotes(page, PRICES);
   await page.goto(path);
   await page.evaluate((data) => localStorage.setItem("fiinance:data:v1", JSON.stringify(data)), sampleData());
   await page.reload();
-  await page.getByText(/^Cotações de hoje/).filter({ visible: true }).first().waitFor();
-  await page.waitForTimeout(1_000);
+  await page.getByRole("main").waitFor();
+  await page.waitForTimeout(1_500);
 };
 
 for (const scheme of ["light", "dark"] as const) {

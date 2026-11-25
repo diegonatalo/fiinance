@@ -52,14 +52,12 @@ export const CalculatorsPage = () => {
       <div className="flex flex-wrap gap-6">
         <AveragePriceCalc
           assets={assets}
-          quotes={data.quotes}
           onRecord={(asset, shares, price) => setRecord({ asset, initialValues: { type: "compra", shares, price } })}
           className={cn("flex-[1_1_520px]", tab !== "average" && "max-md:hidden")}
         />
         <MagicNumberCalc
           assets={assets}
           payouts={data.payouts}
-          quotes={data.quotes}
           className={cn("flex-[1_1_520px]", tab !== "magic" && "max-md:hidden")}
         />
       </div>

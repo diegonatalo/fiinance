@@ -20,7 +20,7 @@ const ICONS: Record<FeatureIcon, { path: string; tint: string }> = {
     path: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01",
     tint: "text-brick",
   },
-  quote: { path: "M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5", tint: "text-up" },
+  device: { path: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM11 18h2", tint: "text-up" },
   backup: { path: "M12 3v12M7 10l5 5 5-5M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2", tint: "text-paper" },
 };
 
@@ -37,17 +37,11 @@ const ArrowIcon = () => (
 const HeroPreview = () => (
   <div aria-hidden="true" className="flex min-w-0 flex-[1_1_420px] flex-col gap-3.5">
     <div className="flex flex-col gap-3.5 rounded-3xl border border-line bg-surface p-7">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <span className="text-sm text-muted">Patrimônio</span>
-        <span className="inline-flex items-center gap-2 text-xs text-muted">
-          <span className="size-[7px] rounded-full bg-up" />
-          Cotações de hoje
-        </span>
-      </div>
+      <span className="text-sm text-muted">Patrimônio</span>
       <span className="text-[clamp(36px,4.6vw,52px)] leading-none font-semibold tracking-[-0.045em] tabular-nums">
-        R$ 29.131,70
+        R$ 28.616,91
       </span>
-      <span className="text-[15px] text-up tabular-nums">▲ R$ 514,79 · +1,80%</span>
+      <span className="text-[15px] text-muted tabular-nums">investido em 7 fundos · 932 cotas</span>
       <svg viewBox="0 0 800 200" preserveAspectRatio="none" className="block h-[120px] w-full">
         <path
           d="M20 170 L104 152 L188 132 L272 114 L356 106 L440 78 L524 66 L608 57 L692 46 L776 38 L776 200 L20 200 Z"

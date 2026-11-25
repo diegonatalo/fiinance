@@ -53,21 +53,19 @@ describe("usePortfolio", () => {
     const id = p.current.data.assets[0].id;
     act(() => {
       p.current.addPayout({ assetId: id, date: "2026-02-15", valuePerShare: 0.1, shares: 10 });
-      p.current.setQuotes({ [id]: 10.5 });
     });
 
     let snapshot: ReturnType<typeof p.current.removeAsset> = null;
     act(() => {
       snapshot = p.current.removeAsset(id);
     });
-    expect(p.current.data).toMatchObject({ assets: [], transactions: [], payouts: [], quotes: {} });
+    expect(p.current.data).toMatchObject({ assets: [], transactions: [], payouts: [] });
     expect(snapshot).toMatchObject({ transactions: [expect.anything()], payouts: [expect.anything()] });
 
     act(() => p.current.restoreAsset(snapshot!));
     expect(p.current.data.assets).toHaveLength(1);
     expect(p.current.data.transactions).toHaveLength(1);
     expect(p.current.data.payouts).toHaveLength(1);
-    expect(p.current.data.quotes[id].price).toBe(10.5);
   });
 
   it("remover um ativo que não existe não faz nada", () => {
@@ -95,18 +93,6 @@ describe("usePortfolio", () => {
     act(() => p.current.addPayout({ assetId: id, date: "2026-02-15", valuePerShare: 0.1, shares: 10 }));
     act(() => p.current.removePayout(p.current.data.payouts[0].id));
     expect(p.current.data.payouts).toEqual([]);
-  });
-
-  it("cotação zero ou negativa apaga a cotação do ativo", () => {
-    const p = setup();
-    act(() => {
-      p.current.addAsset(mxrf, buy(1, 10));
-    });
-    const id = p.current.data.assets[0].id;
-    act(() => p.current.setQuotes({ [id]: 10 }));
-    expect(p.current.data.quotes[id].price).toBe(10);
-    act(() => p.current.setQuotes({ [id]: 0 }));
-    expect(p.current.data.quotes[id]).toBeUndefined();
   });
 
   it("atualiza o ativo e a meta de papel", () => {
@@ -138,7 +124,6 @@ describe("usePortfolio", () => {
       assets: [{ id: "a", ticker: "HGLG11", type: "tijolo", segment: "logística" }],
       transactions: [{ id: "t", assetId: "a", type: "compra", date: "2026-01-01", shares: 2, price: 160 }],
       payouts: [],
-      quotes: {},
       paperTarget: null,
     };
     act(() => {

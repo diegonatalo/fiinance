@@ -33,7 +33,7 @@ describe("simulateAveragePrice", () => {
 });
 
 describe("calculateMagicNumber", () => {
-  it("arredonda para cima cotação ÷ dividendo", () => {
+  it("arredonda para cima preço ÷ provento", () => {
     const result = calculateMagicNumber(1, 95, 40);
     expect(result).toMatchObject({
       magicNumber: 95,
@@ -53,7 +53,7 @@ describe("calculateMagicNumber", () => {
     expect(calculateMagicNumber(1, 100, 25)?.progress).toBe(25);
   });
 
-  it("devolve null sem dividendo ou cotação válidos", () => {
+  it("devolve null sem provento ou preço válidos", () => {
     expect(calculateMagicNumber(0, 100, 1)).toBeNull();
     expect(calculateMagicNumber(1, -5, 1)).toBeNull();
     expect(calculateMagicNumber(Number.NaN, 100, 1)).toBeNull();

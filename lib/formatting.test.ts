@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { formatDate, formatDayMonth, formatMonth, formatMonthLong, isValidDate, monthName, monthOf, today } from "@/lib/date";
-import { formatBRL, formatChange, formatDelta, formatDeltaBRL, formatKind, formatNumber, formatPct, formatSignedPct } from "@/lib/format";
+import { formatBRL, formatChange, formatDelta, formatKind, formatNumber, formatPct, formatSignedPct } from "@/lib/format";
 import { uid } from "@/lib/id";
 import { parseDecimal, parseDecimalOrZero } from "@/lib/numbers";
 
@@ -98,14 +98,11 @@ describe("uid", () => {
 });
 
 describe("formatos da identidade", () => {
-
   it("variação com sinal tipográfico e seta", () => {
     expect(formatChange(1.8)).toBe("+1,80%");
     expect(formatChange(-3.14)).toBe("−3,14%");
     expect(formatDelta(3.09)).toBe("▲ +3,09%");
     expect(formatDelta(-1.66, 1)).toBe("▼ −1,7%");
-    expect(plain(formatDeltaBRL(-120.31))).toBe("▼ R$ 120,31");
-    expect(plain(formatDeltaBRL(0))).toBe("▲ R$ 0,00");
   });
 
   it("tipo e segmento com inicial maiúscula", () => {

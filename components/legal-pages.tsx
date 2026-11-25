@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { PRIVACY_EMAIL, SOURCE_URL } from "@/lib/site";
 
 /** Data da última mudança nos textos (`AAAA-MM-DD`). */
-const UPDATED_AT = "2026-11-24";
+const UPDATED_AT = "2026-11-25";
 
 const linkClass = "font-medium text-paper underline underline-offset-2";
 
@@ -36,8 +36,8 @@ export const PrivacyPage = () => (
           content: (
             <>
               <p>
-                Os fundos que você cadastra (ticker, tipo e segmento), as compras e vendas, os proventos, a meta de
-                alocação e as últimas cotações. E a sua escolha de tema claro ou escuro.
+                Os fundos que você cadastra (ticker, tipo e segmento), as compras e vendas, os proventos e a meta de
+                alocação. E a sua escolha de tema claro ou escuro.
               </p>
               <p>
                 Tudo fica no armazenamento deste navegador (localStorage), neste aparelho. Nós não temos acesso a
@@ -50,21 +50,11 @@ export const PrivacyPage = () => (
           id: "terceiros",
           title: "Quem mais recebe dados",
           content: (
-            <>
-              <p>
-                <strong>Cotações (nosso servidor e brapi.dev):</strong> para mostrar o preço de hoje, o app envia ao
-                nosso servidor só os códigos dos fundos que você tem. O servidor pergunta o preço à brapi, que tem a{" "}
-                <a href="https://brapi.dev" target="_blank" rel="noopener noreferrer" className={linkClass}>
-                  própria política de privacidade
-                </a>
-                , e devolve a resposta. Os preços ficam guardados no servidor por alguns minutos, sem nenhum dado seu.
-                Quantidades, preços pagos e proventos nunca saem do seu navegador.
-              </p>
-              <p>
-                <strong>Vercel:</strong> a hospedagem do site e do servidor registra dados técnicos de acesso (como IP e
-                navegador) para entregar as páginas. Não usamos cookies, estatísticas de visita nem propaganda.
-              </p>
-            </>
+            <p>
+              <strong>Vercel:</strong> a hospedagem do site registra dados técnicos de acesso (como IP e navegador) para
+              entregar as páginas. Nada do que você cadastra é enviado a ela nem a mais ninguém. Não usamos cookies,
+              estatísticas de visita nem propaganda.
+            </p>
           ),
         },
         {
@@ -72,8 +62,8 @@ export const PrivacyPage = () => (
           title: "Backup",
           content: (
             <p>
-              O backup em JSON leva toda a carteira: fundos, operações, proventos, cotações e meta. A exportação em CSV
-              leva as operações. Depois de baixados, os arquivos ficam sob o seu cuidado.
+              O backup em JSON leva toda a carteira: fundos, operações, proventos e meta. A exportação em CSV leva as
+              operações. Depois de baixados, os arquivos ficam sob o seu cuidado.
             </p>
           ),
         },
@@ -128,8 +118,7 @@ export const TermsPage = () => (
           content: (
             <p>
               O FIInance só organiza e calcula os números que você informa. Nada nele é recomendação de compra ou
-              venda, e as decisões de investimento são suas. As cotações vêm de um serviço externo e podem atrasar,
-              falhar ou vir erradas; confira na sua corretora antes de decidir.
+              venda, e as decisões de investimento são suas. Confira os números na sua corretora antes de decidir.
             </p>
           ),
         },

@@ -7,12 +7,11 @@ import { formatDayMonth } from "@/lib/date";
 import { formatBRL, formatNumber, formatPct } from "@/lib/format";
 import { calculateMagicNumber } from "@/lib/magic-number";
 import { parseDecimal, parseDecimalOrZero } from "@/lib/numbers";
-import type { Fii, Payout, Quote } from "@/types/fii";
+import type { Fii, Payout } from "@/types/fii";
 
 type MagicNumberCalcProps = {
   assets: Fii[];
   payouts: Payout[];
-  quotes: Record<string, Quote>;
   className?: string;
 };
 
@@ -23,22 +22,20 @@ function lastPayout(payouts: Payout[], assetId: string) {
   return payouts.filter((p) => p.assetId === assetId).toSorted((a, b) => b.date.localeCompare(a.date))[0];
 }
 
-export const MagicNumberCalc = ({ assets, payouts, quotes, className }: MagicNumberCalcProps) => {
+export const MagicNumberCalc = ({ assets, payouts, className }: MagicNumberCalcProps) => {
   const held = assets.filter((a) => a.shares > 0);
   // null: ainda não escolheu, vale o primeiro fundo da carteira
   const [picked, setPicked] = useState<string | null>(null);
   const [typedDividend, setTypedDividend] = useState<string | null>(null);
-  const [manualQuote, setManualQuote] = useState("");
+  const [price, setPrice] = useState("");
   const [manualShares, setManualShares] = useState("");
 
   const assetId = picked ?? held[0]?.id ?? MANUAL;
   const asset = held.find((a) => a.id === assetId) ?? null;
   const last = asset ? lastPayout(payouts, asset.id) : undefined;
-  const todayQuote = asset ? quotes[asset.id]?.price : undefined;
   const dividend = typedDividend ?? (last ? toField(last.valuePerShare) : "");
-  const quote = todayQuote ?? parseDecimal(manualQuote);
   const currentShares = asset ? asset.shares : parseDecimalOrZero(manualShares);
-  const result = calculateMagicNumber(parseDecimal(dividend), quote, currentShares);
+  const result = calculateMagicNumber(parseDecimal(dividend), parseDecimal(price), currentShares);
 
   function pick(id: string) {
     setPicked(id);
@@ -71,20 +68,9 @@ export const MagicNumberCalc = ({ assets, payouts, quotes, className }: MagicNum
         >
           <Input inputMode="decimal" value={dividend} onChange={(e) => setTypedDividend(e.target.value)} placeholder="R$ 0,00" />
         </Field>
-        {todayQuote !== undefined ? (
-          <div className="flex flex-col gap-2">
-            <span className="text-[13px] text-muted">Cotação de hoje</span>
-            <span className="flex h-12 items-center justify-between rounded-xl border border-dashed border-line px-3.5 text-[15px] font-medium tabular-nums">
-              {formatBRL(todayQuote)}
-              <span className="size-[7px] rounded-full bg-up" aria-hidden="true" />
-            </span>
-            <span className="text-xs text-subtle">atualizada sozinha</span>
-          </div>
-        ) : (
-          <Field label="Cotação" hint={asset ? "ainda sem a cotação de hoje" : undefined}>
-            <Input inputMode="decimal" value={manualQuote} onChange={(e) => setManualQuote(e.target.value)} placeholder="R$ 0,00" />
-          </Field>
-        )}
+        <Field label="Preço da cota">
+          <Input inputMode="decimal" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="R$ 0,00" />
+        </Field>
         {!asset && (
           <div className="col-span-2">
             <Field label="Cotas que você já possui">
@@ -96,7 +82,7 @@ export const MagicNumberCalc = ({ assets, payouts, quotes, className }: MagicNum
 
       <div className="flex flex-col gap-[18px] rounded-2xl border border-line bg-bg p-5 tabular-nums md:p-6">
         {!result ? (
-          <p className="py-6 text-center text-sm text-muted">Preencha o provento e a cotação para ver o resultado.</p>
+          <p className="py-6 text-center text-sm text-muted">Preencha o provento e o preço da cota para ver o resultado.</p>
         ) : (
           <>
             <div className="flex items-end justify-between gap-4">

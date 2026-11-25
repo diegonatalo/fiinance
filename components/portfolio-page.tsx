@@ -8,13 +8,12 @@ import { FiiTable, type TypeFilter } from "@/components/fii-table";
 import { HistoryCard } from "@/components/history-card";
 import { OperationModal } from "@/components/operation-modal";
 import { PageHeader } from "@/components/page-header";
-import { QuoteStatus } from "@/components/quote-status";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { usePortfolioContext } from "@/hooks/use-portfolio-context";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/cn";
-import { formatBRL, formatDelta, formatNumber } from "@/lib/format";
+import { formatBRL, formatNumber } from "@/lib/format";
 import type { Fii } from "@/types/fii";
 
 const FILTERS: { value: TypeFilter; label: string }[] = [
@@ -24,7 +23,7 @@ const FILTERS: { value: TypeFilter; label: string }[] = [
 ];
 
 export const PortfolioPage = () => {
-  const { assets, data, summary, tickerInUse, addAsset, updateAsset, removeAsset, restoreAsset } =
+  const { assets, summary, tickerInUse, addAsset, updateAsset, removeAsset, restoreAsset } =
     usePortfolioContext();
   const notify = useToast();
   const [filter, setFilter] = useState<TypeFilter>("all");
@@ -67,13 +66,7 @@ export const PortfolioPage = () => {
           ) : (
             <>
               {funds} · {formatNumber(summary.totalShares)} cotas ·{" "}
-              <span className="text-fg">{formatBRL(summary.marketValue)}</span> hoje
-              {summary.completeQuotes && (
-                <>
-                  {" "}
-                  · <span className={summary.resultPct >= 0 ? "text-up" : "text-down"}>{formatDelta(summary.resultPct)}</span>
-                </>
-              )}
+              <span className="text-fg">{formatBRL(summary.totalInvested)}</span> investidos
             </>
           )
         }
@@ -116,7 +109,6 @@ export const PortfolioPage = () => {
       ) : (
         <FiiTable
           assets={assets}
-          quotes={data.quotes}
           filter={filter}
           onEdit={setEditing}
           onDelete={handleDelete}
@@ -126,10 +118,9 @@ export const PortfolioPage = () => {
 
       {assets.length > 0 && (
         <p className="text-[13px] text-muted">
-          A cotação de cada fundo é atualizada sozinha. Compras e vendas recalculam o preço médio na hora.
+          Compras e vendas recalculam o preço médio na hora.
         </p>
       )}
-      <QuoteStatus bare className="-mt-3 text-xs text-subtle md:hidden" />
 
       <HistoryCard />
       <BackupCard />

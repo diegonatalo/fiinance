@@ -10,7 +10,6 @@ const valid = {
     { id: "t1", assetId: "a", type: "compra", date: "2026-01-10", shares: 10, price: 9.5 },
   ],
   payouts: [{ id: "p1", assetId: "a", date: "2026-02-10", valuePerShare: 0.1, shares: 10 }],
-  quotes: { a: { price: 10, updatedAt: "2026-02-10T10:00:00Z" } },
   paperTarget: 40,
 };
 
@@ -30,7 +29,6 @@ describe("sanitizeData", () => {
     expect(data.assets[0].ticker).toBe("MXRF11");
     expect(data.transactions).toHaveLength(1);
     expect(data.payouts).toHaveLength(1);
-    expect(data.quotes.a.price).toBe(10);
     expect(data.paperTarget).toBe(40);
   });
 
@@ -68,15 +66,17 @@ describe("sanitizeData", () => {
     expect(data.transactions.map((t) => t.id)).toEqual(["t1"]);
   });
 
-  it("descarta proventos e cotações inválidos", () => {
+  it("descarta proventos inválidos", () => {
     const data = sanitizeData({
       ...valid,
       payouts: [valid.payouts[0], { ...valid.payouts[0], id: "p2", valuePerShare: 0 }],
-      quotes: { a: { price: 10 }, fantasma: { price: 5 }, b: { price: -1 } },
     })!;
     expect(data.payouts).toHaveLength(1);
-    expect(Object.keys(data.quotes)).toEqual(["a"]);
-    expect(data.quotes.a.updatedAt).toBe("");
+  });
+
+  it("deixa de fora as cotações das versões antigas", () => {
+    const data = sanitizeData({ ...valid, quotes: { a: { price: 10, updatedAt: "" } } })!;
+    expect(data).not.toHaveProperty("quotes");
   });
 
   it.each([[-1], [101], ["40"], [Number.NaN]])("recusa meta de papel fora de 0–100 (%s)", (target) => {
@@ -142,5 +142,14 @@ describe("parseBackup", () => {
     const data = backup();
     expect(parseBackup({ ...data, transactions: [...data.transactions, { id: "x" }] })).toBeNull();
     expect(parseBackup({ ...data, assets: [...data.assets, null] })).toBeNull();
+  });
+});
+
+describe("backups com cotações", () => {
+  it("aceita o backup de uma versão antiga e ignora as cotações", () => {
+    const old = { ...valid, app: "fiinance", quotes: { a: { price: 10, updatedAt: "" }, fantasma: { price: 5 } } };
+    const data = parseBackup(old);
+    expect(data?.assets).toHaveLength(1);
+    expect(data).not.toHaveProperty("quotes");
   });
 });

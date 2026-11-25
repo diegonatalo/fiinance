@@ -25,7 +25,7 @@ export const STEPS: Step[] = [
   },
 ];
 
-export type FeatureIcon = "chart" | "coins" | "target" | "calculator" | "quote" | "backup";
+export type FeatureIcon = "chart" | "coins" | "target" | "calculator" | "device" | "backup";
 
 export type Feature = { icon: FeatureIcon; title: string; text: string };
 
@@ -51,9 +51,9 @@ export const FEATURES: Feature[] = [
     text: "Preço médio depois de uma nova compra e o número mágico: quantas cotas para o provento pagar uma cota nova.",
   },
   {
-    icon: "quote",
-    title: "Cotações automáticas",
-    text: "O preço de cada fundo chega sozinho quando você abre o app. Sem token e sem digitar.",
+    icon: "device",
+    title: "No celular e no computador",
+    text: "Tema claro ou escuro, barra de abas no celular e uma carteira que vira lista em telas pequenas.",
   },
   {
     icon: "backup",
@@ -78,7 +78,7 @@ export const FAQ: Faq[] = [
   {
     question: "Onde ficam os meus dados?",
     answer:
-      "Só no seu navegador. Para buscar as cotações, apenas os códigos dos fundos passam pelo nosso servidor, que pergunta o preço à brapi. Quantidades, preços pagos e proventos nunca saem do seu aparelho.",
+      "Só no seu navegador. Nada do que você cadastra vai para um servidor nosso, e não tem conta nem cookie de rastreamento.",
   },
   {
     question: "Como levo a carteira para outro computador?",

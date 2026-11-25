@@ -3,7 +3,6 @@ import {
   PAPER_SEGMENTS,
   BRICK_SEGMENTS,
   type Asset,
-  type Quote,
   type AppData,
   type Payout,
   type Transaction,
@@ -14,7 +13,6 @@ export const EMPTY_DATA: AppData = {
   assets: [],
   transactions: [],
   payouts: [],
-  quotes: {},
   paperTarget: null,
 };
 
@@ -101,26 +99,13 @@ export function sanitizeData(raw: unknown): AppData | null {
     .map(sanitizePayout)
     .filter((p): p is Payout => p !== null && ids.has(p.assetId));
 
-  const quotes: Record<string, Quote> = {};
-  if (isObj(raw.quotes)) {
-    for (const [id, c] of Object.entries(raw.quotes)) {
-      if (ids.has(id) && isObj(c) && positive(c.price)) {
-        quotes[id] = {
-          price: c.price,
-          updatedAt:
-            typeof c.updatedAt === "string" ? c.updatedAt : "",
-        };
-      }
-    }
-  }
-
   const target = raw.paperTarget;
   const paperTarget =
     typeof target === "number" && Number.isFinite(target) && target >= 0 && target <= 100
       ? target
       : null;
 
-  return { version: 2, assets, transactions, payouts, quotes, paperTarget };
+  return { version: 2, assets, transactions, payouts, paperTarget };
 }
 
 /** Identifica o backup: um JSON de outro app nunca é lido como carteira. */
@@ -129,12 +114,13 @@ export const BACKUP_APP = "fiinance";
 /**
  * Lê um backup importado. Mais rígido que o `sanitizeData` do storage: confere o app e a
  * versão, e um registro quebrado recusa o arquivo inteiro (nada é descartado em silêncio).
- * Backups de antes do campo `app` são aceitos quando o formato inteiro bate.
+ * Backups de antes do campo `app` são aceitos quando o formato inteiro bate. O campo `quotes`
+ * de versões antigas (cotações) é ignorado.
  */
 export function parseBackup(raw: unknown): AppData | null {
   if (!isObj(raw) || (raw.app !== undefined && raw.app !== BACKUP_APP) || raw.version !== 2) return null;
-  const { assets, transactions, payouts, quotes } = raw;
-  if (!Array.isArray(assets) || !Array.isArray(transactions) || !Array.isArray(payouts) || !isObj(quotes)) {
+  const { assets, transactions, payouts } = raw;
+  if (!Array.isArray(assets) || !Array.isArray(transactions) || !Array.isArray(payouts)) {
     return null;
   }
   const data = sanitizeData(raw);
@@ -142,8 +128,7 @@ export function parseBackup(raw: unknown): AppData | null {
     data !== null &&
     data.assets.length === assets.length &&
     data.transactions.length === transactions.length &&
-    data.payouts.length === payouts.length &&
-    Object.keys(data.quotes).length === Object.keys(quotes).length;
+    data.payouts.length === payouts.length;
   return complete ? data : null;
 }
 

@@ -14,15 +14,3 @@ export const addFii = async (page: Page, ticker: string, shares: string, price: 
 
 /** Linha do fundo na tabela da carteira. */
 export const assetRow = (page: Page, ticker: string) => page.getByRole("row").filter({ hasText: ticker });
-
-/**
- * As cotações vêm da rota do app (`/api/quotes`), que consulta a brapi no servidor.
- * Nos testes a rota é simulada no navegador: nada de rede de verdade.
- */
-export const mockQuotes = async (page: Page, prices: Record<string, number>) => {
-  await page.route("**/api/quotes?**", async (route) => {
-    const tickers = (new URL(route.request().url()).searchParams.get("tickers") ?? "").split(",");
-    const found = Object.fromEntries(tickers.filter((t) => prices[t] !== undefined).map((t) => [t, prices[t]]));
-    await route.fulfill({ json: { prices: found, failed: tickers.filter((t) => prices[t] === undefined) } });
-  });
-};

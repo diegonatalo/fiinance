@@ -31,10 +31,12 @@ const HEIGHT = 200;
 const MAX_LABELS = 10;
 
 export type EvolutionChart = {
-  /** linha tracejada do valor investido */
+  /** linha do valor investido */
   invested: string;
-  /** o patrimônio de hoje, no último mês */
-  today: { x: number; y: number } | null;
+  /** área sob a linha */
+  area: string;
+  /** o último mês, destacado com um ponto */
+  last: { x: number; y: number };
   /** altura (y) das linhas de grade, do zero ao topo */
   grid: number[];
   /** meses no eixo x, com a posição em % da largura */
@@ -72,18 +74,14 @@ export function fillMonths(points: EvolutionPoint[], currentMonth: string): Evol
 }
 
 /**
- * Geometria do gráfico de evolução: o investido mês a mês e o patrimônio de hoje.
- * `currentMonth` (aaaa-mm) estende a linha até o mês atual; `marketValue` é o patrimônio.
+ * Geometria do gráfico de evolução: o investido acumulado mês a mês.
+ * `currentMonth` (aaaa-mm) estende a linha até o mês atual.
  */
-export function evolutionChart(
-  points: EvolutionPoint[],
-  currentMonth: string,
-  marketValue: number | null,
-): EvolutionChart | null {
+export function evolutionChart(points: EvolutionPoint[], currentMonth: string): EvolutionChart | null {
   const series = fillMonths(points, currentMonth);
   if (series.length < 2) return null;
 
-  const max = niceCeil(Math.max(...series.map((p) => p.contributed), marketValue ?? 0) * 1.08);
+  const max = niceCeil(Math.max(...series.map((p) => p.contributed)) * 1.08);
   const x = (i: number) => LEFT + ((RIGHT - LEFT) * i) / (series.length - 1);
   const y = (v: number) => Math.round((BOTTOM - (Math.max(v, 0) / max) * HEIGHT) * 100) / 100;
 
@@ -98,9 +96,11 @@ export function evolutionChart(
       text: spansYears ? formatMonth(p.month) : formatMonth(p.month).slice(0, 3),
     }));
 
+  const end = { x: Math.round(x(series.length - 1)), y: y(series.at(-1)!.contributed) };
   return {
     invested,
-    today: marketValue === null ? null : { x: Math.round(x(series.length - 1)), y: y(marketValue) },
+    area: `${invested} L${end.x} ${BOTTOM} L${LEFT} ${BOTTOM} Z`,
+    last: end,
     grid: [0, 0.25, 0.5, 0.75, 1].map((f) => BOTTOM - f * HEIGHT),
     labels,
   };

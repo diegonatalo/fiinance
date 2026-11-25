@@ -1,9 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { addFii, assetRow, mockQuotes } from "./fixtures";
-
-test.beforeEach(async ({ page }) => {
-  await mockQuotes(page, {});
-});
+import { addFii, assetRow } from "./fixtures";
 
 test("exporta o backup, apaga tudo e importa de volta", async ({ page }, testInfo) => {
   await addFii(page, "KNRI11", "5", "140,00");

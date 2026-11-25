@@ -34,10 +34,6 @@
       "desc": "Lance compras e vendas. Cotas e preço médio saem delas, e comprar um ticker repetido soma à posição."
     },
     {
-      "title": "Resultado",
-      "desc": "As cotações chegam sozinhas: veja valor de hoje, peso e lucro ou prejuízo de cada fundo, em R$ e em %."
-    },
-    {
       "title": "Proventos",
       "desc": "O app confere quantas cotas você tinha na data e calcula renda mensal e yield on cost de 12 meses."
     },
@@ -51,7 +47,7 @@
     },
     {
       "title": "Calculadoras",
-      "desc": "Número mágico e preço médio, já ligados à sua carteira e à cotação de hoje, com opção de registrar a compra simulada."
+      "desc": "Número mágico e preço médio, já ligados à sua carteira, com opção de registrar a compra simulada."
     },
     {
       "title": "Backup",
@@ -77,13 +73,13 @@
         "file": "docs/screenshots/painel-dark.png",
         "file_light": "docs/screenshots/painel-light.png",
         "title": "Painel",
-        "alt": "Painel com o patrimônio, a evolução do investido, a meta de alocação e o peso de cada fundo"
+        "alt": "Painel com o total investido, a evolução, a meta de alocação e o peso de cada fundo"
       },
       {
         "file": "docs/screenshots/carteira.png",
         "title": "Carteira",
-        "alt": "Tabela de fundos com cotas, preço médio, cotação do dia, valor de hoje, resultado e peso",
-        "caption": "<b>Carteira</b>: cotação do dia, resultado e peso de cada fundo."
+        "alt": "Tabela de fundos com cotas, preço médio, valor investido e peso",
+        "caption": "<b>Carteira</b>: posição, preço médio e peso de cada fundo."
       },
       {
         "file": "docs/screenshots/proventos.png",
@@ -110,6 +106,6 @@
   },
   "footer": "Feito com 🧱 para quem investe em FIIs.",
   "credits": [
-    "Ícones do [Phosphor Icons](https://phosphoricons.com), fontes [Geist](https://vercel.com/font)\ne cotações pela [brapi](https://brapi.dev)."
+    "Ícones do [Phosphor Icons](https://phosphoricons.com) e fontes [Geist](https://vercel.com/font)."
   ]
 }

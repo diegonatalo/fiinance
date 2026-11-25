@@ -7,32 +7,28 @@ import { simulateAveragePrice } from "@/lib/average-price";
 import { cn } from "@/lib/cn";
 import { formatBRL, formatChange, formatNumber } from "@/lib/format";
 import { parseDecimal, parseDecimalOrZero } from "@/lib/numbers";
-import type { Fii, Quote } from "@/types/fii";
+import type { Fii } from "@/types/fii";
 
 type AveragePriceCalcProps = {
   assets: Fii[];
-  quotes: Record<string, Quote>;
   /** abre o registro de compra com os valores da simulação */
   onRecord: (asset: Fii, shares: number, price: number) => void;
   className?: string;
 };
 
 const MANUAL = "";
-const toField = (n: number) => n.toFixed(2).replace(".", ",");
 
-export const AveragePriceCalc = ({ assets, quotes, onRecord, className }: AveragePriceCalcProps) => {
+export const AveragePriceCalc = ({ assets, onRecord, className }: AveragePriceCalcProps) => {
   const held = assets.filter((a) => a.shares > 0);
   // null: ainda não escolheu, vale o primeiro fundo da carteira
   const [picked, setPicked] = useState<string | null>(null);
   const [manualShares, setManualShares] = useState("");
   const [manualPrice, setManualPrice] = useState("");
   const [newShares, setNewShares] = useState("");
-  const [typedPrice, setTypedPrice] = useState<string | null>(null);
+  const [newPrice, setNewPrice] = useState("");
 
   const assetId = picked ?? held[0]?.id ?? MANUAL;
   const asset = held.find((a) => a.id === assetId) ?? null;
-  const quote = asset ? quotes[asset.id]?.price : undefined;
-  const newPrice = typedPrice ?? (quote !== undefined ? toField(quote) : "");
 
   const currentShares = asset ? asset.shares : parseDecimalOrZero(manualShares);
   const currentPrice = asset ? asset.averagePrice : parseDecimalOrZero(manualPrice);
@@ -41,10 +37,6 @@ export const AveragePriceCalc = ({ assets, quotes, onRecord, className }: Averag
   const result = simulateAveragePrice(currentShares, currentPrice, qty, price);
   const lowered = result ? result.variation <= 0 : false;
 
-  function pick(id: string) {
-    setPicked(id);
-    setTypedPrice(null);
-  }
 
   return (
     <Card className={cn("flex flex-col gap-[22px]", className)}>
@@ -56,7 +48,7 @@ export const AveragePriceCalc = ({ assets, quotes, onRecord, className }: Averag
       <div className="grid grid-cols-2 gap-3 md:gap-4">
         <div className="col-span-2">
           <Field label="Fundo">
-            <Select value={assetId} onChange={(e) => pick(e.target.value)}>
+            <Select value={assetId} onChange={(e) => setPicked(e.target.value)}>
               {held.map((a) => (
                 <option key={a.id} value={a.id}>
                   {a.ticker} · {formatNumber(a.shares)} cotas a {formatBRL(a.averagePrice)}
@@ -79,11 +71,8 @@ export const AveragePriceCalc = ({ assets, quotes, onRecord, className }: Averag
         <Field label="Cotas compradas">
           <Input inputMode="numeric" value={newShares} onChange={(e) => setNewShares(e.target.value)} placeholder="0" />
         </Field>
-        <Field
-          label="Preço por cota"
-          hint={typedPrice === null && quote !== undefined ? "já vem com a cotação de hoje" : undefined}
-        >
-          <Input inputMode="decimal" value={newPrice} onChange={(e) => setTypedPrice(e.target.value)} placeholder="R$ 0,00" />
+        <Field label="Preço por cota">
+          <Input inputMode="decimal" value={newPrice} onChange={(e) => setNewPrice(e.target.value)} placeholder="R$ 0,00" />
         </Field>
       </div>
 

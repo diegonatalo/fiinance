@@ -2,20 +2,20 @@ import Link from "next/link";
 import { Card, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/cn";
 import { brickSegmentDistribution, paperSegmentDistribution, type Slice } from "@/lib/distribution";
-import { formatBRL, formatDelta, formatKind, formatPct } from "@/lib/format";
+import { formatBRL, formatKind, formatPct } from "@/lib/format";
 import type { PositionRow } from "@/lib/summary";
 import type { Fii } from "@/types/fii";
 
 const typeColor = (asset: Fii) => (asset.type === "papel" ? "bg-paper" : "bg-brick");
 
-/** Peso de cada fundo no valor de hoje, em barras. */
+/** Peso de cada fundo no total investido, em barras. */
 export const FundsCard = ({ rows, className }: { rows: PositionRow[]; className?: string }) => {
-  const max = Math.max(...rows.map((r) => r.value), 0);
+  const max = Math.max(...rows.map((r) => r.invested), 0);
   return (
     <Card className={cn("flex flex-col gap-3.5", className)}>
       <div className="flex items-baseline justify-between gap-3">
         <CardTitle>Por fundo</CardTitle>
-        <span className="text-[13px] text-muted">peso no valor atual</span>
+        <span className="text-[13px] text-muted">peso no valor investido</span>
       </div>
       {rows.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted">Nenhum fundo na carteira.</p>
@@ -30,10 +30,10 @@ export const FundsCard = ({ rows, className }: { rows: PositionRow[]; className?
               <span className="h-2 rounded-full bg-hairline" aria-hidden="true">
                 <span
                   className={cn("block h-2 rounded-full", typeColor(r.asset))}
-                  style={{ width: `${max > 0 ? (r.value / max) * 100 : 0}%` }}
+                  style={{ width: `${max > 0 ? (r.invested / max) * 100 : 0}%` }}
                 />
               </span>
-              <span className="text-right">{formatBRL(r.value)}</span>
+              <span className="text-right">{formatBRL(r.invested)}</span>
               <span className="text-right text-muted">{formatPct(r.weight)}</span>
             </li>
           ))}
@@ -65,12 +65,8 @@ export const TopHoldings = ({ rows, className }: { rows: PositionRow[]; classNam
               <span className="text-xs text-muted">{formatKind(r.asset.type, r.asset.segment)}</span>
             </span>
             <span className="flex flex-col items-end gap-0.5">
-              <span className="text-sm font-medium">{formatBRL(r.value)}</span>
-              {r.resultPct !== undefined && (
-                <span className={cn("text-xs", r.resultPct >= 0 ? "text-up" : "text-down")}>
-                  {formatDelta(r.resultPct)}
-                </span>
-              )}
+              <span className="text-sm font-medium">{formatBRL(r.invested)}</span>
+              <span className="text-xs text-muted">{formatPct(r.weight)}</span>
             </span>
           </li>
         ))}
@@ -158,8 +154,5 @@ export const SegmentsCard = ({ assets, paperPct, brickPct, className }: Segments
       texts={PAPER_TEXT}
       empty="Nenhum fundo de papel na carteira."
     />
-    <p className="border-t border-hairline pt-5 text-[13px] leading-relaxed text-muted">
-      Os preços vêm sozinhos toda vez que você abre o app. Nada de digitar cotação.
-    </p>
   </Card>
 );
