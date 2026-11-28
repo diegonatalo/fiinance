@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { PRIVACY_EMAIL, SOURCE_URL } from "@/lib/site";
 
 /** Data da última mudança nos textos (`AAAA-MM-DD`). */
-const UPDATED_AT = "2026-11-25";
+const UPDATED_AT = "2026-11-27";
 
 const linkClass = "font-medium text-paper underline underline-offset-2";
 
@@ -40,8 +40,8 @@ export const PrivacyPage = () => (
                 de volta). Para manter você conectado, também as sessões abertas, com o IP e o navegador de cada uma.
               </p>
               <p>
-                <strong>Da carteira:</strong> os fundos que você cadastra (ticker, tipo e segmento), as compras e vendas,
-                os proventos e a meta de alocação.
+                <strong>Da carteira:</strong> os fundos que você cadastra: ticker, tipo, segmento ou perfil de risco,
+                cotas, preço médio, último rendimento e a nota que você dá a cada um.
               </p>
               <p>
                 <strong>Neste navegador:</strong> o cookie de sessão, necessário para entrar, e a sua escolha de tema

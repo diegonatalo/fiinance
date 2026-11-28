@@ -36,24 +36,24 @@
   ],
   "features": [
     {
-      "title": "Operações",
-      "desc": "Lance compras e vendas. Cotas e preço médio saem delas, e comprar um ticker repetido soma à posição."
+      "title": "Cadastro",
+      "desc": "Ticker, cotas, preço médio, último rendimento e tipo: tijolo com segmento ou papel com perfil de risco."
     },
     {
-      "title": "Proventos",
-      "desc": "O app confere quantas cotas você tinha na data e calcula renda mensal e yield on cost de 12 meses."
+      "title": "Proventos esperados",
+      "desc": "Último rendimento × cotas de cada fundo, somados: quanto a carteira deve pagar no mês."
     },
     {
-      "title": "Meta de alocação",
-      "desc": "Defina quanto quer em papel e em tijolo e veja o aporte que falta para chegar lá."
+      "title": "Meta pela nota",
+      "desc": "Dê uma nota de 1 a 10 a cada fundo; ela define a meta, e o app divide o próximo aporte entre quem está abaixo."
     },
     {
       "title": "Gráficos",
-      "desc": "Evolução do investido, peso de cada fundo, tijolo por segmento e papel por indexador."
+      "desc": "Donuts da diversificação por tipo, tijolo por segmento e papel por risco, e o peso de cada fundo."
     },
     {
       "title": "Calculadoras",
-      "desc": "Número mágico e preço médio, já ligados à sua carteira, com opção de registrar a compra simulada."
+      "desc": "Número mágico e preço médio, já ligados à sua carteira, com opção de aplicar a compra simulada ao fundo."
     },
     {
       "title": "Conta",
@@ -79,19 +79,13 @@
         "file": "docs/screenshots/painel-dark.png",
         "file_light": "docs/screenshots/painel-light.png",
         "title": "Painel",
-        "alt": "Painel com o total investido, a evolução, a meta de alocação e o peso de cada fundo"
+        "alt": "Painel com o total investido, os proventos esperados, a diversificação em donuts e o peso de cada fundo"
       },
       {
         "file": "docs/screenshots/carteira.png",
         "title": "Carteira",
-        "alt": "Tabela de fundos com cotas, preço médio, valor investido e peso",
-        "caption": "<b>Carteira</b>: posição, preço médio e peso de cada fundo."
-      },
-      {
-        "file": "docs/screenshots/proventos.png",
-        "title": "Proventos",
-        "alt": "Proventos dos últimos 12 meses em barras e os pagamentos de cada mês",
-        "caption": "<b>Proventos</b>: renda mensal e histórico de pagamentos."
+        "alt": "Tabela de fundos com cotas, preço médio, valor investido, peso, meta e rendimento",
+        "caption": "<b>Carteira</b>: posição, peso, meta pela nota e proventos esperados de cada fundo."
       },
       {
         "file": "docs/screenshots/calculadoras.png",

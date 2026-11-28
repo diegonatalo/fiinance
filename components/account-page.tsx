@@ -87,7 +87,7 @@ export const AccountPage = () => {
         <div className="flex flex-col gap-1.5">
           <CardTitle>Excluir conta</CardTitle>
           <p className="max-w-2xl text-sm leading-relaxed text-muted">
-            A conta e toda a carteira (fundos, operações, proventos e meta) são apagadas para sempre. Não dá para desfazer.
+            A conta e toda a carteira (todos os fundos) são apagadas para sempre. Não dá para desfazer.
           </p>
         </div>
         <div>

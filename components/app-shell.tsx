@@ -4,7 +4,7 @@ import { useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandLink } from "@/components/brand";
-import { CalculatorsIcon, DashboardIcon, PayoutsIcon, PortfolioIcon } from "@/components/nav-icons";
+import { CalculatorsIcon, DashboardIcon, PortfolioIcon } from "@/components/nav-icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonClasses } from "@/components/ui/button";
 import { useAccount } from "@/hooks/use-account";
@@ -18,7 +18,6 @@ import { THEME_KEY } from "@/lib/storage-keys";
 const navItems = [
   { to: "/app", label: "Painel", end: true, icon: DashboardIcon },
   { to: "/app/carteira", label: "Carteira", end: false, icon: PortfolioIcon },
-  { to: "/app/proventos", label: "Proventos", end: false, icon: PayoutsIcon },
   { to: "/app/calculadoras", label: "Calculadoras", end: false, icon: CalculatorsIcon },
 ];
 
@@ -94,7 +93,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         aria-label="Principal"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-sunken/95 px-2 pt-1.5 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur md:hidden"
       >
-        <ul className="grid grid-cols-4">
+        <ul className="grid grid-cols-3">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item);

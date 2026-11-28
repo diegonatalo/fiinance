@@ -3,26 +3,20 @@ import { Card } from "@/components/ui/card";
 import { Field } from "@/components/ui/field";
 import { Input, Select } from "@/components/ui/input";
 import { cn } from "@/lib/cn";
-import { formatDayMonth } from "@/lib/date";
 import { formatBRL, formatNumber, formatPct } from "@/lib/format";
 import { calculateMagicNumber } from "@/lib/magic-number";
 import { parseDecimal, parseDecimalOrZero } from "@/lib/numbers";
-import type { Fii, Payout } from "@/types/fii";
+import type { Asset } from "@/types/fii";
 
 type MagicNumberCalcProps = {
-  assets: Fii[];
-  payouts: Payout[];
+  assets: Asset[];
   className?: string;
 };
 
 const MANUAL = "";
 const toField = (n: number) => String(n).replace(".", ",");
 
-function lastPayout(payouts: Payout[], assetId: string) {
-  return payouts.filter((p) => p.assetId === assetId).toSorted((a, b) => b.date.localeCompare(a.date))[0];
-}
-
-export const MagicNumberCalc = ({ assets, payouts, className }: MagicNumberCalcProps) => {
+export const MagicNumberCalc = ({ assets, className }: MagicNumberCalcProps) => {
   const held = assets.filter((a) => a.shares > 0);
   // null: ainda não escolheu, vale o primeiro fundo da carteira
   const [picked, setPicked] = useState<string | null>(null);
@@ -32,8 +26,8 @@ export const MagicNumberCalc = ({ assets, payouts, className }: MagicNumberCalcP
 
   const assetId = picked ?? held[0]?.id ?? MANUAL;
   const asset = held.find((a) => a.id === assetId) ?? null;
-  const last = asset ? lastPayout(payouts, asset.id) : undefined;
-  const dividend = typedDividend ?? (last ? toField(last.valuePerShare) : "");
+  const last = asset && asset.lastDividend > 0 ? asset.lastDividend : null;
+  const dividend = typedDividend ?? (last ? toField(last) : "");
   const currentShares = asset ? asset.shares : parseDecimalOrZero(manualShares);
   const result = calculateMagicNumber(parseDecimal(dividend), parseDecimal(price), currentShares);
 
@@ -64,7 +58,7 @@ export const MagicNumberCalc = ({ assets, payouts, className }: MagicNumberCalcP
         </div>
         <Field
           label="Provento por cota"
-          hint={typedDividend === null && last ? `último provento, de ${formatDayMonth(last.date)}` : undefined}
+          hint={typedDividend === null && last ? "último rendimento cadastrado" : undefined}
         >
           <Input inputMode="decimal" value={dividend} onChange={(e) => setTypedDividend(e.target.value)} placeholder="R$ 0,00" />
         </Field>

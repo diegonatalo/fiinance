@@ -1,67 +1,54 @@
 export type FiiType = "papel" | "tijolo";
 
-export type PaperSegment = "IPCA" | "CDI";
-
 export type BrickSegment =
-  | "lajes"
-  | "logística"
-  | "shoppings"
+  | "logístico"
+  | "renda urbana"
   | "híbrido"
+  | "lajes corporativas"
+  | "shoppings"
+  | "fazendas"
   | "outro";
 
-export type Segment = PaperSegment | BrickSegment;
-
-export const PAPER_SEGMENTS: PaperSegment[] = ["IPCA", "CDI"];
+export type RiskProfile = "High Grade" | "Middle Risk" | "High Yield";
 
 export const BRICK_SEGMENTS: BrickSegment[] = [
-  "lajes",
-  "logística",
-  "shoppings",
+  "logístico",
+  "renda urbana",
   "híbrido",
+  "lajes corporativas",
+  "shoppings",
+  "fazendas",
   "outro",
 ];
 
-/** Cadastro do fundo. A posição (cotas e preço médio) é derivada das transações. */
+export const RISK_PROFILES: RiskProfile[] = ["High Grade", "Middle Risk", "High Yield"];
+
+export const MIN_RATING = 1;
+export const MAX_RATING = 10;
+export const DEFAULT_RATING = 5;
+
+/**
+ * Um fundo da carteira, com a posição digitada pela pessoa. Tijolo tem segmento
+ * e papel tem perfil de risco; o outro campo fica null.
+ */
 export type Asset = {
   id: string;
   ticker: string;
   type: FiiType;
-  segment: Segment;
-};
-
-/** Posição consolidada de um ativo, calculada a partir das transações. */
-export type Fii = Asset & {
+  /** só tijolo */
+  segment: BrickSegment | null;
+  /** só papel; null num fundo de papel que veio de antes do perfil de risco existir */
+  risk: RiskProfile | null;
   shares: number;
+  /** em reais */
   averagePrice: number;
-};
-
-export type OperationType = "compra" | "venda";
-
-export type Transaction = {
-  id: string;
-  assetId: string;
-  type: OperationType;
-  /** yyyy-mm-dd */
-  date: string;
-  shares: number;
-  price: number;
-};
-
-export type Payout = {
-  id: string;
-  assetId: string;
-  /** yyyy-mm-dd */
-  date: string;
-  valuePerShare: number;
-  /** cotas que geraram o provento (na data do recebimento) */
-  shares: number;
+  /** último rendimento por cota, em reais (até 4 casas) */
+  lastDividend: number;
+  /** de 1 a 10: pesa na meta do fundo na carteira */
+  rating: number;
 };
 
 /** A carteira da pessoa logada, como o app usa. */
 export type AppData = {
   assets: Asset[];
-  transactions: Transaction[];
-  payouts: Payout[];
-  /** meta de alocação em papel, de 0 a 100 (o restante vai para tijolo) */
-  paperTarget: number | null;
 };

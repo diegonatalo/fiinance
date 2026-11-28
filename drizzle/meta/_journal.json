@@ -8,6 +8,13 @@
       "when": 1795615049648,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795833335173,
+      "tag": "0001_asset_snapshot",
+      "breakpoints": true
     }
   ]
 }

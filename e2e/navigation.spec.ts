@@ -4,7 +4,6 @@ import { test as signedIn } from "./fixtures";
 const PAGES = [
   { path: "/app", link: "Painel" },
   { path: "/app/carteira", link: "Carteira" },
-  { path: "/app/proventos", link: "Proventos" },
   { path: "/app/calculadoras", link: "Calculadoras" },
 ];
 
@@ -65,10 +64,15 @@ signedIn("com conta, a página inicial leva ao painel e a marca volta para ela",
 });
 
 test("os endereços antigos redirecionam para /app", async ({ request }) => {
-  for (const path of ["/carteira", "/proventos", "/calculadoras"]) {
+  for (const [path, destination] of [
+    ["/carteira", "/app/carteira"],
+    ["/calculadoras", "/app/calculadoras"],
+    ["/proventos", "/app"],
+    ["/app/proventos", "/app"],
+  ]) {
     const response = await request.get(path, { maxRedirects: 0 });
     expect(response.status(), path).toBe(308);
-    expect(response.headers().location, path).toBe(`/app${path}`);
+    expect(response.headers().location, path).toBe(destination);
   }
 });
 

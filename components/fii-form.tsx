@@ -1,98 +1,84 @@
 import { useId, useState } from "react";
-import { Button } from "./ui/button";
-import { Field } from "./ui/field";
-import { Input, Select } from "./ui/input";
-import { cn } from "@/lib/cn";
-import { today, isValidDate } from "@/lib/date";
-import { useToday } from "@/hooks/use-today";
-import { parseDecimal } from "@/lib/numbers";
-import { LIMITS, TICKER_REGEX, toCents } from "@/lib/validation";
-import {
-  PAPER_SEGMENTS,
-  BRICK_SEGMENTS,
-  type Asset,
-  type Fii,
-  type FiiType,
-  type Segment,
-} from "@/types/fii";
 import { FloppyDiskIcon, PlusIcon } from "@phosphor-icons/react";
-
-export type FiiFormValues = {
-  asset: Omit<Asset, "id">;
-  /** presente só ao cadastrar um ativo novo */
-  buy?: { date: string; shares: number; price: number };
-};
+import { Button } from "@/components/ui/button";
+import { Field } from "@/components/ui/field";
+import { Input, Select } from "@/components/ui/input";
+import type { NewAsset } from "@/hooks/use-portfolio";
+import { cn } from "@/lib/cn";
+import { parseDecimal } from "@/lib/numbers";
+import { LIMITS, TICKER_REGEX, toCents, toHundredthCents } from "@/lib/validation";
+import {
+  BRICK_SEGMENTS,
+  DEFAULT_RATING,
+  MAX_RATING,
+  MIN_RATING,
+  RISK_PROFILES,
+  type Asset,
+  type BrickSegment,
+  type FiiType,
+  type RiskProfile,
+} from "@/types/fii";
 
 type FiiFormProps = {
-  onSubmit: (values: FiiFormValues) => void;
-  /** quando informado, o formulário edita o cadastro do ativo (sem cotas/preço) */
-  initial?: Fii | null;
+  onSubmit: (asset: NewAsset) => void;
+  /** quando informado, o formulário edita esse fundo */
+  initial?: Asset | null;
   onCancel?: () => void;
-  /** devolve o ativo que já usa o ticker, se houver */
+  /** devolve o fundo que já usa o ticker, se houver */
   tickerInUse: (ticker: string, ignoreId?: string) => Asset | undefined;
 };
 
-type FormErrors = {
-  ticker?: string;
-  date?: string;
-  shares?: string;
-  averagePrice?: string;
-};
+type FormErrors = Partial<Record<"ticker" | "risk" | "shares" | "averagePrice" | "lastDividend", string>>;
 
-export const FiiForm = ({
-  onSubmit,
-  initial,
-  onCancel,
-  tickerInUse,
-}: FiiFormProps) => {
+const RATINGS = Array.from({ length: MAX_RATING - MIN_RATING + 1 }, (_, i) => MIN_RATING + i);
+
+/** Número do app para o campo de texto, no formato brasileiro. */
+const toField = (n: number | undefined) => (n === undefined ? "" : String(n).replace(".", ","));
+
+const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
+export const FiiForm = ({ onSubmit, initial, onCancel, tickerInUse }: FiiFormProps) => {
   const [ticker, setTicker] = useState(initial?.ticker ?? "");
   const [type, setType] = useState<FiiType>(initial?.type ?? "tijolo");
-  const [segment, setSegment] = useState<Segment>(
-    initial?.segment ?? "lajes",
-  );
-  const todayValue = useToday();
-  const [typedDate, setDate] = useState<string | null>(null);
-  const date = typedDate ?? todayValue;
-  const [shares, setShares] = useState("");
-  const [price, setPrice] = useState("");
+  const [segment, setSegment] = useState<BrickSegment>(initial?.segment ?? BRICK_SEGMENTS[0]);
+  // fundo de papel de antes do perfil de risco: começa sem escolha
+  const [risk, setRisk] = useState<RiskProfile | "">(initial ? (initial.risk ?? "") : RISK_PROFILES[0]);
+  const [shares, setShares] = useState(toField(initial?.shares));
+  const [price, setPrice] = useState(initial && initial.averagePrice > 0 ? toField(initial.averagePrice) : "");
+  const [dividend, setDividend] = useState(initial && initial.lastDividend > 0 ? toField(initial.lastDividend) : "");
+  const [rating, setRating] = useState(initial?.rating ?? DEFAULT_RATING);
   const [errors, setErrors] = useState<FormErrors>({});
   const typeLabel = useId();
 
-  const segments = type === "papel" ? PAPER_SEGMENTS : BRICK_SEGMENTS;
   const normalizedTicker = ticker.trim().toUpperCase();
-  const duplicate = normalizedTicker
-    ? tickerInUse(normalizedTicker, initial?.id)
-    : undefined;
 
   function handleType(fresh: FiiType) {
     setType(fresh);
-    setSegment(fresh === "papel" ? "IPCA" : "lajes");
+    if (fresh === "papel" && risk === "") setRisk(RISK_PROFILES[0]);
   }
 
   function validate(): FormErrors {
     const e: FormErrors = {};
     if (!normalizedTicker) e.ticker = "Informe o ticker";
-    else if (!TICKER_REGEX.test(normalizedTicker))
-      e.ticker = "Formato inválido (ex.: HGLG11)";
-    else if (initial && duplicate) e.ticker = "Ticker já cadastrado";
+    else if (!TICKER_REGEX.test(normalizedTicker)) e.ticker = "Formato inválido (ex.: HGLG11)";
+    else if (tickerInUse(normalizedTicker, initial?.id)) e.ticker = "Ticker já cadastrado";
 
-    if (!initial) {
-      if (!isValidDate(date)) e.date = "Data inválida";
-      else if (date > today()) e.date = "Data no futuro";
+    if (type === "papel" && risk === "") e.risk = "Escolha o perfil de risco";
 
-      const qty = parseDecimal(shares);
-      if (!shares.trim()) e.shares = "Informe a quantidade";
-      else if (!Number.isInteger(qty) || qty <= 0)
-        e.shares = "Use um número inteiro maior que 0";
-      else if (qty > LIMITS.shares) e.shares = "Quantidade grande demais";
+    const qty = parseDecimal(shares);
+    if (!shares.trim()) e.shares = "Informe a quantidade";
+    else if (!Number.isInteger(qty) || qty < 0) e.shares = "Use um número inteiro";
+    else if (qty > LIMITS.shares) e.shares = "Quantidade grande demais";
 
-      const amount = parseDecimal(price);
-      if (!price.trim()) e.averagePrice = "Informe o preço";
-      else if (!Number.isFinite(amount) || amount <= 0)
-        e.averagePrice = "Deve ser maior que 0";
-      else if (toCents(amount, LIMITS.priceCents) === null)
-        e.averagePrice = "Use no máximo 2 casas decimais";
-    }
+    const amount = price.trim() ? parseDecimal(price) : 0;
+    if (!Number.isFinite(amount) || amount < 0) e.averagePrice = "Valor inválido";
+    else if (toCents(amount, LIMITS.priceCents) === null) e.averagePrice = "Use no máximo 2 casas decimais";
+    else if (amount === 0 && qty > 0) e.averagePrice = "Informe o preço médio";
+
+    const paid = dividend.trim() ? parseDecimal(dividend) : 0;
+    if (!Number.isFinite(paid) || paid < 0) e.lastDividend = "Valor inválido";
+    else if (toHundredthCents(paid, LIMITS.dividendHundredthCents) === null)
+      e.lastDividend = "Use no máximo 4 casas decimais";
     return e;
   }
 
@@ -103,31 +89,29 @@ export const FiiForm = ({
     if (Object.keys(e).length > 0) return;
 
     onSubmit({
-      asset: { ticker: normalizedTicker, type, segment },
-      buy: initial
-        ? undefined
-        : { date, shares: parseDecimal(shares), price: parseDecimal(price) },
+      ticker: normalizedTicker,
+      type,
+      segment: type === "tijolo" ? segment : null,
+      risk: type === "papel" ? (risk as RiskProfile) : null,
+      shares: parseDecimal(shares),
+      averagePrice: price.trim() ? parseDecimal(price) : 0,
+      lastDividend: dividend.trim() ? parseDecimal(dividend) : 0,
+      rating,
     });
 
     if (!initial) {
       setTicker("");
       setShares("");
       setPrice("");
+      setDividend("");
+      setRating(DEFAULT_RATING);
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4" noValidate>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field
-          label="Ticker"
-          error={errors.ticker}
-          hint={
-            !initial && duplicate
-              ? "Já está na carteira: a compra será somada à posição."
-              : undefined
-          }
-        >
+        <Field label="Ticker" error={errors.ticker}>
           <Input
             value={ticker}
             onChange={(e) => setTicker(e.target.value)}
@@ -165,57 +149,76 @@ export const FiiForm = ({
         </div>
       </div>
 
-      <div className={cn("grid gap-4", !initial && "sm:grid-cols-2")}>
-        <Field label="Segmento">
-          <Select
-            value={segment}
-            onChange={(e) => setSegment(e.target.value as Segment)}
-            className="capitalize"
-          >
-            {segments.map((s) => (
-              <option key={s} value={s}>
-                {s}
+      <div className="grid gap-4 sm:grid-cols-2">
+        {type === "tijolo" ? (
+          <Field label="Segmento">
+            <Select value={segment} onChange={(e) => setSegment(e.target.value as BrickSegment)}>
+              {BRICK_SEGMENTS.map((s) => (
+                <option key={s} value={s}>
+                  {capitalize(s)}
+                </option>
+              ))}
+            </Select>
+          </Field>
+        ) : (
+          <Field label="Perfil de risco" error={errors.risk}>
+            <Select value={risk} onChange={(e) => setRisk(e.target.value as RiskProfile)} error={!!errors.risk}>
+              {risk === "" && (
+                <option value="" disabled>
+                  Escolha
+                </option>
+              )}
+              {RISK_PROFILES.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </Select>
+          </Field>
+        )}
+
+        <Field label="Nota (1 a 10)" hint="Quanto maior, maior a meta do fundo na carteira.">
+          <Select value={rating} onChange={(e) => setRating(Number(e.target.value))}>
+            {RATINGS.map((n) => (
+              <option key={n} value={n}>
+                {n}
               </option>
             ))}
           </Select>
         </Field>
-
-        {!initial && (
-          <Field label="Data da compra" error={errors.date}>
-            <Input
-              type="date"
-              value={date}
-              max={todayValue}
-              onChange={(e) => setDate(e.target.value)}
-              error={!!errors.date}
-            />
-          </Field>
-        )}
       </div>
 
-      {!initial && (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Qtd. de cotas" error={errors.shares}>
-            <Input
-              inputMode="numeric"
-              value={shares}
-              onChange={(e) => setShares(e.target.value)}
-              placeholder="100"
-              error={!!errors.shares}
-            />
-          </Field>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Field label="Cotas" error={errors.shares}>
+          <Input
+            inputMode="numeric"
+            value={shares}
+            onChange={(e) => setShares(e.target.value)}
+            placeholder="100"
+            error={!!errors.shares}
+          />
+        </Field>
 
-          <Field label="Preço pago por cota (R$)" error={errors.averagePrice}>
-            <Input
-              inputMode="decimal"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="150,00"
-              error={!!errors.averagePrice}
-            />
-          </Field>
-        </div>
-      )}
+        <Field label="Preço médio (R$)" error={errors.averagePrice}>
+          <Input
+            inputMode="decimal"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            placeholder="150,00"
+            error={!!errors.averagePrice}
+          />
+        </Field>
+
+        <Field label="Último rendimento (R$ por cota)" error={errors.lastDividend}>
+          <Input
+            inputMode="decimal"
+            value={dividend}
+            onChange={(e) => setDividend(e.target.value)}
+            placeholder="1,10"
+            error={!!errors.lastDividend}
+          />
+        </Field>
+      </div>
 
       <div className="flex flex-wrap items-center justify-end gap-2 pt-1">
         {onCancel && (
@@ -230,7 +233,7 @@ export const FiiForm = ({
             </>
           ) : (
             <>
-              <PlusIcon size={16} weight="bold" aria-hidden="true" /> Adicionar FII
+              <PlusIcon size={16} weight="bold" aria-hidden="true" /> Adicionar fundo
             </>
           )}
         </Button>

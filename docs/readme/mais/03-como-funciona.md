@@ -1,16 +1,18 @@
 ### 🧠 Como funciona
 
-O app guarda **operações**, e a posição de cada fundo é sempre derivada delas.
+Cada fundo guarda a posição que você informa: cotas, preço médio e último rendimento, além do tipo (tijolo com segmento, papel com perfil de risco) e de uma nota de 1 a 10.
 
 | Conceito | Regra |
 |---|---|
-| **Compra** | Soma as cotas e recalcula o preço médio ponderado. |
-| **Venda** | Reduz as cotas e mantém o preço médio. Não deixa vender mais do que havia na data. |
-| **Provento** | `valor por cota × cotas em carteira na data do pagamento`. |
-| **Yield on cost (12m)** | Proventos dos últimos 12 meses ÷ total investido. |
-| **Número mágico** | `⌈preço da cota ÷ provento por cota⌉`: cotas para o provento do mês comprar uma nova. |
+| **Investido** | `cotas × preço médio` de cada fundo; o total é a soma. |
 | **Peso** | Fatia de cada fundo no total investido. O app não busca cotações. |
-| **Aporte para a meta** | Menor compra em uma só classe que leva à proporção desejada: `(A + x) / (T + x) = alvo`. |
+| **Meta** | `nota do fundo ÷ soma das notas`. Notas 8, 6 e 6 dão 40%, 30% e 30%. |
+| **Proventos esperados** | `último rendimento × cotas`, somado entre os fundos: o que a carteira deve pagar no mês. |
+| **Yield on cost** | Proventos esperados × 12 ÷ total investido. |
+| **Aporte mínimo para a meta** | O fundo mais acima da meta define o tamanho da carteira: `max(investido ÷ meta) − total`. |
+| **Divisão do aporte** | Cada fundo recebe na proporção do que falta para a meta depois do aporte. |
+| **Diversificação** | Donuts pelo valor investido: por tipo, tijolo por segmento e papel por perfil de risco. |
+| **Número mágico** | `⌈preço da cota ÷ último rendimento⌉`: cotas para o provento do mês comprar uma nova. |
 
 > Os valores servem para acompanhamento e não substituem a nota de corretagem nem o informe de
 > rendimentos. O app não calcula imposto de renda.

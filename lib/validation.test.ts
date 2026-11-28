@@ -3,16 +3,22 @@ import {
   LIMITS,
   TICKER_REGEX,
   normalizeAsset,
-  normalizePaperTarget,
-  normalizePayout,
-  normalizeTransaction,
   toCents,
+  toHundredthCents,
   validId,
 } from "@/lib/validation";
 
-const asset = { id: "a", ticker: " mxrf11 ", type: "papel", segment: "CDI" };
-const buy = { id: "t1", assetId: "a", type: "compra", date: "2026-01-10", shares: 10, price: 9.5 };
-const payout = { id: "p1", assetId: "a", date: "2026-02-10", valuePerShare: 0.1, shares: 10 };
+const asset = {
+  id: "a",
+  ticker: " mxrf11 ",
+  type: "papel",
+  risk: "High Yield",
+  shares: 100,
+  averagePrice: 9.87,
+  lastDividend: 0.0825,
+  rating: 7,
+};
+const brick = { ...asset, ticker: "HGLG11", type: "tijolo", risk: undefined, segment: "logístico" };
 
 describe("TICKER_REGEX", () => {
   it.each(["MXRF11", "HGLG11", "XPLG11B"])("aceita %s", (ticker) => {
@@ -39,71 +45,69 @@ describe("toCents", () => {
     expect(toCents(0.1 + 0.2, LIMITS.priceCents)).toBe(30);
   });
 
-  it.each([0, -1, 1.234, Number.NaN, "10", 2_000_000])("recusa %s", (value) => {
+  it("aceita zero", () => {
+    expect(toCents(0, LIMITS.priceCents)).toBe(0);
+  });
+
+  it.each([-1, 1.234, Number.NaN, "10", 2_000_000])("recusa %s", (value) => {
     expect(toCents(value, LIMITS.priceCents)).toBeNull();
   });
 });
 
+describe("toHundredthCents", () => {
+  it("aceita até 4 casas", () => {
+    expect(toHundredthCents(0.0825, LIMITS.dividendHundredthCents)).toBe(825);
+    expect(toHundredthCents(1.1, LIMITS.dividendHundredthCents)).toBe(11_000);
+  });
+
+  it.each([0.00001, -0.1, Number.NaN])("recusa %s", (value) => {
+    expect(toHundredthCents(value, LIMITS.dividendHundredthCents)).toBeNull();
+  });
+});
+
 describe("normalizeAsset", () => {
-  it("normaliza o ticker", () => {
-    expect(normalizeAsset(asset)).toEqual({ id: "a", ticker: "MXRF11", type: "papel", segment: "CDI" });
+  it("normaliza o ticker e deixa o segmento vazio no papel", () => {
+    expect(normalizeAsset({ ...asset, segment: "logístico" })).toEqual({
+      id: "a",
+      ticker: "MXRF11",
+      type: "papel",
+      segment: null,
+      risk: "High Yield",
+      shares: 100,
+      averagePrice: 9.87,
+      lastDividend: 0.0825,
+      rating: 7,
+    });
+  });
+
+  it("tijolo leva segmento e nunca perfil de risco", () => {
+    expect(normalizeAsset({ ...brick, risk: "High Grade" })).toMatchObject({ segment: "logístico", risk: null });
+  });
+
+  it("aceita fundo sem cotas, sem preço médio e sem rendimento", () => {
+    expect(normalizeAsset({ ...asset, shares: 0, averagePrice: 0, lastDividend: 0 })).not.toBeNull();
   });
 
   it.each([
-    [null],
-    [{ ...asset, ticker: "XX" }],
-    [{ ...asset, type: "outro" }],
-    [{ ...asset, segment: "lajes" }],
-    [{ ...asset, id: "" }],
-  ])("recusa %j", (raw) => {
+    ["sem objeto", null],
+    ["ticker inválido", { ...asset, ticker: "XX" }],
+    ["tipo desconhecido", { ...asset, type: "outro" }],
+    ["papel sem perfil de risco", { ...asset, risk: undefined }],
+    ["perfil inexistente", { ...asset, risk: "CDI" }],
+    ["tijolo sem segmento", { ...brick, segment: undefined }],
+    ["segmento antigo", { ...brick, segment: "lajes" }],
+    ["id vazio", { ...asset, id: "" }],
+    ["cotas fracionadas", { ...asset, shares: 1.5 }],
+    ["cotas negativas", { ...asset, shares: -1 }],
+    ["cotas demais", { ...asset, shares: LIMITS.shares + 1 }],
+    ["cotas sem preço médio", { ...asset, averagePrice: 0 }],
+    ["preço com 3 casas", { ...asset, averagePrice: 9.875 }],
+    ["rendimento com 5 casas", { ...asset, lastDividend: 0.08251 }],
+    ["nota 0", { ...asset, rating: 0 }],
+    ["nota 11", { ...asset, rating: 11 }],
+    ["nota fracionada", { ...asset, rating: 7.5 }],
+    ["nota em texto", { ...asset, rating: "7" }],
+  ])("recusa %s", (_, raw) => {
     expect(normalizeAsset(raw)).toBeNull();
-  });
-});
-
-describe("normalizeTransaction", () => {
-  it("aceita uma compra válida", () => {
-    expect(normalizeTransaction(buy)).toEqual(buy);
-  });
-
-  it.each([
-    [{ ...buy, type: "troca" }],
-    [{ ...buy, date: "2026-02-31" }],
-    [{ ...buy, date: "1980-01-01" }],
-    [{ ...buy, shares: 1.5 }],
-    [{ ...buy, shares: LIMITS.shares + 1 }],
-    [{ ...buy, price: 9.555 }],
-    [{ ...buy, price: 0 }],
-    [{ ...buy, assetId: 5 }],
-  ])("recusa %j", (raw) => {
-    expect(normalizeTransaction(raw)).toBeNull();
-  });
-});
-
-describe("normalizePayout", () => {
-  it("aceita um provento válido, mesmo com mais de 2 casas por cota", () => {
-    expect(normalizePayout(payout)).toEqual(payout);
-    expect(normalizePayout({ ...payout, valuePerShare: 0.0807 })?.valuePerShare).toBe(0.0807);
-  });
-
-  it.each([
-    [{ ...payout, valuePerShare: 0 }],
-    [{ ...payout, valuePerShare: 0.0001, shares: 1 }],
-    [{ ...payout, shares: 0 }],
-    [{ ...payout, date: "amanhã" }],
-    [{ ...payout, valuePerShare: 1_000_000, shares: 1_000 }],
-  ])("recusa %j", (raw) => {
-    expect(normalizePayout(raw)).toBeNull();
-  });
-});
-
-describe("normalizePaperTarget", () => {
-  it("aceita de 0 a 100 e null (sem meta)", () => {
-    expect(normalizePaperTarget(40)).toBe(40);
-    expect(normalizePaperTarget(0)).toBe(0);
-    expect(normalizePaperTarget(null)).toBeNull();
-  });
-
-  it.each([-1, 101, "40", Number.NaN, undefined])("recusa %s", (value) => {
-    expect(normalizePaperTarget(value)).toBeUndefined();
   });
 });

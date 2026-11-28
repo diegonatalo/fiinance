@@ -3,28 +3,30 @@ import { ArrowsDownUpIcon, CaretRightIcon, PencilSimpleIcon, TrashSimpleIcon } f
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { cn } from "@/lib/cn";
-import { formatBRL, formatKind, formatNumber, formatPct } from "@/lib/format";
+import { formatBRL, formatDividend, formatKind, formatNumber, formatPct } from "@/lib/format";
 import { positionRows, type PositionRow } from "@/lib/summary";
-import type { Fii, FiiType } from "@/types/fii";
+import type { Asset, FiiType } from "@/types/fii";
 
 export type TypeFilter = "all" | FiiType;
 
 type FiiTableProps = {
-  assets: Fii[];
+  assets: Asset[];
   filter: TypeFilter;
-  onEdit: (fii: Fii) => void;
-  onDelete: (fii: Fii) => void;
-  onOperation: (fii: Fii) => void;
+  onEdit: (asset: Asset) => void;
+  onDelete: (asset: Asset) => void;
 };
 
-type SortField = "ticker" | "invested";
+type SortField = "ticker" | "invested" | "gap";
 
-const typeBar = (asset: Fii) => (asset.type === "papel" ? "bg-paper" : "bg-brick");
+const typeBar = (asset: Asset) => (asset.type === "papel" ? "bg-paper" : "bg-brick");
 
-const BuySellIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4" />
-  </svg>
+/** "+2,5 p.p." acima da meta, "−2,5 p.p." abaixo. */
+const formatGap = (gap: number) => `${gap >= 0 ? "+" : "−"}${formatPct(Math.abs(gap)).replace("%", "")} p.p.`;
+
+const Gap = ({ gap }: { gap: number }) => (
+  <span className={cn("text-xs", Math.abs(gap) < 0.05 ? "text-muted" : gap < 0 ? "text-down" : "text-up")}>
+    {formatGap(gap)}
+  </span>
 );
 
 type SortHeaderProps = {
@@ -53,7 +55,7 @@ const SortHeader = ({ field, sort, asc, onSort, children, className }: SortHeade
   </th>
 );
 
-export const FiiTable = ({ assets, filter, onEdit, onDelete, onOperation }: FiiTableProps) => {
+export const FiiTable = ({ assets, filter, onEdit, onDelete }: FiiTableProps) => {
   const [sort, setSort] = useState<SortField>("invested");
   const [asc, setAsc] = useState(false);
   const [open, setOpen] = useState<PositionRow | null>(null);
@@ -64,26 +66,26 @@ export const FiiTable = ({ assets, filter, onEdit, onDelete, onOperation }: FiiT
     .toSorted((x, y) => {
       const direction = asc ? 1 : -1;
       if (sort === "ticker") return x.asset.ticker.localeCompare(y.asset.ticker) * direction;
+      if (sort === "gap") return (x.gap - y.gap) * direction;
       return (x.invested - y.invested) * direction;
     });
 
   const totalShares = all.reduce((acc, r) => acc + r.asset.shares, 0);
   const invested = all.reduce((acc, r) => acc + r.invested, 0);
-  const maxWeight = Math.max(...rows.map((r) => r.weight), 0);
+  const income = all.reduce((acc, r) => acc + r.income, 0);
+  const maxWeight = Math.max(...rows.map((r) => Math.max(r.weight, r.target)), 0);
 
   function onSort(field: SortField) {
     if (field === sort) setAsc(!asc);
     else {
       setSort(field);
-      setAsc(field === "ticker");
+      // ticker de A a Z; abaixo da meta primeiro; maior investido primeiro
+      setAsc(field !== "invested");
     }
   }
 
-  const actions = (a: Fii) => (
+  const actions = (a: Asset) => (
     <div className="flex justify-end gap-1">
-      <Button variant="ghost" size="icon" onClick={() => onOperation(a)} aria-label={`Comprar ou vender ${a.ticker}`}>
-        <BuySellIcon />
-      </Button>
       <Button variant="ghost" size="icon" onClick={() => onEdit(a)} aria-label={`Editar ${a.ticker}`}>
         <PencilSimpleIcon size={18} />
       </Button>
@@ -116,7 +118,9 @@ export const FiiTable = ({ assets, filter, onEdit, onDelete, onOperation }: FiiT
               </span>
               <span className="flex flex-col items-end gap-[3px]">
                 <span className="text-sm font-semibold">{formatBRL(r.invested)}</span>
-                <span className="text-xs text-muted">{formatPct(r.weight)}</span>
+                <span className="text-xs text-muted">
+                  {formatPct(r.weight)} / meta {formatPct(r.target)}
+                </span>
               </span>
               <CaretRightIcon size={14} className="shrink-0 text-faint" aria-hidden="true" />
             </button>
@@ -126,7 +130,7 @@ export const FiiTable = ({ assets, filter, onEdit, onDelete, onOperation }: FiiT
 
       {/* Computador: tabela. */}
       <div className="hidden overflow-x-auto rounded-[20px] border border-line bg-surface md:block">
-        <table className="w-full min-w-[760px] border-collapse tabular-nums">
+        <table className="w-full min-w-[960px] border-collapse tabular-nums">
           <caption className="sr-only">Fundos da carteira</caption>
           <thead>
             <tr className="text-left font-mono text-[11px] tracking-[0.06em] text-subtle uppercase">
@@ -142,8 +146,11 @@ export const FiiTable = ({ assets, filter, onEdit, onDelete, onOperation }: FiiT
               <SortHeader field="invested" sort={sort} asc={asc} onSort={onSort} className="text-right">
                 Investido
               </SortHeader>
-              <th scope="col" className="py-[18px] pr-3 pl-7 text-left font-medium">
-                Peso
+              <SortHeader field="gap" sort={sort} asc={asc} onSort={onSort} className="pl-7 text-left">
+                Peso / meta
+              </SortHeader>
+              <th scope="col" className="px-3 py-[18px] text-right font-medium">
+                Rendimento
               </th>
               <th scope="col" className="px-6 py-[18px] text-right font-medium">
                 Ações
@@ -159,9 +166,11 @@ export const FiiTable = ({ assets, filter, onEdit, onDelete, onOperation }: FiiT
                     <div className="flex flex-col gap-1">
                       <span className="font-mono text-[15px] font-medium">
                         {r.asset.ticker}
-                        {r.asset.shares === 0 && <span className="ml-2 font-sans text-xs text-muted">zerado</span>}
+                        {r.asset.shares === 0 && <span className="ml-2 font-sans text-xs text-muted">sem cotas</span>}
                       </span>
-                      <span className="text-xs text-muted">{formatKind(r.asset.type, r.asset.segment)}</span>
+                      <span className="text-xs text-muted">
+                        {formatKind(r.asset)} · nota {r.asset.rating}
+                      </span>
                     </div>
                   </div>
                 </th>
@@ -170,14 +179,29 @@ export const FiiTable = ({ assets, filter, onEdit, onDelete, onOperation }: FiiT
                 <td className="px-3 py-4 text-right text-sm font-semibold">{formatBRL(r.invested)}</td>
                 <td className="py-4 pr-3 pl-7">
                   <div className="flex items-center gap-2.5">
-                    <span className="h-1.5 w-20 rounded-full bg-hairline" aria-hidden="true">
+                    <span className="relative h-1.5 w-20 rounded-full bg-hairline" aria-hidden="true">
                       <span
                         className={cn("block h-1.5 rounded-full", typeBar(r.asset))}
                         style={{ width: `${maxWeight > 0 ? (r.weight / maxWeight) * 100 : 0}%` }}
                       />
+                      <span
+                        className="absolute -top-1 h-3.5 w-0.5 -translate-x-1/2 rounded-sm bg-fg"
+                        style={{ left: `${maxWeight > 0 ? (r.target / maxWeight) * 100 : 0}%` }}
+                      />
                     </span>
-                    <span className="text-[13px] text-muted">{formatPct(r.weight)}</span>
+                    <span className="flex flex-col">
+                      <span className="text-[13px]">
+                        {formatPct(r.weight)} <span className="text-faint">/ {formatPct(r.target)}</span>
+                      </span>
+                      <Gap gap={r.gap} />
+                    </span>
                   </div>
+                </td>
+                <td className="px-3 py-4 text-right">
+                  <span className="flex flex-col items-end">
+                    <span className="text-sm">{formatBRL(r.income)}</span>
+                    <span className="text-xs text-muted">{formatDividend(r.asset.lastDividend)} por cota</span>
+                  </span>
                 </td>
                 <td className="px-6 py-4">{actions(r.asset)}</td>
               </tr>
@@ -192,6 +216,7 @@ export const FiiTable = ({ assets, filter, onEdit, onDelete, onOperation }: FiiT
               <td className="px-3 py-5" />
               <td className="px-3 py-5 text-right text-base font-semibold">{formatBRL(invested)}</td>
               <td className="py-5 pr-3 pl-7 text-[13px] text-muted">100%</td>
+              <td className="px-3 py-5 text-right text-sm font-semibold">{formatBRL(income)}</td>
               <td className="px-6 py-5" />
             </tr>
           </tfoot>
@@ -201,7 +226,7 @@ export const FiiTable = ({ assets, filter, onEdit, onDelete, onOperation }: FiiT
       <Modal open={!!open} title={open?.asset.ticker ?? ""} onClose={() => setOpen(null)}>
         {open && (
           <div className="flex flex-col gap-5 tabular-nums">
-            <p className="text-sm text-muted">{formatKind(open.asset.type, open.asset.segment)}</p>
+            <p className="text-sm text-muted">{formatKind(open.asset)}</p>
             <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
               <dt className="text-muted">Cotas</dt>
               <dd className="text-right">{formatNumber(open.asset.shares)}</dd>
@@ -211,11 +236,16 @@ export const FiiTable = ({ assets, filter, onEdit, onDelete, onOperation }: FiiT
               <dd className="text-right font-semibold">{formatBRL(open.invested)}</dd>
               <dt className="text-muted">Peso</dt>
               <dd className="text-right">{formatPct(open.weight)}</dd>
+              <dt className="text-muted">Nota e meta</dt>
+              <dd className="text-right">
+                {open.asset.rating} · {formatPct(open.target)}
+              </dd>
+              <dt className="text-muted">Último rendimento</dt>
+              <dd className="text-right">{formatDividend(open.asset.lastDividend)}</dd>
+              <dt className="text-muted">Proventos esperados</dt>
+              <dd className="text-right font-semibold">{formatBRL(open.income)}</dd>
             </dl>
-            <div className="grid grid-cols-3 gap-2">
-              <Button variant="outline" onClick={() => { setOpen(null); onOperation(open.asset); }}>
-                Operar
-              </Button>
+            <div className="grid grid-cols-2 gap-2">
               <Button variant="outline" onClick={() => { setOpen(null); onEdit(open.asset); }}>
                 Editar
               </Button>
