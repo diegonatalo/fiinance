@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Painel | FIInance", robots: { index:
 export const instant = false;
 
 /**
- * O app (painel, carteira, proventos, calculadoras, conta) mora em `/app` e pede login;
+ * O app (painel, carteira, calculadoras, conta) mora em `/app` e pede login;
  * a landing e as páginas legais ficam fora dele. A sessão é lida dentro do <Suspense>.
  */
 export default function AppLayout({ children }: LayoutProps<"/app">) {

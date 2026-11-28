@@ -1,6 +1,5 @@
-import type { assets, payouts, transactions } from "@/lib/db/schema";
-import { payoutCents } from "@/lib/validation";
-import type { Asset, Payout, Transaction } from "@/types/fii";
+import type { assets } from "@/lib/db/schema";
+import { BRICK_SEGMENTS, RISK_PROFILES, type Asset } from "@/types/fii";
 
 /*
  * Conversão entre as linhas do banco (dinheiro em centavos) e os tipos do app
@@ -8,14 +7,18 @@ import type { Asset, Payout, Transaction } from "@/types/fii";
  */
 
 type AssetRow = typeof assets.$inferSelect;
-type TransactionRow = typeof transactions.$inferSelect;
-type PayoutRow = typeof payouts.$inferSelect;
 
 export const assetFromRow = (row: AssetRow): Asset => ({
   id: row.id,
   ticker: row.ticker,
   type: row.type,
-  segment: row.segment,
+  // um valor fora da lista (gravado pela versão anterior durante o deploy) vira "sem segmento"
+  segment: row.type === "tijolo" && row.segment && BRICK_SEGMENTS.includes(row.segment) ? row.segment : null,
+  risk: row.type === "papel" && row.risk && RISK_PROFILES.includes(row.risk) ? row.risk : null,
+  shares: row.shares,
+  averagePrice: row.averagePriceCents / 100,
+  lastDividend: row.lastDividendHundredthCents / 10_000,
+  rating: row.rating,
 });
 
 export const assetToRow = (userId: string, a: Asset) => ({
@@ -24,40 +27,9 @@ export const assetToRow = (userId: string, a: Asset) => ({
   ticker: a.ticker,
   type: a.type,
   segment: a.segment,
-});
-
-export const transactionFromRow = (row: TransactionRow): Transaction => ({
-  id: row.id,
-  assetId: row.assetId,
-  type: row.type,
-  date: row.date,
-  shares: row.shares,
-  price: row.priceCents / 100,
-});
-
-export const transactionToRow = (userId: string, t: Transaction) => ({
-  userId,
-  id: t.id,
-  assetId: t.assetId,
-  type: t.type,
-  date: t.date,
-  shares: t.shares,
-  priceCents: Math.round(t.price * 100),
-});
-
-export const payoutFromRow = (row: PayoutRow): Payout => ({
-  id: row.id,
-  assetId: row.assetId,
-  date: row.date,
-  shares: row.shares,
-  valuePerShare: row.totalCents / 100 / row.shares,
-});
-
-export const payoutToRow = (userId: string, p: Payout) => ({
-  userId,
-  id: p.id,
-  assetId: p.assetId,
-  date: p.date,
-  shares: p.shares,
-  totalCents: payoutCents(p),
+  risk: a.risk,
+  shares: a.shares,
+  averagePriceCents: Math.round(a.averagePrice * 100),
+  lastDividendHundredthCents: Math.round(a.lastDividend * 10_000),
+  rating: a.rating,
 });

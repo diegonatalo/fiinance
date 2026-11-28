@@ -1,10 +1,12 @@
+import { BRICK_SEGMENTS, RISK_PROFILES } from "@/types/fii";
+
 /** Textos da landing (`/`). As seções ficam em `components/landing/`. */
 
 export const HERO = {
   kicker: "Carteira de fundos imobiliários",
   title: "Sua carteira de FIIs em papel e tijolo.",
   subtitle:
-    "O FIInance mostra quanto você investiu, quanto a carteira vale hoje e quanto ela rende por mês. E diz quanto falta aportar em papel e em tijolo para chegar na alocação que você quer.",
+    "O FIInance mostra quanto você investiu, o peso de cada fundo e quanto a carteira deve render por mês. Você dá uma nota a cada fundo, e ele diz onde aportar para chegar na carteira que você quer.",
   note: "Grátis. Crie uma conta e sua carteira fica salva em qualquer aparelho.",
 };
 
@@ -13,15 +15,15 @@ export type Step = { title: string; text: string };
 export const STEPS: Step[] = [
   {
     title: "Cadastre seus fundos",
-    text: "Informe o ticker, as cotas e o preço pago. Compras e vendas viram o preço médio de cada fundo.",
+    text: "Informe o ticker, as cotas, o preço médio e o último rendimento, e se é tijolo (com o segmento) ou papel (com o perfil de risco).",
   },
   {
-    title: "Lance os proventos",
-    text: "Registre o que cada fundo pagou no mês e acompanhe a renda passiva crescer.",
+    title: "Dê uma nota a cada um",
+    text: "De 1 a 10. A nota define a meta do fundo na carteira: quanto maior, maior a fatia.",
   },
   {
-    title: "Ajuste a alocação",
-    text: "Defina a meta entre papel e tijolo e veja quanto aportar em cada um para chegar nela.",
+    title: "Aporte onde falta",
+    text: "Veja quem está abaixo da meta e quanto do próximo aporte vai para cada fundo.",
   },
 ];
 
@@ -33,17 +35,17 @@ export const FEATURES: Feature[] = [
   {
     icon: "chart",
     title: "Painel com gráficos",
-    text: "Valor investido, valor atual, distribuição por tipo e segmento e a evolução da carteira ao longo do tempo.",
+    text: "Total investido, o peso de cada fundo e a diversificação por tipo, por segmento e por risco, em gráficos de donut.",
   },
   {
     icon: "coins",
-    title: "Proventos por mês",
-    text: "Histórico de rendimentos por fundo e por mês, com o gráfico da renda passiva.",
+    title: "Proventos esperados",
+    text: "O último rendimento de cada fundo vezes as suas cotas: quanto a carteira deve pagar no mês.",
   },
   {
     icon: "target",
-    title: "Meta de alocação",
-    text: "Compare a carteira com a meta e saiba onde aportar antes de comprar.",
+    title: "Meta pela nota",
+    text: "Compare o peso de cada fundo com a meta dada pela nota e saiba onde aportar antes de comprar.",
   },
   {
     icon: "calculator",
@@ -68,7 +70,7 @@ export type Screenshot = { light: string; dark: string; alt: string };
 export const SCREENSHOT: Screenshot = {
   light: "/landing/painel-claro.webp",
   dark: "/landing/painel-escuro.webp",
-  alt: "Painel do FIInance com patrimônio, evolução, alocação e o peso de cada fundo.",
+  alt: "Painel do FIInance com patrimônio, proventos esperados, a diversificação em donuts e o peso de cada fundo.",
 };
 
 export type Faq = { question: string; answer: string };
@@ -91,4 +93,7 @@ export const FAQ: Faq[] = [
 ];
 
 /** Tipos e segmentos que o app usa para classificar cada fundo (`types/fii.ts`). */
-export const SEGMENTS = ["Tijolo · lajes", "Tijolo · logística", "Tijolo · shoppings", "Tijolo · híbrido", "Papel · CDI", "Papel · IPCA"];
+export const SEGMENTS = [
+  ...BRICK_SEGMENTS.filter((s) => s !== "outro").map((s) => `Tijolo · ${s}`),
+  ...RISK_PROFILES.map((r) => `Papel · ${r}`),
+];

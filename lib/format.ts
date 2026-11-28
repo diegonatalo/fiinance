@@ -1,3 +1,5 @@
+import type { Asset } from "@/types/fii";
+
 export function formatBRL(value: number): string {
   return value.toLocaleString("pt-BR", {
     style: "currency",
@@ -31,9 +33,20 @@ export function formatDelta(value: number, decimals = 2): string {
 }
 
 
+/** Último rendimento por cota: 2 casas, ou até 4 quando precisa ("R$ 0,0825"). */
+export function formatDividend(value: number): string {
+  return value.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+  });
+}
+
 const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
-/** "papel", "IPCA" -> "Papel · IPCA" · "tijolo", "logística" -> "Tijolo · Logística" */
-export function formatKind(type: string, segment: string): string {
-  return `${capitalize(type)} · ${capitalize(segment)}`;
+/** "Tijolo · Logístico", "Papel · High Grade" ou "Papel · sem perfil de risco". */
+export function formatKind(asset: Pick<Asset, "type" | "segment" | "risk">): string {
+  if (asset.type === "papel") return `Papel · ${asset.risk ?? "sem perfil de risco"}`;
+  return `Tijolo · ${asset.segment ? capitalize(asset.segment) : "sem segmento"}`;
 }

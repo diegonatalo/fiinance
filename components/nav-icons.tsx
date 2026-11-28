@@ -31,13 +31,6 @@ export const PortfolioIcon = () => (
   </Icon>
 );
 
-export const PayoutsIcon = () => (
-  <Icon>
-    <ellipse cx="12" cy="6" rx="7" ry="3" />
-    <path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" />
-  </Icon>
-);
-
 export const CalculatorsIcon = () => (
   <Icon>
     <rect x="5" y="2" width="14" height="20" rx="3" />

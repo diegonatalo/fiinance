@@ -1,43 +1,10 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { formatDate, formatDayMonth, formatMonth, formatMonthLong, isValidDate, monthName, monthOf, today } from "@/lib/date";
-import { formatBRL, formatChange, formatDelta, formatKind, formatNumber, formatPct, formatSignedPct } from "@/lib/format";
+import { describe, expect, it, vi } from "vitest";
+import { formatBRL, formatChange, formatDelta, formatDividend, formatKind, formatNumber, formatPct, formatSignedPct } from "@/lib/format";
 import { uid } from "@/lib/id";
 import { parseDecimal, parseDecimalOrZero } from "@/lib/numbers";
 
 // Os espaços do toLocaleString são não separáveis (U+00A0); normaliza para comparar.
 const plain = (text: string) => text.replace(/ /g, " ");
-
-describe("datas", () => {
-  afterEach(() => vi.useRealTimers());
-
-  it("today devolve a data local no formato yyyy-mm-dd", () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date(2026, 2, 5, 15, 0, 0));
-    expect(today()).toBe("2026-03-05");
-  });
-
-  it("formatDate converte para dd/mm/aaaa", () => {
-    expect(formatDate("2026-03-05")).toBe("05/03/2026");
-  });
-
-  it("monthOf corta o mês", () => {
-    expect(monthOf("2026-03-05")).toBe("2026-03");
-  });
-
-  it("formatMonth devolve mês abreviado e ano com dois dígitos", () => {
-    expect(formatMonth("2026-03")).toBe("mar/26");
-    expect(formatMonth("2025-12")).toBe("dez/25");
-  });
-
-  it("isValidDate aceita datas reais e recusa as impossíveis", () => {
-    expect(isValidDate("2026-02-28")).toBe(true);
-    expect(isValidDate("2024-02-29")).toBe(true);
-    expect(isValidDate("2026-02-29")).toBe(false);
-    expect(isValidDate("2026-13-01")).toBe(false);
-    expect(isValidDate("05/03/2026")).toBe(false);
-    expect(isValidDate("")).toBe(false);
-  });
-});
 
 describe("formatação", () => {
   it("formatBRL usa o formato de moeda brasileiro", () => {
@@ -106,13 +73,15 @@ describe("formatos da identidade", () => {
   });
 
   it("tipo e segmento com inicial maiúscula", () => {
-    expect(formatKind("tijolo", "logística")).toBe("Tijolo · Logística");
-    expect(formatKind("papel", "IPCA")).toBe("Papel · IPCA");
+    expect(formatKind({ type: "tijolo", segment: "lajes corporativas", risk: null })).toBe("Tijolo · Lajes corporativas");
+    expect(formatKind({ type: "tijolo", segment: null, risk: null })).toBe("Tijolo · sem segmento");
+    expect(formatKind({ type: "papel", segment: null, risk: "High Grade" })).toBe("Papel · High Grade");
+    expect(formatKind({ type: "papel", segment: null, risk: null })).toBe("Papel · sem perfil de risco");
   });
 
-  it("meses e datas curtas", () => {
-    expect(formatMonthLong("2026-10")).toBe("outubro de 2026");
-    expect(monthName("2026-03")).toBe("março");
-    expect(formatDayMonth("2026-10-14")).toBe("14/10");
+  it("formatDividend mostra até 4 casas, só quando precisa", () => {
+    expect(plain(formatDividend(0.85))).toBe("R$ 0,85");
+    expect(plain(formatDividend(0.0825))).toBe("R$ 0,0825");
+    expect(plain(formatDividend(1))).toBe("R$ 1,00");
   });
 });

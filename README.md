@@ -28,7 +28,7 @@
 </div>
 
 **Sua carteira de FIIs em papel e tijolo.**<br />
-Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes direto no navegador.
+Cadastre seus FIIs com cotas, preço médio, último rendimento e uma nota de 1 a 10, e veja os proventos esperados, a diversificação e onde aportar para chegar na meta.
 
 <br />
 
@@ -42,29 +42,23 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 <sub>Capturas com dados fictícios, só para demonstração.</sub>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/shot-01.svg" /><img src="docs/assets/shot-01-light.svg" alt="Painel com o total investido, a evolução, a meta de alocação e o peso de cada fundo" width="100%" /></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/shot-01.svg" /><img src="docs/assets/shot-01-light.svg" alt="Painel com o total investido, os proventos esperados, a diversificação em donuts e o peso de cada fundo" width="100%" /></picture>
 
 <br />
 
-<img src="docs/assets/shot-02.svg" alt="Tabela de fundos com cotas, preço médio, valor investido e peso" width="380" />
+<img src="docs/assets/shot-02.svg" alt="Tabela de fundos com cotas, preço médio, valor investido, peso, meta e rendimento" width="100%" />
 <br />
-<sub><b>Carteira</b>: posição, preço médio e peso de cada fundo.</sub>
+<sub><b>Carteira</b>: posição, peso, meta pela nota e proventos esperados de cada fundo.</sub>
 
 <br />
 
-<img src="docs/assets/shot-03.svg" alt="Proventos dos últimos 12 meses em barras e os pagamentos de cada mês" width="380" />
-<br />
-<sub><b>Proventos</b>: renda mensal e histórico de pagamentos.</sub>
-
-<br />
-
-<img src="docs/assets/shot-04.svg" alt="Calculadoras de preço médio e número mágico lado a lado com seus resultados" width="100%" />
+<img src="docs/assets/shot-03.svg" alt="Calculadoras de preço médio e número mágico lado a lado com seus resultados" width="100%" />
 <br />
 <sub><b>Calculadoras</b>: novo preço médio e número mágico.</sub>
 
 <br />
 
-<img src="docs/assets/shot-05.svg" alt="Painel no celular, com o patrimônio e a meta de alocação, e carteira no celular, com cada fundo em uma linha" width="100%" />
+<img src="docs/assets/shot-04.svg" alt="Painel no celular, com o patrimônio e a meta de alocação, e carteira no celular, com cada fundo em uma linha" width="100%" />
 <br />
 <sub><b>No celular</b>: o layout se adapta à tela.</sub>
 
@@ -80,13 +74,13 @@ Acompanhe preço médio, proventos e meta de alocação, e simule novos aportes 
 
 <div align="center">
 
-<img src="docs/assets/f-01.svg" alt="Operações: Lance compras e vendas. Cotas e preço médio saem delas, e comprar um ticker repetido soma à posição." width="49%" />
-<img src="docs/assets/f-02.svg" alt="Proventos: O app confere quantas cotas você tinha na data e calcula renda mensal e yield on cost de 12 meses." width="49%" />
+<img src="docs/assets/f-01.svg" alt="Cadastro: Ticker, cotas, preço médio, último rendimento e tipo: tijolo com segmento ou papel com perfil de risco." width="49%" />
+<img src="docs/assets/f-02.svg" alt="Proventos esperados: Último rendimento × cotas de cada fundo, somados: quanto a carteira deve pagar no mês." width="49%" />
 <br />
-<img src="docs/assets/f-03.svg" alt="Meta de alocação: Defina quanto quer em papel e em tijolo e veja o aporte que falta para chegar lá." width="49%" />
-<img src="docs/assets/f-04.svg" alt="Gráficos: Evolução do investido, peso de cada fundo, tijolo por segmento e papel por indexador." width="49%" />
+<img src="docs/assets/f-03.svg" alt="Meta pela nota: Dê uma nota de 1 a 10 a cada fundo; ela define a meta, e o app divide o próximo aporte entre quem está abaixo." width="49%" />
+<img src="docs/assets/f-04.svg" alt="Gráficos: Donuts da diversificação por tipo, tijolo por segmento e papel por risco, e o peso de cada fundo." width="49%" />
 <br />
-<img src="docs/assets/f-05.svg" alt="Calculadoras: Número mágico e preço médio, já ligados à sua carteira, com opção de registrar a compra simulada." width="49%" />
+<img src="docs/assets/f-05.svg" alt="Calculadoras: Número mágico e preço médio, já ligados à sua carteira, com opção de aplicar a compra simulada ao fundo." width="49%" />
 <img src="docs/assets/f-06.svg" alt="Conta: E-mail e senha: a carteira fica salva no banco e aparece igual no celular e no computador." width="49%" />
 <br />
 <img src="docs/assets/f-07.svg" alt="Tema e celular: Tema claro ou escuro, barra de abas e uma carteira em lista no celular." width="49%" />
@@ -154,11 +148,11 @@ O modelo está em [`.env.example`](.env.example). Em desenvolvimento, o banco pr
 pnpm test
 ```
 
-Usa [Vitest](https://vitest.dev). Os testes cobrem os cálculos da carteira (preço médio, número mágico, alocação, sugestão de aporte, proventos), a validação do que chega às Server Actions, a conversão para as linhas do banco (centavos), as regras da conta (Better Auth com o adaptador em memória), a formatação de números e datas e a geometria dos gráficos.
+Usa [Vitest](https://vitest.dev). Os testes cobrem os cálculos da carteira (total investido, peso, meta pela nota, divisão do aporte, proventos esperados, preço médio, número mágico), a diversificação e a geometria do donut, a validação do que chega às Server Actions, a conversão para as linhas do banco (centavos), a migração do banco (contra um Postgres de verdade, quando há `DATABASE_URL`), as regras da conta (Better Auth com o adaptador em memória) e a formatação de números.
 
 Para reexecutar ao salvar: `pnpm test:watch`.
 
-Os testes de ponta a ponta (Playwright, em `e2e/`) abrem o app no Chromium, cada um com uma conta nova, e percorrem os fluxos inteiros: cadastro, entrar, sair, senha errada, e-mail repetido, uma conta sem ver a outra, excluir a conta, adicionar um FII e recarregar, somar uma segunda compra, lançar provento, ajustar a meta e abrir todas as páginas sem erros. Eles usam o banco do `.env.local` (a branch `dev` do Neon); no CI, um Postgres descartável.
+Os testes de ponta a ponta (Playwright, em `e2e/`) abrem o app no Chromium, cada um com uma conta nova, e percorrem os fluxos inteiros: cadastro, entrar, sair, senha errada, e-mail repetido, uma conta sem ver a outra, excluir a conta, cadastrar fundos de tijolo e de papel e recarregar, editar, excluir e desfazer, aplicar uma compra simulada e abrir todas as páginas sem erros. Eles usam o banco do `.env.local` (a branch `dev` do Neon); no CI, um Postgres descartável.
 
 ```bash
 pnpm exec playwright install chromium   # só na primeira vez
@@ -183,8 +177,8 @@ SCREENSHOTS=1 pnpm test:e2e e2e/screenshots.spec.ts
 ├── app/          rotas do Next (App Router): landing (/), app (/app/...), /entrar, /cadastro, /api/auth,
 │                 /privacidade, /termos, 404, robots e sitemap;
 │                 o corpo de cada tela fica em components/ (portfolio-page.tsx…)
-├── types/        tipos do domínio: Asset, Transaction, Payout, AppData
-├── lib/          lógica pura: posição, resumo, proventos, metas, calculadoras, gráficos, validação;
+├── types/        tipos do domínio: Asset, AppData, segmentos e perfis de risco
+├── lib/          lógica pura: resumo, metas pela nota, diversificação, donut, calculadoras, validação;
 │                 db/ (schema e conexão), data/ (leituras e Server Actions), auth (Better Auth)
 ├── drizzle/      migrações do banco, geradas por pnpm db:generate
 ├── hooks/        use-portfolio (estado e salvamento), use-account, use-theme
@@ -217,21 +211,23 @@ O app pede uma conta (e-mail e senha, com o [Better Auth](https://www.better-aut
 
 Cada tabela do app tem a chave `(user_id, id)`, e cada Server Action confere a sessão e grava só nas linhas da própria pessoa. Dinheiro fica em centavos. Excluir a conta, em **Conta**, apaga tudo em cascata.
 
-O app não busca cotações: os valores são sempre o que você investiu, a partir das compras e vendas que você lança.
+O app não busca cotações: os valores são sempre o que você investiu, pelas cotas e pelo preço médio que você informa.
 
 ### 🧠 Como funciona
 
-O app guarda **operações**, e a posição de cada fundo é sempre derivada delas.
+Cada fundo guarda a posição que você informa: cotas, preço médio e último rendimento, além do tipo (tijolo com segmento, papel com perfil de risco) e de uma nota de 1 a 10.
 
 | Conceito | Regra |
 |---|---|
-| **Compra** | Soma as cotas e recalcula o preço médio ponderado. |
-| **Venda** | Reduz as cotas e mantém o preço médio. Não deixa vender mais do que havia na data. |
-| **Provento** | `valor por cota × cotas em carteira na data do pagamento`. |
-| **Yield on cost (12m)** | Proventos dos últimos 12 meses ÷ total investido. |
-| **Número mágico** | `⌈preço da cota ÷ provento por cota⌉`: cotas para o provento do mês comprar uma nova. |
+| **Investido** | `cotas × preço médio` de cada fundo; o total é a soma. |
 | **Peso** | Fatia de cada fundo no total investido. O app não busca cotações. |
-| **Aporte para a meta** | Menor compra em uma só classe que leva à proporção desejada: `(A + x) / (T + x) = alvo`. |
+| **Meta** | `nota do fundo ÷ soma das notas`. Notas 8, 6 e 6 dão 40%, 30% e 30%. |
+| **Proventos esperados** | `último rendimento × cotas`, somado entre os fundos: o que a carteira deve pagar no mês. |
+| **Yield on cost** | Proventos esperados × 12 ÷ total investido. |
+| **Aporte mínimo para a meta** | O fundo mais acima da meta define o tamanho da carteira: `max(investido ÷ meta) − total`. |
+| **Divisão do aporte** | Cada fundo recebe na proporção do que falta para a meta depois do aporte. |
+| **Diversificação** | Donuts pelo valor investido: por tipo, tijolo por segmento e papel por perfil de risco. |
+| **Número mágico** | `⌈preço da cota ÷ último rendimento⌉`: cotas para o provento do mês comprar uma nova. |
 
 > Os valores servem para acompanhamento e não substituem a nota de corretagem nem o informe de
 > rendimentos. O app não calcula imposto de renda.
@@ -246,8 +242,8 @@ o `robots.txt` e as URLs absolutas de `og:image` e `twitter:image` usadas nos pr
 
 ### 🧭 Próximos passos
 
-- [ ] Lucro realizado e imposto de renda sobre vendas.
-- [ ] Paginação do histórico de operações e de proventos, que cresce com o tempo.
+- [ ] Cotação atual de cada fundo, para mostrar o valor de mercado ao lado do investido.
+- [ ] Apagar as tabelas da versão anterior (operações, proventos e meta papel × tijolo), que o app já não usa.
 - [ ] Recuperação de senha e confirmação de e-mail, com um serviço de e-mail.
 
 ### 📄 Créditos e licença

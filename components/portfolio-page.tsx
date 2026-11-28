@@ -2,18 +2,17 @@
 
 import { useState } from "react";
 import { PlusIcon } from "@phosphor-icons/react";
-import { FiiForm, type FiiFormValues } from "@/components/fii-form";
+import { FiiForm } from "@/components/fii-form";
 import { FiiTable, type TypeFilter } from "@/components/fii-table";
-import { HistoryCard } from "@/components/history-card";
-import { OperationModal } from "@/components/operation-modal";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
+import type { NewAsset } from "@/hooks/use-portfolio";
 import { usePortfolioContext } from "@/hooks/use-portfolio-context";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/cn";
 import { formatBRL, formatNumber } from "@/lib/format";
-import type { Fii } from "@/types/fii";
+import type { Asset } from "@/types/fii";
 
 const FILTERS: { value: TypeFilter; label: string }[] = [
   { value: "all", label: "Todos" },
@@ -27,31 +26,27 @@ export const PortfolioPage = () => {
   const notify = useToast();
   const [filter, setFilter] = useState<TypeFilter>("all");
   const [adding, setAdding] = useState(false);
-  const [editing, setEditing] = useState<Fii | null>(null);
-  const [operating, setOperating] = useState<Fii | null>(null);
+  const [editing, setEditing] = useState<Asset | null>(null);
 
-  function handleAdd({ asset, buy }: FiiFormValues) {
-    if (!buy) return;
-    const { existing } = addAsset(asset, buy);
-    notify(existing ? `Compra somada à posição de ${asset.ticker}` : `${asset.ticker} adicionado à carteira`);
+  function handleAdd(asset: NewAsset) {
+    addAsset(asset);
+    notify(`${asset.ticker} adicionado à carteira`);
     setAdding(false);
   }
 
-  function handleUpdate({ asset }: FiiFormValues) {
+  function handleUpdate(asset: NewAsset) {
     if (!editing) return;
     updateAsset(editing.id, asset);
     notify(`${asset.ticker} atualizado`);
     setEditing(null);
   }
 
-  function handleDelete(fii: Fii) {
-    const snapshot = removeAsset(fii.id);
-    if (!snapshot) return;
-    notify(`${fii.ticker} removido`, { label: "Desfazer", onClick: () => restoreAsset(snapshot) });
+  function handleDelete(asset: Asset) {
+    const removed = removeAsset(asset.id);
+    if (!removed) return;
+    notify(`${asset.ticker} removido`, { label: "Desfazer", onClick: () => restoreAsset(removed) });
   }
 
-  // posição atualizada do ativo em operação (muda quando a compra/venda é salva)
-  const currentOperating = assets.find((a) => a.id === operating?.id) ?? null;
   const count = (type: TypeFilter) => assets.filter((a) => type === "all" || a.type === type).length;
   const funds = `${formatNumber(assets.length)} ${assets.length === 1 ? "fundo" : "fundos"}`;
 
@@ -61,15 +56,16 @@ export const PortfolioPage = () => {
         title="Carteira"
         description={
           assets.length === 0 ? (
-            "Cadastre seus fundos com a primeira compra."
+            "Cadastre seus fundos com as cotas, o preço médio e o último rendimento."
           ) : (
             <>
               {funds} · {formatNumber(summary.totalShares)} cotas ·{" "}
-              <span className="text-fg">{formatBRL(summary.totalInvested)}</span> investidos
+              <span className="text-fg">{formatBRL(summary.totalInvested)}</span> investidos ·{" "}
+              <span className="text-fg">{formatBRL(summary.expectedIncome)}</span> por mês
             </>
           )
         }
-        action={{ label: "Nova operação", onClick: () => setAdding(true) }}
+        action={{ label: "Novo fundo", onClick: () => setAdding(true) }}
       >
         {assets.length > 0 && (
           <div
@@ -99,10 +95,10 @@ export const PortfolioPage = () => {
         <section className="flex flex-col items-center gap-4 rounded-[20px] border border-dashed border-line-strong px-6 py-16 text-center">
           <p className="text-lg font-semibold">Carteira vazia</p>
           <p className="max-w-sm text-[15px] text-muted">
-            Registre a primeira compra de um fundo. O preço médio e o peso de cada um aparecem aqui.
+            Cadastre o primeiro fundo. O peso, a meta e os proventos esperados de cada um aparecem aqui.
           </p>
           <Button onClick={() => setAdding(true)}>
-            <PlusIcon size={16} weight="bold" aria-hidden="true" /> Nova operação
+            <PlusIcon size={16} weight="bold" aria-hidden="true" /> Novo fundo
           </Button>
         </section>
       ) : (
@@ -111,19 +107,16 @@ export const PortfolioPage = () => {
           filter={filter}
           onEdit={setEditing}
           onDelete={handleDelete}
-          onOperation={setOperating}
         />
       )}
 
       {assets.length > 0 && (
         <p className="text-[13px] text-muted">
-          Compras e vendas recalculam o preço médio na hora.
+          A meta de cada fundo é a nota dele dividida pela soma das notas.
         </p>
       )}
 
-      <HistoryCard />
-
-      <Modal open={adding} title="Nova operação" onClose={() => setAdding(false)}>
+      <Modal open={adding} title="Novo fundo" onClose={() => setAdding(false)}>
         <FiiForm onSubmit={handleAdd} tickerInUse={tickerInUse} onCancel={() => setAdding(false)} />
       </Modal>
 
@@ -136,8 +129,6 @@ export const PortfolioPage = () => {
           onCancel={() => setEditing(null)}
         />
       </Modal>
-
-      <OperationModal asset={currentOperating} onClose={() => setOperating(null)} />
     </>
   );
 };

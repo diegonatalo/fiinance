@@ -7,12 +7,12 @@ import { simulateAveragePrice } from "@/lib/average-price";
 import { cn } from "@/lib/cn";
 import { formatBRL, formatChange, formatNumber } from "@/lib/format";
 import { parseDecimal, parseDecimalOrZero } from "@/lib/numbers";
-import type { Fii } from "@/types/fii";
+import type { Asset } from "@/types/fii";
 
 type AveragePriceCalcProps = {
-  assets: Fii[];
-  /** abre o registro de compra com os valores da simulação */
-  onRecord: (asset: Fii, shares: number, price: number) => void;
+  assets: Asset[];
+  /** soma a compra simulada à posição do fundo */
+  onRecord: (asset: Asset, shares: number, price: number) => void;
   className?: string;
 };
 
@@ -120,7 +120,7 @@ export const AveragePriceCalc = ({ assets, onRecord, className }: AveragePriceCa
             </dl>
             {asset && Number.isInteger(qty) && (
               <Button variant="outline" onClick={() => onRecord(asset, qty, price)}>
-                Registrar esta compra
+                Aplicar esta compra ao fundo
               </Button>
             )}
           </>

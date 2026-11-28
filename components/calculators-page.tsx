@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { AveragePriceCalc } from "@/components/average-price-calculator";
 import { MagicNumberCalc } from "@/components/magic-number-calculator";
-import { OperationModal, type InitialOperation } from "@/components/operation-modal";
 import { PageHeader } from "@/components/page-header";
 import { usePortfolioContext } from "@/hooks/use-portfolio-context";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/cn";
-import type { Fii } from "@/types/fii";
+import { formatBRL, formatNumber } from "@/lib/format";
+import type { Asset } from "@/types/fii";
 
 type Tab = "average" | "magic";
 
@@ -17,15 +18,21 @@ const TABS: { value: Tab; label: string }[] = [
 ];
 
 export const CalculatorsPage = () => {
-  const { assets, data } = usePortfolioContext();
+  const { assets, updateAsset } = usePortfolioContext();
+  const notify = useToast();
   const [tab, setTab] = useState<Tab>("average");
-  const [record, setRecord] = useState<{ asset: Fii; initialValues: InitialOperation } | null>(null);
 
-  const currentAsset = assets.find((a) => a.id === record?.asset.id) ?? null;
+  /** Aplica a compra simulada ao fundo: soma as cotas e grava o novo preço médio (em centavos). */
+  function applyBuy({ id, ...asset }: Asset, shares: number, price: number) {
+    const total = asset.shares + shares;
+    const averagePrice = Math.round(((asset.shares * asset.averagePrice + shares * price) / total) * 100) / 100;
+    updateAsset(id, { ...asset, shares: total, averagePrice });
+    notify(`${asset.ticker}: ${formatNumber(total)} cotas a ${formatBRL(averagePrice)}`);
+  }
 
   return (
     <>
-      <PageHeader title="Calculadoras" description="Simule antes de comprar. Nada é salvo até você registrar." />
+      <PageHeader title="Calculadoras" description="Simule antes de comprar. Nada é salvo até você aplicar a compra ao fundo." />
 
       {/* No celular, uma calculadora por vez. */}
       <div
@@ -52,17 +59,14 @@ export const CalculatorsPage = () => {
       <div className="flex flex-wrap gap-6">
         <AveragePriceCalc
           assets={assets}
-          onRecord={(asset, shares, price) => setRecord({ asset, initialValues: { type: "compra", shares, price } })}
+          onRecord={applyBuy}
           className={cn("flex-[1_1_520px]", tab !== "average" && "max-md:hidden")}
         />
         <MagicNumberCalc
           assets={assets}
-          payouts={data.payouts}
           className={cn("flex-[1_1_520px]", tab !== "magic" && "max-md:hidden")}
         />
       </div>
-
-      <OperationModal asset={currentAsset} initialValues={record?.initialValues} onClose={() => setRecord(null)} />
     </>
   );
 };

@@ -35,15 +35,31 @@ export { expect };
 /** Espera as mudanças chegarem ao banco (o app marca com `data-saving` o que ainda está salvando). */
 export const saved = (page: Page) => expect(page.locator("[data-saving]")).toHaveCount(0);
 
-/** Compra um FII pela "Nova operação" da carteira. Preço no formato brasileiro (ex.: "150,50"). */
-export const addFii = async (page: Page, ticker: string, shares: string, price: string) => {
+export type FiiFields = {
+  type?: "tijolo" | "papel";
+  /** segmento (tijolo) ou perfil de risco (papel), como aparece na lista */
+  kind?: string;
+  dividend?: string;
+  rating?: string;
+};
+
+/** Cadastra um FII pelo "Novo fundo" da carteira. Valores no formato brasileiro (ex.: "150,50"). */
+export const addFii = async (page: Page, ticker: string, shares: string, price: string, fields: FiiFields = {}) => {
   if (!page.url().endsWith("/app/carteira")) await page.goto("/app/carteira");
-  await page.getByRole("main").getByRole("button", { name: "Nova operação" }).first().click();
-  const dialog = page.getByRole("dialog", { name: "Nova operação" });
+  const dialog = page.getByRole("dialog", { name: "Novo fundo" });
+  // repete o clique se a janela anterior ainda estava fechando
+  await expect(async () => {
+    await page.getByRole("main").getByRole("button", { name: "Novo fundo" }).first().click({ timeout: 2_000 });
+    await expect(dialog).toBeVisible({ timeout: 2_000 });
+  }).toPass();
   await dialog.getByLabel(/^Ticker/).fill(ticker);
-  await dialog.getByLabel(/^Qtd\. de cotas/).fill(shares);
-  await dialog.getByLabel(/^Preço pago/).fill(price);
-  await dialog.getByRole("button", { name: "Adicionar FII" }).click();
+  if (fields.type) await dialog.getByRole("button", { name: fields.type, exact: true }).click();
+  if (fields.kind) await dialog.getByLabel(fields.type === "papel" ? "Perfil de risco" : "Segmento").selectOption({ label: fields.kind });
+  if (fields.rating) await dialog.getByLabel(/^Nota/).selectOption(fields.rating);
+  await dialog.getByLabel(/^Cotas/).fill(shares);
+  await dialog.getByLabel(/^Preço médio/).fill(price);
+  if (fields.dividend) await dialog.getByLabel(/^Último rendimento/).fill(fields.dividend);
+  await dialog.getByRole("button", { name: "Adicionar fundo" }).click();
   await expect(dialog).toHaveCount(0);
 };
 

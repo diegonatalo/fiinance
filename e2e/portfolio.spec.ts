@@ -1,74 +1,101 @@
 import { addFii, assetRow, expect, saved, test } from "./fixtures";
 
-test("adiciona um FII e ele continua lá depois de recarregar", async ({ page }) => {
-  await addFii(page, "HGLG11", "10", "150,50");
+test("cadastra fundos de tijolo e de papel e eles continuam lá depois de recarregar", async ({ page }) => {
+  await addFii(page, "HGLG11", "10", "150,50", { kind: "Logístico", dividend: "1,10", rating: "8" });
   await expect(page.getByText("HGLG11 adicionado à carteira")).toBeVisible();
+  await addFii(page, "MXRF11", "100", "9,87", { type: "papel", kind: "High Yield", dividend: "0,0825" });
   await expect(assetRow(page, "HGLG11")).toContainText("R$ 1.505,00");
 
   await saved(page);
   await page.reload();
-  await expect(assetRow(page, "HGLG11")).toContainText("R$ 150,50");
+  const hglg = assetRow(page, "HGLG11");
+  await expect(hglg).toContainText("Tijolo · Logístico · nota 8");
+  await expect(hglg).toContainText("R$ 150,50");
+  // 10 × R$ 1,10
+  await expect(hglg).toContainText("R$ 11,00");
+  const mxrf = assetRow(page, "MXRF11");
+  await expect(mxrf).toContainText("Papel · High Yield · nota 5");
+  await expect(mxrf).toContainText("R$ 0,0825 por cota");
 });
 
-test("segunda compra do mesmo FII soma na posição", async ({ page }) => {
-  await addFii(page, "XPML11", "10", "100,00");
-  await addFii(page, "XPML11", "10", "120,00");
-  await expect(page.getByText("Compra somada à posição de XPML11")).toBeVisible();
-
-  // 20 cotas, preço médio de R$ 110,00
-  await saved(page);
-  await page.reload();
-  const row = assetRow(page, "XPML11");
-  await expect(row).toContainText("R$ 110,00");
-  await expect(row).toContainText("R$ 2.200,00");
-});
-
-test("não adiciona com o formulário vazio", async ({ page }) => {
+test("não adiciona com o formulário vazio nem com ticker repetido", async ({ page }) => {
   await page.goto("/app/carteira");
   await expect(page.getByText("Carteira vazia")).toBeVisible();
-  await page.getByRole("main").getByRole("button", { name: "Nova operação" }).first().click();
-  await page.getByRole("dialog").getByRole("button", { name: "Adicionar FII" }).click();
-  await expect(page.getByText("Informe o ticker")).toBeVisible();
+  await page.getByRole("main").getByRole("button", { name: "Novo fundo" }).first().click();
+  const dialog = page.getByRole("dialog", { name: "Novo fundo" });
+  await dialog.getByRole("button", { name: "Adicionar fundo" }).click();
+  await expect(dialog.getByText("Informe o ticker")).toBeVisible();
+  await dialog.getByRole("button", { name: "Cancelar" }).click();
+
+  await addFii(page, "KNRI11", "5", "150,00");
+  await page.getByRole("main").getByRole("button", { name: "Novo fundo" }).first().click();
+  await dialog.getByLabel(/^Ticker/).fill("knri11");
+  await dialog.getByLabel(/^Cotas/).fill("1");
+  await dialog.getByLabel(/^Preço médio/).fill("10");
+  await dialog.getByRole("button", { name: "Adicionar fundo" }).click();
+  await expect(dialog.getByText("Ticker já cadastrado")).toBeVisible();
 });
 
-test("o painel mostra o total investido e o peso de cada fundo", async ({ page }) => {
-  await addFii(page, "HGLG11", "10", "150,00");
-  await addFii(page, "MXRF11", "50", "10,00");
+test("editar muda a posição e excluir pode ser desfeito", async ({ page }) => {
+  await addFii(page, "XPML11", "10", "100,00");
+  await page.getByRole("table").getByRole("button", { name: "Editar XPML11" }).click();
+  const dialog = page.getByRole("dialog", { name: "Editar fundo" });
+  await dialog.getByLabel(/^Cotas/).fill("20");
+  await dialog.getByLabel(/^Preço médio/).fill("110,00");
+  await dialog.getByRole("button", { name: "Salvar alterações" }).click();
+  await saved(page);
+  await page.reload();
+  await expect(assetRow(page, "XPML11")).toContainText("R$ 2.200,00");
+
+  await page.getByRole("table").getByRole("button", { name: "Excluir XPML11" }).click();
+  await page.getByRole("button", { name: "Desfazer" }).click();
+  await saved(page);
+  await page.reload();
+  await expect(assetRow(page, "XPML11")).toContainText("R$ 2.200,00");
+
+  await page.getByRole("table").getByRole("button", { name: "Excluir XPML11" }).click();
+  await saved(page);
+  await page.reload();
+  await expect(page.getByText("Carteira vazia")).toBeVisible();
+});
+
+test("o painel mostra o total, os proventos esperados, a diversificação e onde aportar", async ({ page }) => {
+  await addFii(page, "HGLG11", "10", "100,00", { kind: "Logístico", dividend: "1,00", rating: "8" });
+  await addFii(page, "KNRI11", "5", "100,00", { kind: "Híbrido", dividend: "0,80", rating: "6" });
+  await addFii(page, "MXRF11", "50", "10,00", { type: "papel", kind: "High Grade", dividend: "0,10", rating: "6" });
   await saved(page);
   await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Painel" }).click();
-  await expect(page.getByRole("main")).toContainText("R$ 2.000,00");
-  await expect(page.getByRole("main")).toContainText("75,0%");
+
+  const main = page.getByRole("main");
+  await expect(main).toContainText("R$ 2.000,00");
+  // 10 + 4 + 5
+  await expect(main).toContainText("R$ 19,00");
+
+  const byType = main.getByRole("figure", { name: "Por tipo" });
+  await expect(byType).toContainText("Tijolo75,0%");
+  await expect(main.getByRole("figure", { name: "Tijolo por segmento" })).toContainText("Híbrido33,3%");
+  await expect(main.getByRole("figure", { name: "Papel por risco" })).toContainText("High Grade100,0%");
+
+  // metas 40/30/30: HGLG (50%) define o aporte mínimo de R$ 500, dividido entre KNRI e MXRF
+  await expect(main.getByText("R$ 500,00 levam todos os fundos à meta só com compras.")).toBeVisible();
+  // com R$ 1.000 a carteira vai a R$ 3.000: faltam R$ 200 em HGLG e R$ 400 em KNRI e em MXRF
+  await main.getByLabel("Valor do aporte (R$)").fill("1000");
+  const card = main.locator("section").filter({ has: page.getByRole("heading", { name: "Próximo aporte" }) });
+  const share = (ticker: string) => card.getByRole("listitem").filter({ hasText: ticker });
+  await expect(share("MXRF11")).toContainText("R$ 400,00");
+  await expect(share("HGLG11")).toContainText("R$ 200,00");
 });
 
-test("a meta de alocação diz onde aportar e fica salva", async ({ page }) => {
-  await addFii(page, "HGLG11", "10", "100,00");
+test("aplicar a compra simulada atualiza a posição do fundo", async ({ page }) => {
+  await addFii(page, "HGLG11", "10", "10,00");
   await saved(page);
-  await page.goto("/app");
-  await page.getByRole("button", { name: "Aumentar meta" }).click();
-  await expect(page.getByLabel("Meta em papel")).toHaveValue("5%");
-  await expect(page.getByText("Próximo aporte")).toBeVisible();
-  await expect(page.getByText("em papel", { exact: true })).toBeVisible();
+  await page.goto("/app/calculadoras");
+  const main = page.getByRole("main");
+  await main.getByLabel(/^Cotas compradas/).first().fill("10");
+  await main.getByLabel(/^Preço por cota/).first().fill("12");
+  await main.getByRole("button", { name: "Aplicar esta compra ao fundo" }).click();
+  await expect(page.getByText("HGLG11: 20 cotas a R$ 11,00")).toBeVisible();
   await saved(page);
-  await page.reload();
-  await expect(page.getByLabel("Meta em papel")).toHaveValue("5%");
-});
-
-test("provento lançado e fundo excluído ficam salvos", async ({ page }) => {
-  await addFii(page, "KNRI11", "20", "150,00");
-  await saved(page);
-  await page.goto("/app/proventos");
-  await page.getByRole("main").getByRole("button", { name: "Lançar provento" }).first().click();
-  const dialog = page.getByRole("dialog", { name: "Lançar provento" });
-  await dialog.getByLabel("Ativo").selectOption({ label: "KNRI11" });
-  await dialog.getByLabel(/^Valor por cota/).fill("1,10");
-  await dialog.getByRole("button", { name: "Registrar provento" }).click();
-  await saved(page);
-  await page.reload();
-  await expect(page.getByRole("main")).toContainText("R$ 22,00");
-
   await page.goto("/app/carteira");
-  await page.getByRole("table").getByRole("button", { name: "Excluir KNRI11" }).click();
-  await saved(page);
-  await page.reload();
-  await expect(page.getByText("Carteira vazia")).toBeVisible();
+  await expect(assetRow(page, "HGLG11")).toContainText("R$ 220,00");
 });

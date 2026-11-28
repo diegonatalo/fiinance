@@ -12,7 +12,7 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import type { FiiType, OperationType, Segment } from "@/types/fii";
+import type { BrickSegment, FiiType, RiskProfile } from "@/types/fii";
 
 /* ---------- Better Auth ----------
  * Tables and columns follow the core schema Better Auth expects.
@@ -109,6 +109,10 @@ const owner = () =>
     .notNull()
     .references(() => user.id, { onDelete: "cascade" });
 
+/**
+ * Cada fundo com a posição que a pessoa digitou. Os padrões das colunas só
+ * existem para a versão anterior do app continuar gravando durante o deploy.
+ */
 export const assets = pgTable(
   "assets",
   {
@@ -116,25 +120,38 @@ export const assets = pgTable(
     id: text("id").notNull(),
     ticker: text("ticker").notNull(),
     type: text("type").$type<FiiType>().notNull(),
-    segment: text("segment").$type<Segment>().notNull(),
+    /** só tijolo */
+    segment: text("segment").$type<BrickSegment>(),
+    /** só papel */
+    risk: text("risk").$type<RiskProfile>(),
+    shares: integer("shares").notNull().default(0),
+    averagePriceCents: integer("average_price_cents").notNull().default(0),
+    /** último rendimento por cota em centésimos de centavo (R$ 0,0825 = 825), para fundos de cota barata */
+    lastDividendHundredthCents: integer("last_dividend_hundredth_cents").notNull().default(0),
+    rating: integer("rating").notNull().default(5),
     createdAt: createdAt(),
   },
   (t) => [
     primaryKey({ columns: [t.userId, t.id] }),
-    // um ticker por pessoa: a segunda compra soma na posição do fundo que já existe
+    // um ticker por pessoa
     uniqueIndex("assets_user_ticker_idx").on(t.userId, t.ticker),
   ],
 );
 
-/** Compras e vendas. A posição de cada fundo (cotas e preço médio) é calculada a partir delas. */
+/*
+ * As tabelas abaixo são da versão anterior (posição calculada pelas operações,
+ * proventos recebidos e meta papel × tijolo). O app não as usa mais; saem num
+ * próximo PR, depois que este estiver em produção.
+ */
+
+/** @deprecated não usada; a posição fica em `assets`. */
 export const transactions = pgTable(
   "transactions",
   {
     userId: owner(),
     id: text("id").notNull(),
     assetId: text("asset_id").notNull(),
-    type: text("type").$type<OperationType>().notNull(),
-    /** dia da operação (aaaa-mm-dd), sem horário nem fuso */
+    type: text("type").$type<"compra" | "venda">().notNull(),
     date: date("date", { mode: "string" }).notNull(),
     shares: integer("shares").notNull(),
     priceCents: integer("price_cents").notNull(),
@@ -142,20 +159,18 @@ export const transactions = pgTable(
   },
   (t) => [
     primaryKey({ columns: [t.userId, t.id] }),
-    // excluir o fundo apaga as operações dele; e só aponta para um fundo da mesma pessoa
     foreignKey({ columns: [t.userId, t.assetId], foreignColumns: [assets.userId, assets.id] }).onDelete("cascade"),
     index("transactions_asset_idx").on(t.userId, t.assetId),
   ],
 );
 
-/** Proventos recebidos. Guarda o total recebido; o valor por cota sai de total ÷ cotas. */
+/** @deprecated não usada; o último rendimento fica em `assets`. */
 export const payouts = pgTable(
   "payouts",
   {
     userId: owner(),
     id: text("id").notNull(),
     assetId: text("asset_id").notNull(),
-    /** dia do pagamento (aaaa-mm-dd) */
     date: date("date", { mode: "string" }).notNull(),
     shares: integer("shares").notNull(),
     totalCents: integer("total_cents").notNull(),
@@ -168,9 +183,8 @@ export const payouts = pgTable(
   ],
 );
 
-/** Uma linha por pessoa, criada na primeira vez que ela define a meta. */
+/** @deprecated não usada; a meta vem da nota de cada fundo. */
 export const userSettings = pgTable("user_settings", {
   userId: owner().primaryKey(),
-  /** meta de alocação em papel, de 0 a 100 (o restante vai para tijolo) */
   paperTarget: doublePrecision("paper_target"),
 });

@@ -1,5 +1,5 @@
 ### 🧭 Próximos passos
 
-- [ ] Lucro realizado e imposto de renda sobre vendas.
-- [ ] Paginação do histórico de operações e de proventos, que cresce com o tempo.
+- [ ] Cotação atual de cada fundo, para mostrar o valor de mercado ao lado do investido.
+- [ ] Apagar as tabelas da versão anterior (operações, proventos e meta papel × tijolo), que o app já não usa.
 - [ ] Recuperação de senha e confirmação de e-mail, com um serviço de e-mail.

@@ -3,7 +3,7 @@ import { paths, signInPath } from "@/lib/paths";
 
 describe("signInPath", () => {
   it("guarda a página pedida para voltar depois de entrar", () => {
-    expect(signInPath("/app/proventos?x=1")).toBe("/entrar?de=%2Fapp%2Fproventos%3Fx%3D1");
+    expect(signInPath("/app/carteira?x=1")).toBe("/entrar?de=%2Fapp%2Fcarteira%3Fx%3D1");
   });
 
   it("sem página, ou já no painel, vai direto para entrar", () => {

@@ -11,12 +11,12 @@ test("sem login, o app manda para entrar e volta para a página pedida depois", 
   const email = await signUpByApi(page.request, baseURL!);
   await page.context().clearCookies();
 
-  await page.goto("/app/proventos");
-  await expect(page).toHaveURL("/entrar?de=%2Fapp%2Fproventos");
+  await page.goto("/app/calculadoras");
+  await expect(page).toHaveURL("/entrar?de=%2Fapp%2Fcalculadoras");
 
   await signIn(page, email);
-  await expect(page).toHaveURL("/app/proventos");
-  await expect(page.getByRole("heading", { level: 1, name: "Proventos" })).toBeVisible();
+  await expect(page).toHaveURL("/app/calculadoras");
+  await expect(page.getByRole("heading", { level: 1, name: "Calculadoras" })).toBeVisible();
 });
 
 test("cria a conta pela tela, a carteira fica na conta e volta ao entrar de novo", async ({ page }) => {

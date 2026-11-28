@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { simulateAveragePrice } from "@/lib/average-price";
 import { calculateMagicNumber } from "@/lib/magic-number";
-import { currentAllocation, suggestContribution } from "@/lib/targets";
 
 describe("simulateAveragePrice", () => {
   it("calcula o novo preço médio de uma compra adicional", () => {
@@ -57,40 +56,5 @@ describe("calculateMagicNumber", () => {
     expect(calculateMagicNumber(0, 100, 1)).toBeNull();
     expect(calculateMagicNumber(1, -5, 1)).toBeNull();
     expect(calculateMagicNumber(Number.NaN, 100, 1)).toBeNull();
-  });
-});
-
-describe("currentAllocation", () => {
-  it("divide a carteira em papel e tijolo", () => {
-    expect(currentAllocation(300, 700)).toEqual({ paperPct: 30, brickPct: 70 });
-  });
-
-  it("devolve zero para carteira vazia", () => {
-    expect(currentAllocation(0, 0)).toEqual({ paperPct: 0, brickPct: 0 });
-  });
-});
-
-describe("suggestContribution", () => {
-  it("sugere aporte em papel quando ele está abaixo da meta", () => {
-    // 200 papel + 800 tijolo, meta 50%: (A + x) / (T + x) = 0,5 => x = 600
-    expect(suggestContribution(200, 800, 50)).toEqual({
-      variantClass: "papel",
-      contribution: 600,
-    });
-  });
-
-  it("sugere aporte em tijolo quando papel passou da meta", () => {
-    expect(suggestContribution(800, 200, 50)).toEqual({
-      variantClass: "tijolo",
-      contribution: 600,
-    });
-  });
-
-  it("não sugere nada quando a carteira já está na meta", () => {
-    expect(suggestContribution(500, 500, 50)).toBeNull();
-  });
-
-  it("não sugere nada para carteira vazia", () => {
-    expect(suggestContribution(0, 0, 50)).toBeNull();
   });
 });

@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { buttonClasses } from "@/components/ui/button";
 import { formatBRL, formatNumber, formatPct } from "@/lib/format";
-import type { PayoutsSummary } from "@/lib/payouts";
 import type { Summary } from "@/lib/summary";
 
 type DashboardHeroProps = {
   summary: Summary;
-  payouts: PayoutsSummary;
 };
 
 const Stat = ({ label, value }: { label: string; value: string }) => (
@@ -24,8 +22,10 @@ const Tile = ({ label, value, note }: { label: string; value: string; note: stri
   </div>
 );
 
-/** Patrimônio (o total investido) em destaque, com a renda da carteira. */
-export const DashboardHero = ({ summary, payouts }: DashboardHeroProps) => {
+/** Patrimônio (o total investido) em destaque, com os proventos esperados. */
+export const DashboardHero = ({ summary }: DashboardHeroProps) => {
+  // último rendimento de cada fundo repetido por 12 meses, sobre o custo
+  const yieldOnCost = summary.totalInvested > 0 ? ((summary.expectedIncome * 12) / summary.totalInvested) * 100 : 0;
   const funds = `${formatNumber(summary.activeAssets)} ${summary.activeAssets === 1 ? "fundo" : "fundos"}`;
   return (
     <section className="flex flex-col gap-4 md:pb-6">
@@ -40,16 +40,16 @@ export const DashboardHero = ({ summary, payouts }: DashboardHeroProps) => {
           </p>
         </div>
         <dl className="hidden flex-wrap gap-x-10 gap-y-6 md:flex">
-          <Stat label="Renda por mês" value={formatBRL(payouts.monthlyAverage)} />
-          <Stat label="Proventos em 12 meses" value={formatBRL(payouts.total12m)} />
-          <Stat label="Yield on cost" value={formatPct(payouts.dyOnCost, 2)} />
+          <Stat label="Proventos esperados por mês" value={formatBRL(summary.expectedIncome)} />
+          <Stat label="Em 12 meses" value={formatBRL(summary.expectedIncome * 12)} />
+          <Stat label="Yield on cost" value={formatPct(yieldOnCost, 2)} />
         </dl>
       </div>
       <dl className="grid grid-cols-2 gap-2.5 md:hidden">
-        <Tile label="Renda por mês" value={formatBRL(payouts.monthlyAverage)} note="média de 12 meses" />
-        <Tile label="Yield on cost" value={formatPct(payouts.dyOnCost, 2)} note="últimos 12 meses" />
+        <Tile label="Proventos esperados" value={formatBRL(summary.expectedIncome)} note="por mês" />
+        <Tile label="Yield on cost" value={formatPct(yieldOnCost, 2)} note="ao ano, pelo último rendimento" />
       </dl>
-      {summary.activeAssets === 0 && (
+      {summary.activeAssets === 0 && summary.totalShares === 0 && (
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-[20px] border border-dashed border-line-strong p-6">
           <p className="text-[15px] text-fg-soft">Sua carteira está vazia. Cadastre o primeiro fundo para ver o painel.</p>
           <Link href="/app/carteira" className={buttonClasses()}>

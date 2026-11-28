@@ -9,15 +9,10 @@ import type { AppData } from "@/types/fii";
 
 /** As ações presas à conta da tela: com outra conta logada, o servidor recusa. */
 const persistenceFor = (owner: string): Persistence => ({
-  addAsset: (asset, buy) => actions.addAsset(owner, asset, buy),
+  addAsset: (asset) => actions.addAsset(owner, asset),
   updateAsset: (asset) => actions.updateAsset(owner, asset),
   removeAsset: (id) => actions.removeAsset(owner, id),
-  restoreAsset: (s) => actions.restoreAsset(owner, s.asset, s.transactions, s.payouts),
-  recordOperation: (operation) => actions.recordOperation(owner, operation),
-  removeTransaction: (id) => actions.removeTransaction(owner, id),
-  addPayout: (payout) => actions.addPayout(owner, payout),
-  removePayout: (id) => actions.removePayout(owner, id),
-  setPaperTarget: (target) => actions.setPaperTarget(owner, target),
+  restoreAsset: (asset) => actions.restoreAsset(owner, asset),
 });
 
 type PortfolioProviderProps = {
